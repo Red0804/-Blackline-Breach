@@ -6,13 +6,10 @@
       "AbsoluteMoniker": "D:0:0:{DF020977-F883-4CBF-8742-EC147986EA9B}|OpenXOPS.vcxproj|C:\\Users\\alswp\\OneDrive\\\uBC14\uD0D5 \uD654\uBA74\\\uC5D1\uC635\\openxops \uCD08\uBCF4\uC6A9 \uAC1C\uC870 \uC2A4\uD0AC \uC644\uC131\\src\\gamemain.cpp||{D0E1A5C6-B359-4E41-9B60-3365922C2A22}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{DF020977-F883-4CBF-8742-EC147986EA9B}|OpenXOPS.vcxproj|C:\\Users\\alswp\\OneDrive\\\uBC14\uD0D5 \uD654\uBA74\\\uC5D1\uC635\\openxops \uCD08\uBCF4\uC6A9 \uAC1C\uC870 \uC2A4\uD0AC \uC644\uC131\\src\\gamemain.h||{D0E1A5C6-B359-4E41-9B60-3365922C2A22}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{DF020977-F883-4CBF-8742-EC147986EA9B}|OpenXOPS.vcxproj|C:\\Users\\alswp\\OneDrive\\\uBC14\uD0D5 \uD654\uBA74\\\uC5D1\uC635\\openxops \uCD08\uBCF4\uC6A9 \uAC1C\uC870 \uC2A4\uD0AC \uC644\uC131\\src\\main.cpp||{D0E1A5C6-B359-4E41-9B60-3365922C2A22}"
-    },
-    {
       "AbsoluteMoniker": "D:0:0:{DF020977-F883-4CBF-8742-EC147986EA9B}|OpenXOPS.vcxproj|C:\\Users\\alswp\\OneDrive\\\uBC14\uD0D5 \uD654\uBA74\\\uC5D1\uC635\\openxops \uCD08\uBCF4\uC6A9 \uAC1C\uC870 \uC2A4\uD0AC \uC644\uC131\\src\\ai.cpp||{D0E1A5C6-B359-4E41-9B60-3365922C2A22}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{DF020977-F883-4CBF-8742-EC147986EA9B}|OpenXOPS.vcxproj|C:\\Users\\alswp\\OneDrive\\\uBC14\uD0D5 \uD654\uBA74\\\uC5D1\uC635\\openxops \uCD08\uBCF4\uC6A9 \uAC1C\uC870 \uC2A4\uD0AC \uC644\uC131\\src\\window.cpp||{D0E1A5C6-B359-4E41-9B60-3365922C2A22}"
     },
     {
       "AbsoluteMoniker": "D:0:0:{DF020977-F883-4CBF-8742-EC147986EA9B}|OpenXOPS.vcxproj|C:\\Users\\alswp\\OneDrive\\\uBC14\uD0D5 \uD654\uBA74\\\uC5D1\uC635\\openxops \uCD08\uBCF4\uC6A9 \uAC1C\uC870 \uC2A4\uD0AC \uC644\uC131\\src\\d3dgraphics-opengl.cpp||{D0E1A5C6-B359-4E41-9B60-3365922C2A22}"
@@ -21,19 +18,22 @@
       "AbsoluteMoniker": "D:0:0:{DF020977-F883-4CBF-8742-EC147986EA9B}|OpenXOPS.vcxproj|C:\\Users\\alswp\\OneDrive\\\uBC14\uD0D5 \uD654\uBA74\\\uC5D1\uC635\\openxops \uCD08\uBCF4\uC6A9 \uAC1C\uC870 \uC2A4\uD0AC \uC644\uC131\\src\\d3dgraphics-directx.cpp||{D0E1A5C6-B359-4E41-9B60-3365922C2A22}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{DF020977-F883-4CBF-8742-EC147986EA9B}|OpenXOPS.vcxproj|C:\\Users\\alswp\\OneDrive\\\uBC14\uD0D5 \uD654\uBA74\\\uC5D1\uC635\\openxops \uCD08\uBCF4\uC6A9 \uAC1C\uC870 \uC2A4\uD0AC \uC644\uC131\\src\\window.cpp||{D0E1A5C6-B359-4E41-9B60-3365922C2A22}"
+      "AbsoluteMoniker": "D:0:0:{DF020977-F883-4CBF-8742-EC147986EA9B}|OpenXOPS.vcxproj|C:\\Users\\alswp\\OneDrive\\\uBC14\uD0D5 \uD654\uBA74\\\uC5D1\uC635\\openxops \uCD08\uBCF4\uC6A9 \uAC1C\uC870 \uC2A4\uD0AC \uC644\uC131\\src\\objectmanager.h||{D0E1A5C6-B359-4E41-9B60-3365922C2A22}"
     },
     {
       "AbsoluteMoniker": "D:0:0:{DF020977-F883-4CBF-8742-EC147986EA9B}|OpenXOPS.vcxproj|C:\\Users\\alswp\\OneDrive\\\uBC14\uD0D5 \uD654\uBA74\\\uC5D1\uC635\\openxops \uCD08\uBCF4\uC6A9 \uAC1C\uC870 \uC2A4\uD0AC \uC644\uC131\\src\\object.cpp||{D0E1A5C6-B359-4E41-9B60-3365922C2A22}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{DF020977-F883-4CBF-8742-EC147986EA9B}|OpenXOPS.vcxproj|C:\\Users\\alswp\\OneDrive\\\uBC14\uD0D5 \uD654\uBA74\\\uC5D1\uC635\\openxops \uCD08\uBCF4\uC6A9 \uAC1C\uC870 \uC2A4\uD0AC \uC644\uC131\\src\\object.h||{D0E1A5C6-B359-4E41-9B60-3365922C2A22}"
-    },
-    {
       "AbsoluteMoniker": "D:0:0:{DF020977-F883-4CBF-8742-EC147986EA9B}|OpenXOPS.vcxproj|C:\\Users\\alswp\\OneDrive\\\uBC14\uD0D5 \uD654\uBA74\\\uC5D1\uC635\\openxops \uCD08\uBCF4\uC6A9 \uAC1C\uC870 \uC2A4\uD0AC \uC644\uC131\\src\\objectmanager.cpp||{D0E1A5C6-B359-4E41-9B60-3365922C2A22}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{DF020977-F883-4CBF-8742-EC147986EA9B}|OpenXOPS.vcxproj|C:\\Users\\alswp\\OneDrive\\\uBC14\uD0D5 \uD654\uBA74\\\uC5D1\uC635\\openxops \uCD08\uBCF4\uC6A9 \uAC1C\uC870 \uC2A4\uD0AC \uC644\uC131\\src\\objectmanager.h||{D0E1A5C6-B359-4E41-9B60-3365922C2A22}"
+      "AbsoluteMoniker": "D:0:0:{DF020977-F883-4CBF-8742-EC147986EA9B}|OpenXOPS.vcxproj|C:\\Users\\alswp\\OneDrive\\\uBC14\uD0D5 \uD654\uBA74\\\uC5D1\uC635\\openxops \uCD08\uBCF4\uC6A9 \uAC1C\uC870 \uC2A4\uD0AC \uC644\uC131\\src\\main.cpp||{D0E1A5C6-B359-4E41-9B60-3365922C2A22}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{DF020977-F883-4CBF-8742-EC147986EA9B}|OpenXOPS.vcxproj|C:\\Users\\alswp\\OneDrive\\\uBC14\uD0D5 \uD654\uBA74\\\uC5D1\uC635\\openxops \uCD08\uBCF4\uC6A9 \uAC1C\uC870 \uC2A4\uD0AC \uC644\uC131\\src\\object.h||{D0E1A5C6-B359-4E41-9B60-3365922C2A22}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{DF020977-F883-4CBF-8742-EC147986EA9B}|OpenXOPS.vcxproj|C:\\Users\\alswp\\OneDrive\\\uBC14\uD0D5 \uD654\uBA74\\\uC5D1\uC635\\openxops \uCD08\uBCF4\uC6A9 \uAC1C\uC870 \uC2A4\uD0AC \uC644\uC131\\src\\gamemain.h||{D0E1A5C6-B359-4E41-9B60-3365922C2A22}"
     }
   ],
   "DocumentGroupContainers": [
@@ -47,7 +47,7 @@
           "Children": [
             {
               "$type": "Document",
-              "DocumentIndex": 3,
+              "DocumentIndex": 1,
               "Title": "ai.cpp",
               "DocumentMoniker": "C:\\Users\\alswp\\OneDrive\\\uBC14\uD0D5 \uD654\uBA74\\\uC5D1\uC635\\openxops \uCD08\uBCF4\uC6A9 \uAC1C\uC870 \uC2A4\uD0AC \uC644\uC131\\src\\ai.cpp",
               "RelativeDocumentMoniker": "..\\ai.cpp",
@@ -55,12 +55,11 @@
               "RelativeToolTip": "..\\ai.cpp",
               "ViewState": "AgIAAAAAAAAAAAAAAAAAAAwAAAAtAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000677|",
-              "WhenOpened": "2026-07-01T06:36:41.081Z",
-              "EditorCaption": ""
+              "WhenOpened": "2026-07-01T06:36:41.081Z"
             },
             {
               "$type": "Document",
-              "DocumentIndex": 6,
+              "DocumentIndex": 2,
               "Title": "window.cpp",
               "DocumentMoniker": "C:\\Users\\alswp\\OneDrive\\\uBC14\uD0D5 \uD654\uBA74\\\uC5D1\uC635\\openxops \uCD08\uBCF4\uC6A9 \uAC1C\uC870 \uC2A4\uD0AC \uC644\uC131\\src\\window.cpp",
               "RelativeDocumentMoniker": "..\\window.cpp",
@@ -68,12 +67,11 @@
               "RelativeToolTip": "..\\window.cpp",
               "ViewState": "AgIAAGoBAAAAAAAAAAAQwHgBAAAAAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000677|",
-              "WhenOpened": "2026-07-01T06:35:13.307Z",
-              "EditorCaption": ""
+              "WhenOpened": "2026-07-01T06:35:13.307Z"
             },
             {
               "$type": "Document",
-              "DocumentIndex": 4,
+              "DocumentIndex": 3,
               "Title": "d3dgraphics-opengl.cpp",
               "DocumentMoniker": "C:\\Users\\alswp\\OneDrive\\\uBC14\uD0D5 \uD654\uBA74\\\uC5D1\uC635\\openxops \uCD08\uBCF4\uC6A9 \uAC1C\uC870 \uC2A4\uD0AC \uC644\uC131\\src\\d3dgraphics-opengl.cpp",
               "RelativeDocumentMoniker": "..\\d3dgraphics-opengl.cpp",
@@ -81,12 +79,11 @@
               "RelativeToolTip": "..\\d3dgraphics-opengl.cpp",
               "ViewState": "AgIAAC8MAAAAAAAAAAAQwEEMAAAmAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000677|",
-              "WhenOpened": "2026-07-01T06:25:55.765Z",
-              "EditorCaption": ""
+              "WhenOpened": "2026-07-01T06:25:55.765Z"
             },
             {
               "$type": "Document",
-              "DocumentIndex": 5,
+              "DocumentIndex": 4,
               "Title": "d3dgraphics-directx.cpp",
               "DocumentMoniker": "C:\\Users\\alswp\\OneDrive\\\uBC14\uD0D5 \uD654\uBA74\\\uC5D1\uC635\\openxops \uCD08\uBCF4\uC6A9 \uAC1C\uC870 \uC2A4\uD0AC \uC644\uC131\\src\\d3dgraphics-directx.cpp",
               "RelativeDocumentMoniker": "..\\d3dgraphics-directx.cpp",
@@ -94,12 +91,11 @@
               "RelativeToolTip": "..\\d3dgraphics-directx.cpp",
               "ViewState": "AgIAANgKAAAAAAAAAAAQwOAKAAAAAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000677|",
-              "WhenOpened": "2026-07-01T06:25:54.28Z",
-              "EditorCaption": ""
+              "WhenOpened": "2026-07-01T06:25:54.28Z"
             },
             {
               "$type": "Document",
-              "DocumentIndex": 10,
+              "DocumentIndex": 5,
               "Title": "objectmanager.h",
               "DocumentMoniker": "C:\\Users\\alswp\\OneDrive\\\uBC14\uD0D5 \uD654\uBA74\\\uC5D1\uC635\\openxops \uCD08\uBCF4\uC6A9 \uAC1C\uC870 \uC2A4\uD0AC \uC644\uC131\\src\\objectmanager.h",
               "RelativeDocumentMoniker": "..\\objectmanager.h",
@@ -111,7 +107,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 7,
+              "DocumentIndex": 6,
               "Title": "object.cpp",
               "DocumentMoniker": "C:\\Users\\alswp\\OneDrive\\\uBC14\uD0D5 \uD654\uBA74\\\uC5D1\uC635\\openxops \uCD08\uBCF4\uC6A9 \uAC1C\uC870 \uC2A4\uD0AC \uC644\uC131\\src\\object.cpp",
               "RelativeDocumentMoniker": "..\\object.cpp",
@@ -123,7 +119,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 9,
+              "DocumentIndex": 7,
               "Title": "objectmanager.cpp",
               "DocumentMoniker": "C:\\Users\\alswp\\OneDrive\\\uBC14\uD0D5 \uD654\uBA74\\\uC5D1\uC635\\openxops \uCD08\uBCF4\uC6A9 \uAC1C\uC870 \uC2A4\uD0AC \uC644\uC131\\src\\objectmanager.cpp",
               "RelativeDocumentMoniker": "..\\objectmanager.cpp",
@@ -135,7 +131,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 2,
+              "DocumentIndex": 8,
               "Title": "main.cpp",
               "DocumentMoniker": "C:\\Users\\alswp\\OneDrive\\\uBC14\uD0D5 \uD654\uBA74\\\uC5D1\uC635\\openxops \uCD08\uBCF4\uC6A9 \uAC1C\uC870 \uC2A4\uD0AC \uC644\uC131\\src\\main.cpp",
               "RelativeDocumentMoniker": "..\\main.cpp",
@@ -143,12 +139,11 @@
               "RelativeToolTip": "..\\main.cpp",
               "ViewState": "AgIAAIYBAAAAAAAAAAAkwI8BAAAAAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000677|",
-              "WhenOpened": "2026-06-30T18:22:48.777Z",
-              "EditorCaption": ""
+              "WhenOpened": "2026-06-30T18:22:48.777Z"
             },
             {
               "$type": "Document",
-              "DocumentIndex": 8,
+              "DocumentIndex": 9,
               "Title": "object.h",
               "DocumentMoniker": "C:\\Users\\alswp\\OneDrive\\\uBC14\uD0D5 \uD654\uBA74\\\uC5D1\uC635\\openxops \uCD08\uBCF4\uC6A9 \uAC1C\uC870 \uC2A4\uD0AC \uC644\uC131\\src\\object.h",
               "RelativeDocumentMoniker": "..\\object.h",
@@ -164,16 +159,16 @@
               "Title": "gamemain.cpp",
               "DocumentMoniker": "C:\\Users\\alswp\\OneDrive\\\uBC14\uD0D5 \uD654\uBA74\\\uC5D1\uC635\\openxops \uCD08\uBCF4\uC6A9 \uAC1C\uC870 \uC2A4\uD0AC \uC644\uC131\\src\\gamemain.cpp",
               "RelativeDocumentMoniker": "..\\gamemain.cpp",
-              "ToolTip": "C:\\Users\\alswp\\OneDrive\\\uBC14\uD0D5 \uD654\uBA74\\\uC5D1\uC635\\openxops \uCD08\uBCF4\uC6A9 \uAC1C\uC870 \uC2A4\uD0AC \uC644\uC131\\src\\gamemain.cpp*",
-              "RelativeToolTip": "..\\gamemain.cpp*",
-              "ViewState": "AgIAAD4dAAAAAAAAAAAkwEwdAAAJAAAAAAAAAA==",
+              "ToolTip": "C:\\Users\\alswp\\OneDrive\\\uBC14\uD0D5 \uD654\uBA74\\\uC5D1\uC635\\openxops \uCD08\uBCF4\uC6A9 \uAC1C\uC870 \uC2A4\uD0AC \uC644\uC131\\src\\gamemain.cpp",
+              "RelativeToolTip": "..\\gamemain.cpp",
+              "ViewState": "AgIAAHYdAAAAAAAAAAAUwIEdAAAAAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000677|",
               "WhenOpened": "2026-06-30T18:19:03.322Z",
               "EditorCaption": ""
             },
             {
               "$type": "Document",
-              "DocumentIndex": 1,
+              "DocumentIndex": 10,
               "Title": "gamemain.h",
               "DocumentMoniker": "C:\\Users\\alswp\\OneDrive\\\uBC14\uD0D5 \uD654\uBA74\\\uC5D1\uC635\\openxops \uCD08\uBCF4\uC6A9 \uAC1C\uC870 \uC2A4\uD0AC \uC644\uC131\\src\\gamemain.h",
               "RelativeDocumentMoniker": "..\\gamemain.h",
@@ -181,8 +176,7 @@
               "RelativeToolTip": "..\\gamemain.h",
               "ViewState": "AgIAAIAAAAAAAAAAAAAUwIkAAAAOAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000680|",
-              "WhenOpened": "2026-06-30T18:18:50.589Z",
-              "EditorCaption": ""
+              "WhenOpened": "2026-06-30T18:18:50.589Z"
             }
           ]
         }
