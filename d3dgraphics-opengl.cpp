@@ -254,13 +254,15 @@ int D3DGraphics::InitD3D(WindowControl *WindowCtrl, const char *TextureFontFilen
 
 
 	//HUD?뙸띪렃궯궲궋귡븧딇귩?됪궥귡띆뷭
-	HUD_myweapon_x[0] = GameConfig.GetScreenWidth() - 140.0f;
-	HUD_myweapon_y[0] = GameConfig.GetScreenHeight() - 40.0f;
+	// 선택 무기는 회전을 없앤 뒤에도 2번째 무기와 겹치지 않도록 더 왼쪽/아래에 둔다.
+	HUD_myweapon_x[0] = GameConfig.GetScreenWidth() - 190.0f;
+	HUD_myweapon_y[0] = GameConfig.GetScreenHeight() - 48.0f;
 	HUD_myweapon_z[0] = 0.86f;
 
 	//HUD??뷈궻븧딇귩?됪궥귡띆뷭
-	HUD_myweapon_x[1] = GameConfig.GetScreenWidth() - 72.0f;
-	HUD_myweapon_y[1] = GameConfig.GetScreenHeight() - 25.0f;
+	// 2번째 무기는 오른쪽 위에 유지해 선택 무기와 시각적으로 분리한다.
+	HUD_myweapon_x[1] = GameConfig.GetScreenWidth() - 70.0f;
+	HUD_myweapon_y[1] = GameConfig.GetScreenHeight() - 22.0f;
 	HUD_myweapon_z[1] = 0.93f;
 
 
@@ -3085,20 +3087,29 @@ void D3DGraphics::Draw2DBoxScaling(int x1, int y1, int x2, int y2, int color)
 // [✨ 이 함수가 없으므로, 여기에 전체를 추가하세요 ✨]
 void D3DGraphics::Draw2DDonutArc(float cx, float cy, float radius, float start_angle, float end_angle, int thickness, int segments, int color)
 {
+	if (StartRenderFlag == false) { return; }
+
+	if (segments < 1) { return; }
+	if (segments > 360) { segments = 360; }
+
+	if (radius <= 0.0f) { return; }
+	if (thickness <= 0) { return; }
+
 	Start2DRender();
 	glDisable(GL_TEXTURE_2D);
 
 	int num_vertices = (segments + 1) * 2;
-	float* vertex_array = new float[num_vertices * 2];
-	unsigned char* color_array = new unsigned char[num_vertices * 4];
-	if (!vertex_array || !color_array) {
-		if (vertex_array) delete[] vertex_array;
-		if (color_array) delete[] color_array;
-		End2DRender();
-		return;
+	float vertex_array[(360 + 1) * 2 * 2];
+	unsigned char color_array[(360 + 1) * 2 * 4];
+
+	float theta_step = (end_angle - start_angle) / (float)segments;
+	float inner_radius = radius - ((float)thickness / 2.0f);
+	float outer_radius = radius + ((float)thickness / 2.0f);
+
+	if (inner_radius < 0.0f) {
+		inner_radius = 0.0f;
 	}
 
-	float theta_step = (end_angle - start_angle) / segments;
 	unsigned char r = (unsigned char)((color >> 24) & 0xFF);
 	unsigned char g = (unsigned char)((color >> 16) & 0xFF);
 	unsigned char b = (unsigned char)((color >> 8) & 0xFF);
@@ -3110,15 +3121,12 @@ void D3DGraphics::Draw2DDonutArc(float cx, float cy, float radius, float start_a
 		float cos_a = cosf(angle - (float)M_PI / 2);
 		float sin_a = sinf(angle - (float)M_PI / 2);
 
-		// 안쪽 정점
-		vertex_array[i * 4 + 0] = cx + (radius - thickness / 2) * cos_a;
-		vertex_array[i * 4 + 1] = cy + (radius - thickness / 2) * sin_a;
+		vertex_array[i * 4 + 0] = cx + inner_radius * cos_a;
+		vertex_array[i * 4 + 1] = cy + inner_radius * sin_a;
 
-		// 바깥쪽 정점
-		vertex_array[i * 4 + 2] = cx + (radius + thickness / 2) * cos_a;
-		vertex_array[i * 4 + 3] = cy + (radius + thickness / 2) * sin_a;
+		vertex_array[i * 4 + 2] = cx + outer_radius * cos_a;
+		vertex_array[i * 4 + 3] = cy + outer_radius * sin_a;
 
-		// 색상 설정
 		for (int j = 0; j < 2; ++j) {
 			color_array[(i * 2 + j) * 4 + 0] = r;
 			color_array[(i * 2 + j) * 4 + 1] = g;
@@ -3136,9 +3144,6 @@ void D3DGraphics::Draw2DDonutArc(float cx, float cy, float radius, float start_a
 
 	glDisableClientState(GL_VERTEX_ARRAY);
 	glDisableClientState(GL_COLOR_ARRAY);
-
-	delete[] vertex_array;
-	delete[] color_array;
 
 	End2DRender();
 }

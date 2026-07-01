@@ -48,9 +48,27 @@
 
 //믦릶
 #define GAMENAME "Blackline Breach"				//!< 게임명
-#define GAMEVERSION "EX2"						//!< 게임의 버전
-#define GAMEFRAMEMS 30					//!< 긲깒??궇궫귟궻룉뿚렄듩걁ms걂
-#define GAMEFPS (1000.0f/GAMEFRAMEMS)	//!< FPS걁긲깒??깒?긣걂?1000 / 30 = 33.333[FPS]
+#define GAMEVERSION "EX3"						//!< 게임의 버전
+#define GAMEFRAMEMS 30					//!< 기존 게임 내부 기준 프레임 시간(ms)
+#define GAMEFPS (1000.0f/GAMEFRAMEMS)	//!< 기존 게임 내부 기준 FPS. 1000 / 30 = 33.333FPS
+
+// 실제 메인 루프에서 로직을 실행할 간격.
+// 30이면 원래 의도된 속도.
+// 예전 ControlFps 체감에 맞추고 싶으면 32~33을 테스트한다.
+// 기존 게임 체감에 맞춘 실제 로직 실행 FPS.
+// 게임 내부 시간 표시가 (int)GAMEFPS == 33 기준으로 되어 있으므로,
+// 실제 로직도 평균 33FPS에 맞춘다.
+#define LOGICFPS_LEGACY 33.0
+#define LOGICFRAMEMS_D (1000.0 / LOGICFPS_LEGACY)
+
+// 화면 렌더링 제한.
+// 게임 로직 속도와는 별개이다.
+#define RENDERFPS_DEFAULT 144
+#define RENDERFPS_MIN 30
+#define RENDERFPS_MAX 240
+
+// 렉이 걸렸을 때 한 루프에서 로직을 너무 많이 따라잡지 않도록 제한
+#define MAX_LOGIC_STEPS_PER_LOOP 5
 #define DEFAULT_SCREEN_WIDTH 1920		//!< 긚긏깏?깛궻븴
 #define DEFAULT_SCREEN_HEIGHT 1080		//!< 긚긏깏?깛궻뛼궠
 

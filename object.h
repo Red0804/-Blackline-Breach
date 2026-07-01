@@ -105,6 +105,7 @@ protected:
 	float pos_y;		//!< Y띆뷭
 	float pos_z;		//!< Z띆뷭
 	float rotation_x;	//!< 됷?둷뱗
+
 	float model_size;	//!< ?됪긖귽긛
 	int id_parameter;	//!< 긢??궻롰쀞
 	int id_model;		//!< 긾긢깑궻긢??붥뜂
@@ -118,6 +119,7 @@ public:
 	virtual void SetParameterInfoClass(class ParameterInfo* in_Param);
 	virtual void SetPosData(float x, float y, float z, float rx);
 	virtual void GetPosData(float* x, float* y, float* z, float* rx);
+
 	virtual void SetEnableFlag(bool flag);
 	virtual bool GetEnableFlag();
 	virtual void SetModel(int id, float size);
@@ -167,7 +169,8 @@ protected:
 	int underblock_face;		//!< 뫉뙰궻긳깓긞긏궻뽋붥뜂
 	float rotation_y;			//!< 멣뫬궻됷?둷뱗
 	float armrotation_y;		//!< 쁱궻됷?둷뱗
-	float upmodel_size;			//!< 뤵뵾릆?됪긖귽긛
+
+	float upmodel_size;
 	float armmodel_size;		//!< 쁱?됪긖귽긛
 	float legmodel_size;		//!< 뫉?됪긖귽긛
 	class weapon *weapon[TOTAL_HAVEWEAPON];			//!< 븧딇
@@ -325,7 +328,7 @@ public:
 	virtual bool ShotWeapon(int* weapon_paramid, int* GunsightErrorRange);
 	virtual bool ReloadWeapon();
 	bool InstantReloadWeapon();
-	virtual bool DumpWeapon();
+	virtual bool DumpWeapon(class Collision* CollD = NULL);
 	virtual void SetMoveForward();
 	virtual void SetMoveBack();
 	virtual void SetMoveLeft();
@@ -507,6 +510,7 @@ protected:
 	int Loadbullets;	//!< 몧뭙릶
 	bool motionflag;	//!< 띆뷭댷벍뭷귩?궥긲깋긐
 
+
 public:
 	weapon(class ParameterInfo *in_Param = NULL, float x = 0.0f, float y = 0.0f, float z = 0.0f, float rx = 0.0f, int id_param = 0, int nbs = 0, bool flag = false);
 	~weapon();
@@ -515,14 +519,14 @@ public:
 	virtual void GetParamData(int *id_param, int *lnbs, int *nbs);
 	virtual bool GetUsingFlag();
 	virtual int Pickup();
-	virtual void Dropoff(float x, float y, float z, float rx, float speed);
+	virtual void Dropoff(float x, float y, float z, float rx, float speed, float add_move_x = 0.0f, float add_move_z = 0.0f, class Collision* CollD = NULL);
 	virtual int Shot();
 	virtual int ShotNoAmmoConsume();
 	virtual int StartReload();
 	virtual int RunReload();
 	virtual bool ResetWeaponParam(class ResourceManager *Resource, int id_param, int lnbs, int nbs);
 	virtual int ProcessObject(class Collision *CollD);
-	virtual void Render(class D3DGraphics *d3dg, bool NoModel);
+	virtual void Render(class D3DGraphics* d3dg, bool NoModel);
 };
 
 //! @brief 룷븿듖뿚긏깋긚
@@ -530,8 +534,10 @@ class smallobject : public object
 {
 protected:
 	class MIFInterface *MIFdata;		//!< MIF귩듖뿚궥귡긏깋긚귉궻?귽깛?
-	float rotation_y;			//!< 됷?둷뱗
-	signed short int point_p4;	//!< ?귽깛긣궻렞빶붥뜂
+	float rotation_y;			//!< �盛?�孫�ｱ�
+
+
+	signed short int point_p4;	//!< ?�ｷｽ�ｹ幀ｸ｣�ｶｻ�橄ｹｶ�ｶ･�怩
 	int hp;						//!< 뫬쀍
 	float jump_rx;				//!< 뷅궽궥돘렡둷뱗
 	float move_rx;				//!< 뷅궽궥돘렡댷벍쀊
@@ -551,15 +557,16 @@ public:
 	virtual void HitGrenadeExplosion(int attacks);
 	virtual void Destruction();
 	virtual int ProcessObject();
-	virtual void Render(D3DGraphics *d3dg, bool NoModel);
+	virtual void Render(class D3DGraphics* d3dg, bool NoModel);
 };
 
 //! @brief 뭙듴듖뿚긏깋긚
 class bullet : public object
 {
 protected:
-	float rotation_y;	//!< 됷?둷뱗
-	int attacks;		//!< 뛘똼쀍
+	float rotation_y;	//!< �盛?�孫�ｱ�
+
+	int attacks;		//!< �尨�仂��
 	int penetration;	//!< 듥믅쀍
 	float speed;		//!< 뭙뫊
 	int teamid;			//!< ???붥뜂
@@ -578,7 +585,7 @@ public:
 	void SetSilencerFlag(bool flag);
 	bool GetSilencerFlag();
 	virtual int ProcessObject();
-	virtual void Render(class D3DGraphics *d3dg, bool NoModel);
+	virtual void Render(D3DGraphics* d3dg, bool NoModel);
 };
 
 //! @brief 롨왮뭙듖뿚긏깋긚

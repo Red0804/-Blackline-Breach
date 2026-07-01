@@ -56,6 +56,7 @@ Config::Config()
 	mastervolume = 1.0f;
 	DamageMultiplier = 1.0f;
 	HealthRegenAmount = 10;
+	RenderFpsLimit = RENDERFPS_DEFAULT;
 
 	AIReactionSpeedMultiplier = 1.0f;
 	AIFireRateMultiplier = 1.0f;
@@ -89,6 +90,9 @@ Config::Config()
 	// RUN / CROUCH는 기존 조작감이 HOLD이므로 기본값 false
 	RunToggleFlag = false;
 	CrouchToggleFlag = false;
+
+	// 화면 렌더링 제한 기본값
+	RenderFpsLimit = RENDERFPS_DEFAULT;
 
 }
 
@@ -252,10 +256,17 @@ int Config::LoadFile(const char *fname)
 	}
 
 	// 앉기 입력 방식
-	// 구버전 config.dat에는 값이 없으므로 기존 조작감인 HOLD
+// 구버전 config.dat에는 값이 없으므로 기존 조작감인 HOLD
 	if (fread(&CrouchToggleFlag, sizeof(bool), 1, fp) != 1) {
 		CrouchToggleFlag = false;
 	}
+
+	// 화면 렌더링 FPS 제한
+	// 구버전 config.dat에는 값이 없으므로 144FPS 기본값 사용
+	if (fread(&RenderFpsLimit, sizeof(int), 1, fp) != 1) {
+		RenderFpsLimit = RENDERFPS_DEFAULT;
+	}
+	SetRenderFpsLimit(RenderFpsLimit);
 
 	//긲?귽깑긪깛긤깑귩빧궣귡
 	fclose(fp);
@@ -379,6 +390,9 @@ int Config::SaveFile(const char *fname)
 
 	// 앉기 입력 방식
 	fwrite(&CrouchToggleFlag, sizeof(bool), 1, fp);
+
+	// 화면 렌더링 FPS 제한
+	fwrite(&RenderFpsLimit, sizeof(int), 1, fp);
 
 
 	//긲?귽깑긪깛긤깑귩빧궣귡
@@ -952,6 +966,25 @@ int Config::GetScreenHeight()
 bool Config::GetMouseLimitFlag()
 {
 	return MouseLimitFlag;
+}
+
+int Config::GetRenderFpsLimit()
+{
+	return RenderFpsLimit;
+}
+
+void Config::SetRenderFpsLimit(int fps)
+{
+	// 0은 제한 없음
+	if (fps == 0) {
+		RenderFpsLimit = 0;
+		return;
+	}
+
+	if (fps < RENDERFPS_MIN) fps = RENDERFPS_MIN;
+	if (fps > RENDERFPS_MAX) fps = RENDERFPS_MAX;
+
+	RenderFpsLimit = fps;
 }
 
 //! @brief 돶쀊먠믦귩롦벦

@@ -365,23 +365,27 @@ void GetOperatingEnvironment()
 //! @return fps릶
 float GetFps(int getcnt)
 {
-	if( getcnt <= 0 ){ return 0.0f; }
+	if (getcnt <= 0) { return 0.0f; }
 
 	static unsigned int ptimeg = 0;
-	unsigned int nowtime;
 	static float pfps = 0.0f;
 	static int cnt = 0;
 
-	if( cnt == 0 ){
+	if (cnt == 0) {
 		ptimeg = GetTimeMS();
 	}
-	if( cnt == getcnt ){
-		nowtime = GetTimeMS();
-		pfps = 1000.0f / ((nowtime - ptimeg)/getcnt);
+
+	cnt += 1;
+
+	if (cnt >= getcnt) {
+		unsigned int nowtime = GetTimeMS();
+		unsigned int elapsed = nowtime - ptimeg;
+
+		if (elapsed > 0) {
+			pfps = (1000.0f * (float)cnt) / (float)elapsed;
+		}
+
 		cnt = 0;
-	}
-	else{
-		cnt += 1;
 	}
 
 	return pfps;

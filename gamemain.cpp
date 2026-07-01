@@ -1325,6 +1325,7 @@ void mainmenu::Render3D()
 	d3dg->RenderMapdata(false);
 
 	//긆긳긙긃긏긣귩?됪
+	// 메뉴/타이틀에서는 우선 보간을 끈다.
 	ObjMgr.Render(camera_x, camera_y, camera_z, camera_rx, camera_ry, 0, false);
 }
 
@@ -2829,6 +2830,8 @@ void mainmenu::CreateOptions()
 	strcpy(Options_AdvancedLinkData[16].text, "[ RESET DEFAULTS ]");
 	strcpy(Options_AdvancedLinkData[17].text, "< SAVE >");
 	strcpy(Options_AdvancedLinkData[18].text, "< CANCEL >");
+	strcpy(Options_AdvancedLinkData[19].text, "RENDER FPS");
+	strcpy(Options_AdvancedLinkData[20].text, "SKILL MODE");
 
 	for (int i = 0; i < OPTIONS_ADVANCED_DATAS; i++) {
 		Options_AdvancedLinkData[i].enable = true;
@@ -2839,16 +2842,28 @@ void mainmenu::CreateOptions()
 	}
 
 	// Gameplay Setting 2열 배치
-// 0~9: 왼쪽 슬라이더, 10~15: 오른쪽 키 설정, 16~18: 아래 버튼
+	// 19: RENDER FPS를 가장 위에 배치
+	// 0~9: 왼쪽 슬라이더
+	// 10~15: 오른쪽 키 설정
+	// 16~18: 아래 버튼
+	Options_AdvancedLinkData[19].pos_x = 0;
+	Options_AdvancedLinkData[19].pos_y = 0;
+
+	// SKILL MODE는 RENDER FPS 오른쪽에 배치한다.
+	Options_AdvancedLinkData[20].pos_x = 500;
+	Options_AdvancedLinkData[20].pos_y = 0;
+
+	// RENDER FPS가 맨 위에 들어가므로 기존 슬라이더는 한 줄 아래부터 배치한다.
+	// 버튼 영역과 겹치지 않도록 28 간격을 사용한다.
 	for (int i = 0; i <= 9; i++) {
 		Options_AdvancedLinkData[i].pos_x = 0;
-		Options_AdvancedLinkData[i].pos_y = i * 30;
+		Options_AdvancedLinkData[i].pos_y = (i + 1) * 28;
 	}
 
 	for (int i = 10; i <= 15; i++) {
 		// 기존 320은 슬라이더/값 표시 영역과 겹치므로 오른쪽으로 이동
 		Options_AdvancedLinkData[i].pos_x = 500;
-		Options_AdvancedLinkData[i].pos_y = (i - 10) * 30;
+		Options_AdvancedLinkData[i].pos_y = (i - 10 + 1) * 30;
 	}
 
 	// 아래 버튼들은 창의 가장 아래줄에 맞춘다.
@@ -2862,17 +2877,17 @@ void mainmenu::CreateOptions()
 	Options_AdvancedLinkData[18].pos_y = 325;
 
 	// Toggle Setting 항목
-	strcpy(Options_ToggleLinkData[0].text, "SKILL MODE");
-	strcpy(Options_ToggleLinkData[1].text, "RADAR");
-	strcpy(Options_ToggleLinkData[2].text, "RADAR INFO");
-	strcpy(Options_ToggleLinkData[3].text, "RADAR SEE THROUGH WALLS");
-	strcpy(Options_ToggleLinkData[4].text, "GRENADE TRAJECTORY");
-	strcpy(Options_ToggleLinkData[5].text, "SCOPE AIM");
-	strcpy(Options_ToggleLinkData[6].text, "RUN");
-	strcpy(Options_ToggleLinkData[7].text, "CROUCH");
-	strcpy(Options_ToggleLinkData[8].text, "[ RESET DEFAULTS ]");
-	strcpy(Options_ToggleLinkData[9].text, "< SAVE >");
-	strcpy(Options_ToggleLinkData[10].text, "< CANCEL >");
+	// SKILL MODE는 Gameplay Setting의 RENDER FPS 오른쪽으로 이동했다.
+	strcpy(Options_ToggleLinkData[0].text, "RADAR");
+	strcpy(Options_ToggleLinkData[1].text, "RADAR INFO");
+	strcpy(Options_ToggleLinkData[2].text, "RADAR SEE THROUGH WALLS");
+	strcpy(Options_ToggleLinkData[3].text, "GRENADE TRAJECTORY");
+	strcpy(Options_ToggleLinkData[4].text, "SCOPE AIM");
+	strcpy(Options_ToggleLinkData[5].text, "RUN");
+	strcpy(Options_ToggleLinkData[6].text, "CROUCH");
+	strcpy(Options_ToggleLinkData[7].text, "[ RESET DEFAULTS ]");
+	strcpy(Options_ToggleLinkData[8].text, "< SAVE >");
+	strcpy(Options_ToggleLinkData[9].text, "< CANCEL >");
 
 	for (int i = 0; i < OPTIONS_TOGGLE_DATAS; i++) {
 		Options_ToggleLinkData[i].enable = true;
@@ -2882,21 +2897,21 @@ void mainmenu::CreateOptions()
 		Options_ToggleLinkData[i].text_cursorcolor = d3dg->GetColorCode(0.0f, 1.0f, 1.0f, 1.0f);
 	}
 
-	for (int i = 0; i <= 7; i++) {
+	for (int i = 0; i <= 6; i++) {
 		Options_ToggleLinkData[i].pos_x = 0;
 		Options_ToggleLinkData[i].pos_y = i * 34;
 	}
 
 	// 아래 버튼들은 창의 가장 아래줄에 맞춘다.
 	// SAVE / CANCEL은 기존 위치보다 살짝 왼쪽으로 평행이동한다.
-	Options_ToggleLinkData[8].pos_x = 0;
+	Options_ToggleLinkData[7].pos_x = 0;
+	Options_ToggleLinkData[7].pos_y = 325;
+
+	Options_ToggleLinkData[8].pos_x = 270;
 	Options_ToggleLinkData[8].pos_y = 325;
 
-	Options_ToggleLinkData[9].pos_x = 270;
+	Options_ToggleLinkData[9].pos_x = 400;
 	Options_ToggleLinkData[9].pos_y = 325;
-
-	Options_ToggleLinkData[10].pos_x = 400;
-	Options_ToggleLinkData[10].pos_y = 325;
 
 	// SKILLS 그룹 목록 버튼
 	for (int i = 0; i < SKILLINFO_GROUP_DATAS; i++) {
@@ -3313,7 +3328,15 @@ void mainmenu::InputOptions()
 			int hit_w = (int)(500 * ui_scale);
 			int hit_h = (int)(28 * ui_scale);
 
-			if ((10 <= i) && (i <= 15)) {
+			if (i == 19) {
+				// RENDER FPS는 이름 + 값 표시 영역까지 클릭 가능하게 한다.
+				hit_w = (int)(500 * ui_scale);
+			}
+			else if (i == 20) {
+				// SKILL MODE는 RENDER FPS 오른쪽에 있으므로 이름 + ON/OFF 값까지 클릭 가능하게 한다.
+				hit_w = (int)(330 * ui_scale);
+			}
+			else if ((10 <= i) && (i <= 15)) {
 				hit_w = (int)(330 * ui_scale);
 			}
 			else if (i == 16) {
@@ -3372,6 +3395,35 @@ void mainmenu::InputOptions()
 			if (Options_AdvancedID == 14) { Options_KeyConfigID = KEY_SKILL; Options_KeyConfigCnt = (int)(GAMEFPS * 5); }
 			if (Options_AdvancedID == 15) { Options_KeyConfigID = KEY_SKILL2; Options_KeyConfigCnt = (int)(GAMEFPS * 5); }
 
+			if (Options_AdvancedID == 19) {
+				// 144Hz 렌더 루프는 유지하되 보간은 쓰지 않는다.
+				// 여기서는 렌더링 FPS 제한만 순환 변경한다.
+				int fps = GameConfig.GetRenderFpsLimit();
+
+				if (fps == 0) {
+					GameConfig.SetRenderFpsLimit(60);
+				}
+				else if (fps <= 60) {
+					GameConfig.SetRenderFpsLimit(120);
+				}
+				else if (fps <= 120) {
+					GameConfig.SetRenderFpsLimit(144);
+				}
+				else if (fps <= 144) {
+					GameConfig.SetRenderFpsLimit(240);
+				}
+				else if (fps <= 240) {
+					GameConfig.SetRenderFpsLimit(0);
+				}
+				else {
+					GameConfig.SetRenderFpsLimit(60);
+				}
+			}
+
+			if (Options_AdvancedID == 20) {
+				GameConfig.SetSkillModeFlag(!GameConfig.GetSkillModeFlag());
+			}
+
 			if (Options_AdvancedID == 16) {
 				GameConfig.SetMasterVolume(1.0f);
 				SoundCtrl.SetVolume(1.0f);
@@ -3387,7 +3439,11 @@ void mainmenu::InputOptions()
 				GameConfig.SetRecoilAimMultiplier(1.0f);
 				GameConfig.SetRecoilSideMultiplier(0.0f);
 
-				// 토글 계열 설정은 TOGGLE SETTING 화면에서 초기화한다.
+				// RENDER FPS와 SKILL MODE는 Gameplay Setting 화면에 있으므로 여기서 초기화한다.
+				GameConfig.SetRenderFpsLimit(RENDERFPS_DEFAULT);
+				GameConfig.SetSkillModeFlag(false);
+
+				// 나머지 토글 계열 설정은 TOGGLE SETTING 화면에서 초기화한다.
 
 // WALK는 이 화면에서 제거했으므로 여기서 초기화하지 않는 것을 추천
 				// GameConfig.SetKeycode(KEY_WALK, 0x10);
@@ -3520,19 +3576,19 @@ void mainmenu::InputOptions()
 				int hit_w = (int)(520 * ui_scale);
 				int hit_h = (int)(30 * ui_scale);
 
-				if (i <= 7) {
+				if (i <= 6) {
 					// 설정 항목은 이름 + 값 표시 영역까지 클릭 가능하게 한다.
 					hit_w = (int)(520 * ui_scale);
 				}
-				else if (i == 8) {
+				else if (i == 7) {
 					// [ RESET DEFAULTS ]
 					hit_w = (int)(270 * ui_scale);
 				}
-				else if (i == 9) {
+				else if (i == 8) {
 					// < SAVE >
 					hit_w = (int)(115 * ui_scale);
 				}
-				else if (i == 10) {
+				else if (i == 9) {
 					// < CANCEL >
 					hit_w = (int)(145 * ui_scale);
 				}
@@ -3545,39 +3601,34 @@ void mainmenu::InputOptions()
 
 			if (inputCtrl->CheckMouseButtonUpL()) {
 				if (Options_ToggleID == 0) {
-					GameConfig.SetSkillModeFlag(!GameConfig.GetSkillModeFlag());
-				}
-
-				if (Options_ToggleID == 1) {
 					GameConfig.SetRadarEnabledFlag(!GameConfig.GetRadarEnabledFlag());
 				}
 
-				if (Options_ToggleID == 2) {
+				if (Options_ToggleID == 1) {
 					GameConfig.SetRadarInfoHudFlag(!GameConfig.GetRadarInfoHudFlag());
 				}
 
-				if (Options_ToggleID == 3) {
+				if (Options_ToggleID == 2) {
 					GameConfig.SetRadarSeeThroughWallsFlag(!GameConfig.GetRadarSeeThroughWallsFlag());
 				}
 
-				if (Options_ToggleID == 4) {
+				if (Options_ToggleID == 3) {
 					GameConfig.SetGrenadeTrajectoryToggleFlag(!GameConfig.GetGrenadeTrajectoryToggleFlag());
 				}
 
-				if (Options_ToggleID == 5) {
+				if (Options_ToggleID == 4) {
 					GameConfig.SetScopeAimToggleFlag(!GameConfig.GetScopeAimToggleFlag());
 				}
 
-				if (Options_ToggleID == 6) {
+				if (Options_ToggleID == 5) {
 					GameConfig.SetRunToggleFlag(!GameConfig.GetRunToggleFlag());
 				}
 
-				if (Options_ToggleID == 7) {
+				if (Options_ToggleID == 6) {
 					GameConfig.SetCrouchToggleFlag(!GameConfig.GetCrouchToggleFlag());
 				}
 
-				if (Options_ToggleID == 8) {
-					GameConfig.SetSkillModeFlag(false);
+				if (Options_ToggleID == 7) {
 					GameConfig.SetRadarEnabledFlag(true);
 					GameConfig.SetRadarInfoHudFlag(true);
 					GameConfig.SetRadarSeeThroughWallsFlag(true);
@@ -3587,13 +3638,13 @@ void mainmenu::InputOptions()
 					GameConfig.SetCrouchToggleFlag(false);
 				}
 
-				if (Options_ToggleID == 9) {
+				if (Options_ToggleID == 8) {
 					GameConfig.SaveFile("config.dat");
 					modescreen = 1;
 					return;
 				}
 
-				if (Options_ToggleID == 10) {
+				if (Options_ToggleID == 9) {
 					GameConfig.LoadFile("config.dat");
 					modescreen = 1;
 					return;
@@ -4197,6 +4248,47 @@ void mainmenu::RenderOptions()
 			d3dg->Draw2DTextureFontText(x + 1, y + 1, Options_AdvancedLinkData[i].text, d3dg->GetColorCode(0.0f, 0.0f, 0.0f, 1.0f), f_w, f_h);
 			d3dg->Draw2DTextureFontText(x, y, Options_AdvancedLinkData[i].text, color, f_w, f_h);
 
+			if (i == 19) {
+				char fpsText[32];
+				int fps = GameConfig.GetRenderFpsLimit();
+
+				if (fps == 0) {
+					strcpy(fpsText, "[ UNLIMITED ]");
+				}
+				else {
+					sprintf(fpsText, "[ %d FPS ]", fps);
+				}
+
+				int fpsTextX = startX + (int)(260 * ui_scale);
+
+				d3dg->Draw2DTextureFontText(
+					fpsTextX,
+					y,
+					fpsText,
+					d3dg->GetColorCode(1.0f, 1.0f, 0.0f, 1.0f),
+					(int)(14 * ui_scale),
+					(int)(18 * ui_scale)
+				);
+
+				continue;
+			}
+
+			if (i == 20) {
+				const char* skillModeText = GameConfig.GetSkillModeFlag() ? "[ ON ]" : "[ OFF ]";
+				int skillModeTextX = x + (int)(190 * ui_scale);
+
+				d3dg->Draw2DTextureFontText(
+					skillModeTextX,
+					y,
+					skillModeText,
+					d3dg->GetColorCode(1.0f, 1.0f, 0.0f, 1.0f),
+					(int)(14 * ui_scale),
+					(int)(18 * ui_scale)
+				);
+
+				continue;
+			}
+
 			if (i >= 16) continue;
 
 			int valueX = startX + (int)(435 * ui_scale);
@@ -4350,36 +4442,32 @@ void mainmenu::RenderOptions()
 				f_h
 			);
 
-			if (i <= 7) {
+			if (i <= 6) {
 				const char* modeText = "[ OFF ]";
 
 				if (i == 0) {
-					modeText = GameConfig.GetSkillModeFlag() ? "[ ON ]" : "[ OFF ]";
-				}
-				else if (i == 1) {
 					modeText = GameConfig.GetRadarEnabledFlag() ? "[ ON ]" : "[ OFF ]";
 				}
-				else if (i == 2) {
+				else if (i == 1) {
 					modeText = GameConfig.GetRadarInfoHudFlag() ? "[ ON ]" : "[ OFF ]";
 				}
-				else if (i == 3) {
+				else if (i == 2) {
 					modeText = GameConfig.GetRadarSeeThroughWallsFlag() ? "[ ON ]" : "[ OFF ]";
 				}
-				else if (i == 4) {
+				else if (i == 3) {
 					modeText = GameConfig.GetGrenadeTrajectoryToggleFlag() ? "[ TOGGLE ]" : "[ HOLD ]";
 				}
-				else if (i == 5) {
+				else if (i == 4) {
 					modeText = GameConfig.GetScopeAimToggleFlag() ? "[ TOGGLE ]" : "[ HOLD ]";
 				}
-				else if (i == 6) {
+				else if (i == 5) {
 					modeText = GameConfig.GetRunToggleFlag() ? "[ TOGGLE ]" : "[ HOLD ]";
 				}
-				else if (i == 7) {
+				else if (i == 6) {
 					modeText = GameConfig.GetCrouchToggleFlag() ? "[ TOGGLE ]" : "[ HOLD ]";
 				}
 
 				// 모든 설정값의 괄호 위치를 같은 X 좌표에 맞춘다.
-				// 가장 긴 항목인 RADAR SEE THROUGH WALLS도 이 위치 안에 들어온다.
 				int modeTextX = startX + (int)(360 * ui_scale);
 
 				d3dg->Draw2DTextureFontText(
@@ -4837,6 +4925,44 @@ void maingame::SetShowInfoFlag(bool flag)
 	ShowInfo_Debugmode = flag;
 }
 
+void maingame::SyncDrawCamera()
+{
+	// 현재 카메라 값을 2D/HUD/1인칭 무기 표시용 draw_camera에 맞춘다.
+	draw_camera_x = camera_x;
+	draw_camera_y = camera_y;
+	draw_camera_z = camera_z;
+	draw_camera_rx = camera_rx;
+	draw_camera_ry = camera_ry;
+
+}
+
+void maingame::ProcessVisualTimers()
+{
+	human* player = ObjMgr.GetPlayerHumanObject();
+
+	if (player != NULL) {
+		if (player->GetHitEffectTimer() > 0) {
+			player->DecreaseHitEffectTimer();
+		}
+
+		if (player->GetHitMarkerTimer() > 0) {
+			player->DecreaseHitMarkerTimer();
+
+			if (player->GetHitMarkerTimer() <= 0) {
+				player->SetHeadshotFlag(false);
+			}
+		}
+	}
+
+	if (damage_arc_timer > 0) {
+		damage_arc_timer--;
+
+		if (damage_arc_timer <= 0) {
+			damage_arc_shield_flag = false;
+		}
+	}
+}
+
 //! @brief 긒??궻렳뛱뫊뱗귩롦벦
 int maingame::GetGameSpeed()
 {
@@ -4952,7 +5078,14 @@ int maingame::Create()
 	view_ry = 0.0f;
 	add_camera_rx = 0.0f;
 	add_camera_ry = 0.0f;
-	Camera_Debugmode = false;
+
+	draw_camera_x = 0.0f;
+	draw_camera_y = 0.0f;
+	draw_camera_z = 0.0f;
+	draw_camera_rx = 0.0f;
+	draw_camera_ry = 0.0f;
+
+	ShowInfo_Debugmode = false;
 	tag = false;
 	radar = true;
 	ShowFullMap = false;
@@ -5003,6 +5136,9 @@ int maingame::Create()
 
 	//?긂긚긇??깑귩뭷돍귉댷벍
 	inputCtrl->MoveMouseCenter();
+
+	// 미션 시작 직후 이전 카메라 값이 튀지 않도록 초기화
+	SyncDrawCamera();
 
 	GameState->NextState();
 	return 0;
@@ -5548,7 +5684,8 @@ void maingame::InputPlayer(human* myHuman, int mouse_x, int mouse_y, float Mouse
 		}
 
 		// 앉기 / 달리기 상태 갱신
-		bool crouching = myHuman->GetCrouchFlag();
+		bool prev_crouching = myHuman->GetCrouchFlag();
+		bool crouching = prev_crouching;
 		bool running_input = false;
 
 		if (install_skill_pending == false) {
@@ -5666,6 +5803,12 @@ void maingame::InputPlayer(human* myHuman, int mouse_x, int mouse_y, float Mouse
 			player_crouch_toggle_state = false;
 			player_move_crouch_priority = false;
 		}
+		// 앉기/서기 전환 순간에는 카메라 높이와 팔/무기 기준점이 동시에 바뀐다.
+		// 144Hz 렌더 보간이 이전 높이와 새 높이를 섞으면 팔이 흔들려 보인다.
+		if (prev_crouching != crouching) {
+			SyncDrawCamera();
+		}
+
 		myHuman->SetCrouchFlag(crouching);
 
 		//ジャンプ?作か?ェック
@@ -6245,6 +6388,7 @@ void maingame::InputPlayer(human* myHuman, int mouse_x, int mouse_y, float Mouse
 
 
 	//긇긽깋?렑긾?긤빾뛛?띿궔?긃긞긏
+	//긇긽깋?렑긾?긤빾뛛?띿궔?긃긞긏
 	if (inputCtrl->CheckKeyDown(GetFunctionKeycode(1))) {
 		if (Camera_F1mode == false) {
 			Camera_F1mode = true;
@@ -6256,6 +6400,11 @@ void maingame::InputPlayer(human* myHuman, int mouse_x, int mouse_y, float Mouse
 			view_rx = 0.0f;
 			view_ry = 0.0f;
 		}
+
+		// 1인칭/3인칭 전환 순간에는 카메라 위치가 크게 바뀌므로
+		// 이전 카메라와 새 카메라 사이를 보간하면 어색해진다.
+		SyncDrawCamera();
+
 	}
 
 	//긇긽깋?띿
@@ -6532,6 +6681,9 @@ void maingame::Process()
 	}
 	human* myHuman = ObjMgr.GetPlayerHumanObject();
 
+	// 렌더링 FPS와 무관하게, 시각 효과 타이머는 로직 프레임에서만 감소시킨다.
+	ProcessVisualTimers();
+
 	ProcessPlayerSkill(myHuman);
 
 	// 스킬 임시 무기를 표시해야 하는 동안에는 실제 무기 슬롯은 유지하고,
@@ -6680,8 +6832,11 @@ void maingame::Process()
 		float crx, cry;
 		float ccx, ccy, ccz;
 
-		crx = camera_rx * 0.8f + (view_rx + mouse_rx * -1 + (float)M_PI / 2) * 0.2f;
-		cry = camera_ry * 0.8f + (view_ry + mouse_ry) * 0.2f - (float)M_PI / 2;
+		// 144Hz 렌더링에서는 카메라를 별도 보간하지 않으므로,
+		// F1 카메라 내부의 0.8/0.2 보간도 제거한다.
+		// 전환 직후 기존 카메라 각도가 섞이면 팔과 화면이 늦게 따라오는 흔들림이 생긴다.
+		crx = view_rx + mouse_rx * -1 + (float)M_PI / 2;
+		cry = view_ry + mouse_ry - (float)M_PI / 2;
 		ccx = x - cosf(crx) * cosf(cry) * 3.0f;
 		ccy = y + HUMAN_HEIGHT - 0.5f + sinf(cry * -1) * 2.5f;
 		ccz = z - sinf(crx) * cosf(cry) * 3.0f;
@@ -6850,6 +7005,9 @@ void maingame::Render3D()
 	prev_scope = current_scope;
 	prev_weapon = current_weapon;
 
+	// 현재 카메라 기준으로 월드와 HUD를 그린다.
+	SyncDrawCamera();
+
 	d3dg->SetCamera(camera_x, camera_y, camera_z, camera_rx, camera_ry, final_viewangle);
 
 	//긲긅긐궴긇긽깋귩먠믦
@@ -6918,6 +7076,7 @@ void maingame::Render3D()
 
 
 	//긆긳긙긃긏긣귩?됪
+	// 오브젝트 보간도 전체 비활성화한다.
 	ObjMgr.Render(camera_x, camera_y, camera_z, camera_rx, camera_ry, DrawPlayer, nomodel);
 
 	// 시민A 응급 치료 성공 이펙트 표시
@@ -7280,53 +7439,122 @@ void maingame::RenderPlayerControlGuide(human* myHuman, int display_weapon_id)
 		slot[11].key_color = condition_key_color;
 	}
 
-	bool has_visible_slot = false;
-	for (int i = 0; i < GUIDE_SLOT_MAX; i++) {
-		if (slot[i].visible == true) {
-			has_visible_slot = true;
-			break;
-		}
-	}
-
-	if (has_visible_slot == false) { return; }
-
 	// ------------------------------------------------------------
-	// 박스 크기와 위치도 고정
-	// ------------------------------------------------------------
-	// 항목이 생기거나 없어져도 박스 높이와 각 줄 위치가 바뀌지 않는다.
-	// ------------------------------------------------------------
+// 기본 조작창은 항상 고정 위치/고정 크기로 출력한다.
+// 조건부 조작은 기본 조작창 위쪽으로만 확장한다.
+// ------------------------------------------------------------
 
 	int line_h = 14;
 	int padding = 6;
 
 	int box_w = 230;
-	int box_h = GUIDE_SLOT_MAX * line_h + padding * 2;
 
 	int x = HUDA_WEAPON_POSX + 4;
-	int y = HUDA_WEAPON_POSY - box_h - 8;
 
-	if (y < 8) {
-		y = 8;
+	// 기본 조작 슬롯
+	// 0 : JUMP
+	// 1 : WALK
+	// 2 : RUN
+	// 3 : CROUCH
+	// 4 : RELOAD
+	// 5 : MAP
+	const int BASE_SLOT_BEGIN = 0;
+	const int BASE_SLOT_END = 5;
+	const int BASE_LINE_COUNT = 6;
+
+	// 조건부 조작 슬롯
+	// 6 : FIRE MODE
+	// 7 : TRAJECTORY
+	// 8 : CONFIRM
+	// 9 : CANCEL
+	// 10: NIGHT VISION
+	// 11: ZOOM
+	const int CONDITION_SLOT_BEGIN = 6;
+	const int CONDITION_SLOT_END = GUIDE_SLOT_MAX - 1;
+
+	int condition_count = 0;
+
+	for (int i = CONDITION_SLOT_BEGIN; i <= CONDITION_SLOT_END; i++) {
+		if (slot[i].visible == true) {
+			condition_count++;
+		}
 	}
 
 	int bg_color = d3dg->GetColorCode(0.0f, 0.0f, 0.0f, 0.38f);
 	int border_color = d3dg->GetColorCode(0.75f, 0.75f, 0.75f, 0.38f);
 
-	d3dg->Draw2DBox(x, y, x + box_w, y + box_h, bg_color);
+	// ------------------------------------------------------------
+	// 1. 기본 조작창 위치 계산
+	//    조건부 조작이 생겨도 이 위치는 변하지 않는다.
+	// ------------------------------------------------------------
 
-	d3dg->Draw2DBox(x, y, x + box_w, y + 1, border_color);
-	d3dg->Draw2DBox(x, y + box_h - 1, x + box_w, y + box_h, border_color);
-	d3dg->Draw2DBox(x, y, x + 1, y + box_h, border_color);
-	d3dg->Draw2DBox(x + box_w - 1, y, x + box_w, y + box_h, border_color);
+	int base_box_h = BASE_LINE_COUNT * line_h + padding * 2;
+	int base_y = HUDA_WEAPON_POSY - base_box_h - 8;
 
-	for (int i = 0; i < GUIDE_SLOT_MAX; i++) {
+	if (base_y < 8) {
+		base_y = 8;
+	}
+
+	// ------------------------------------------------------------
+	// 2. 조건부 조작창 출력
+	//    조건부 조작은 기본 조작창 위쪽으로만 확장된다.
+	// ------------------------------------------------------------
+
+	if (condition_count > 0) {
+		int condition_box_h = condition_count * line_h + padding * 2;
+		int condition_y = base_y - condition_box_h - 2;
+
+		if (condition_y < 8) {
+			condition_y = 8;
+		}
+
+		d3dg->Draw2DBox(x, condition_y, x + box_w, condition_y + condition_box_h, bg_color);
+
+		d3dg->Draw2DBox(x, condition_y, x + box_w, condition_y + 1, border_color);
+		d3dg->Draw2DBox(x, condition_y + condition_box_h - 1, x + box_w, condition_y + condition_box_h, border_color);
+		d3dg->Draw2DBox(x, condition_y, x + 1, condition_y + condition_box_h, border_color);
+		d3dg->Draw2DBox(x + box_w - 1, condition_y, x + box_w, condition_y + condition_box_h, border_color);
+
+		int draw_line = 0;
+
+		for (int i = CONDITION_SLOT_BEGIN; i <= CONDITION_SLOT_END; i++) {
+			if (slot[i].visible == false) {
+				continue;
+			}
+
+			DrawControlGuideLine(
+				x + padding,
+				condition_y + padding + draw_line * line_h,
+				slot[i].action,
+				slot[i].key,
+				slot[i].action_color,
+				slot[i].key_color
+			);
+
+			draw_line++;
+		}
+	}
+
+	// ------------------------------------------------------------
+	// 3. 기본 조작창 출력
+	//    항상 같은 크기와 같은 위치에 유지된다.
+	// ------------------------------------------------------------
+
+	d3dg->Draw2DBox(x, base_y, x + box_w, base_y + base_box_h, bg_color);
+
+	d3dg->Draw2DBox(x, base_y, x + box_w, base_y + 1, border_color);
+	d3dg->Draw2DBox(x, base_y + base_box_h - 1, x + box_w, base_y + base_box_h, border_color);
+	d3dg->Draw2DBox(x, base_y, x + 1, base_y + base_box_h, border_color);
+	d3dg->Draw2DBox(x + box_w - 1, base_y, x + box_w, base_y + base_box_h, border_color);
+
+	for (int i = BASE_SLOT_BEGIN; i <= BASE_SLOT_END; i++) {
 		if (slot[i].visible == false) {
 			continue;
 		}
 
 		DrawControlGuideLine(
 			x + padding,
-			y + padding + i * line_h,
+			base_y + padding + i * line_h,
 			slot[i].action,
 			slot[i].key,
 			slot[i].action_color,
@@ -7521,7 +7749,7 @@ void maingame::Render2D()
 {
 	char str[256];
 	unsigned char stru[256];
-	float fps = GetFps(10);
+	float fps = GetFps(60);
 	float effect;
 
 	human* myHuman = ObjMgr.GetPlayerHumanObject();
@@ -7816,7 +8044,9 @@ void maingame::Render2D()
 		float cy = (float)GameConfig.GetScreenHeight() / 2;
 		float radius = 30.0f + static_cast<float>(ErrorRange);
 		int thickness = 5;
-		int segments = 100; // 원을 구성하는 조각 수를 늘려 부드럽게 만듭니다.
+		// 매 프레임 2개의 DonutArc를 그리므로 과한 세그먼트는 프레임 드랍 원인이 된다.
+		// 48이면 재장전 게이지는 충분히 부드럽고, 기존 100보다 드로우 부담이 낮다.
+		int segments = 48;
 
 		float start_angle = 0.0f;
 		float end_angle = progress * 2.0f * (float)M_PI;
@@ -8211,14 +8441,34 @@ void maingame::Render2D()
 		d3dg->Draw2DTextureFontText(HUDA_WEAPON_POSX + 9, HUDA_WEAPON_POSY + 4, weaponname, d3dg->GetColorCode(1.0f, 1.0f, 1.0f, 1.0f), 16, 20);
 #endif
 
-		// 스킬 임시 무기나 DP28 스킬 무기를 들고 있을 때,
-// 실제 1번/2번 무기 슬롯이 무엇인지 우측 무기 HUD 안에 작게 표시한다.
-		if ((IsPlayerTemporarySkillWeaponVisible() == true) ||
-			(IsPlayerDP28SkillWeaponActive() == true)) {
+		// 오른쪽 아래 3D 무기 모델 대신,
+		// 실제 1번/2번 무기 슬롯 정보를 항상 표시한다.
+		// 탄창 정보는 왼쪽 아래 HUD에 이미 있으므로 여기에는 표시하지 않는다.
+		{
+			int highlight_slot = selectweapon;
+
+			// 스킬 임시 무기 사용 중에는 실제 복귀 슬롯을 밝게 표시한다.
+			if (IsPlayerTemporarySkillWeaponVisible() == true) {
+				int return_slot = GetPlayerTemporarySkillWeaponReturnSlot();
+
+				if ((return_slot >= 0) && (return_slot < TOTAL_HAVEWEAPON)) {
+					highlight_slot = return_slot;
+				}
+			}
+
+			// DP28 스킬 무기 사용 중에도 원래 무기로 돌아갈 슬롯을 밝게 표시한다.
+			if (IsPlayerDP28SkillWeaponActive() == true) {
+				int return_slot = GetPlayerDP28SkillWeaponReturnSlot();
+
+				if ((return_slot >= 0) && (return_slot < TOTAL_HAVEWEAPON)) {
+					highlight_slot = return_slot;
+				}
+			}
+
 			for (int i = 0; i < TOTAL_HAVEWEAPON; i++) {
 				WeaponParameter slot_paramdata;
 				char slot_weapon_name[32 + 1];
-				char slot_text[40];
+				char slot_text[48];
 
 				strcpy(slot_weapon_name, "NONE");
 
@@ -8236,16 +8486,15 @@ void maingame::Render2D()
 					slot_weapon_name[sizeof(slot_weapon_name) - 1] = '\0';
 				}
 
-				sprintf(slot_text, "%d:%s", i + 1, slot_weapon_name);
+				sprintf(slot_text, "[%d] %s", i + 1, slot_weapon_name);
 
 				// 우측 무기 HUD 안에 들어가도록 글자 폭만 줄인다.
-				// 세로 크기는 유지하고, 너무 길 때만 좌우로 압축한다.
 				int slot_font_width = 10;
 				int slot_font_height = 14;
-				const int slot_text_max_width = HUDA_WEAPON_SIZEW * 32 - 20;
+				const int slot_text_max_width = HUDA_WEAPON_SIZEW * 32 - 24;
 
 				int slot_text_len = (int)strlen(slot_text);
-				if (slot_text_len * slot_font_width > slot_text_max_width) {
+				if ((slot_text_len > 0) && (slot_text_len * slot_font_width > slot_text_max_width)) {
 					slot_font_width = slot_text_max_width / slot_text_len;
 					if (slot_font_width < 8) { slot_font_width = 8; }
 					if (slot_font_width > 10) { slot_font_width = 10; }
@@ -8255,27 +8504,35 @@ void maingame::Render2D()
 				while (((int)strlen(slot_text) * slot_font_width > slot_text_max_width) &&
 					(strlen(slot_weapon_name) > 1)) {
 					slot_weapon_name[strlen(slot_weapon_name) - 1] = '\0';
-					sprintf(slot_text, "%d:%s", i + 1, slot_weapon_name);
+					sprintf(slot_text, "[%d] %s", i + 1, slot_weapon_name);
 				}
 
-				float alpha = 0.55f;
+				bool selected_slot = (i == highlight_slot);
+				bool empty_slot = (strcmp(slot_weapon_name, "NONE") == 0);
 
-				if (IsPlayerTemporarySkillWeaponVisible() == true) {
-					if (i == GetPlayerTemporarySkillWeaponReturnSlot()) {
-						alpha = 1.0f;
-					}
+				// 하이라이트 박스는 사용하지 않고 글자 색으로만 구분한다.
+				// 선택 슬롯은 스킬 UI와 비슷한 노란색,
+				// 비선택 슬롯은 읽기 쉬운 밝은 회색,
+				// 빈 슬롯은 어두운 회색으로 표시한다.
+				int slot_text_color;
+
+				if (selected_slot == true) {
+					slot_text_color = d3dg->GetColorCode(1.0f, 0.82f, 0.15f, 1.0f);
 				}
-				else if (IsPlayerDP28SkillWeaponActive() == true) {
-					if (i == GetPlayerDP28SkillWeaponReturnSlot()) {
-						alpha = 1.0f;
-					}
+				else if (empty_slot == true) {
+					slot_text_color = d3dg->GetColorCode(0.45f, 0.45f, 0.45f, 0.75f);
 				}
+				else {
+					slot_text_color = d3dg->GetColorCode(0.78f, 0.78f, 0.78f, 0.95f);
+				}
+
+				int row_y1 = HUDA_WEAPON_POSY + 31 + i * 21;
 
 				d3dg->Draw2DTextureFontText(
-					HUDA_WEAPON_POSX + 10,
-					HUDA_WEAPON_POSY + 34 + i * 18,
+					HUDA_WEAPON_POSX + 13,
+					row_y1 + 2,
 					slot_text,
-					d3dg->GetColorCode(1.0f, 1.0f, 1.0f, alpha),
+					slot_text_color,
 					slot_font_width,
 					slot_font_height
 				);
@@ -8405,7 +8662,7 @@ void maingame::Render2D()
 
 			float radius = 30.0f + static_cast<float>(ErrorRange);
 			int thickness = 5;
-			int segments = 60;
+			int segments = 48;
 
 			float start_angle = -3.14159265f / 2.0f;
 			float end_angle = start_angle + progress * 2.0f * 3.14159265f;
@@ -8549,8 +8806,6 @@ void maingame::Render2D()
 						// 피격 대각선 X 효과 그리기
 						human* player = ObjMgr.GetPlayerHumanObject();
 						if (player && player->GetHitEffectTimer() > 0) {
-							player->DecreaseHitEffectTimer();
-
 							int cx = GameConfig.GetScreenWidth() / 2;
 							int cy = GameConfig.GetScreenHeight() / 2;
 							int offset = 20;
@@ -8697,7 +8952,6 @@ void maingame::Render2D()
 
 	// 피격 방향 원호 표시
 	if ((damage_arc_timer > 0) && (Camera_Debugmode == false)) {
-		damage_arc_timer--;
 
 		int cx = GameConfig.GetScreenWidth() / 2;
 		int cy = GameConfig.GetScreenHeight() / 2;
@@ -8711,7 +8965,7 @@ void maingame::Render2D()
 		if (alpha > 1.0f) { alpha = 1.0f; }
 
 		// 피격 방향을 현재 카메라 기준으로 변환
-		float dir = camera_rx - damage_arc_rx;
+		float dir = draw_camera_rx - damage_arc_rx;
 
 		// 화면 좌표계 보정
 		float screen_angle = dir;
@@ -8741,18 +8995,11 @@ void maingame::Render2D()
 			segments,
 			color
 		);
-
-		if (damage_arc_timer <= 0) {
-			damage_arc_shield_flag = false;
-		}
 	}
 	// '히트마커' 타이머를 확인하고, 그에 맞는 히트마커를 그립니다.
 	human* player = ObjMgr.GetPlayerHumanObject();
 	if (player && player->GetHitMarkerTimer() > 0)
 	{
-		// 타이머 1 감소
-		player->DecreaseHitMarkerTimer();
-
 		int cx = GameConfig.GetScreenWidth() / 2;
 		int cy = GameConfig.GetScreenHeight() / 2;
 
@@ -8780,16 +9027,11 @@ void maingame::Render2D()
 			d3dg->Draw2DLine(cx - gap, cy + gap, cx - gap - length, cy + gap + length, color);
 			d3dg->Draw2DLine(cx + gap, cy + gap, cx + gap + length, cy + gap + length, color);
 		}
-
-		// 타이머가 끝나면 헤드샷 플래그를 리셋합니다.
-		if (player->GetHitMarkerTimer() == 0) {
-			player->SetHeadshotFlag(false);
-		}
 	}
 
 	if( tag == true ){
 		int color;
-		if( ObjMgr.GetObjectInfoTag(camera_x, camera_y, camera_z, camera_rx, camera_ry, &color, str) == true ){
+		if (ObjMgr.GetObjectInfoTag(draw_camera_x, draw_camera_y, draw_camera_z, draw_camera_rx, draw_camera_ry, &color, str) == true) {
 			d3dg->Draw2DTextureFontTextCenterScaling(1, 270 +1 , str, d3dg->GetColorCode(0.0f,0.0f,0.0f,1.0f), 14, 18);
 			d3dg->Draw2DTextureFontTextCenterScaling(0, 270, str, color, 14, 18);
 		}
@@ -8844,59 +9086,9 @@ void maingame::Render2D()
 	d3dg->ResetZbuffer();
 
 
-	//HUD表示・モードA
-	if (Camera_F2mode == 0) {
-		int notselectweapon = selectweapon + 1;
-		if (notselectweapon == TOTAL_HAVEWEAPON) { notselectweapon = 0; }
-
-		//（3D描画）カメラ座標を暫定設定
-		ScopeParameter sparam;
-		GameParamInfo.GetScopeParam(0, &sparam);
-		d3dg->SetCamera(camera_x, camera_y, camera_z, camera_rx, camera_ry, sparam.ViewAngle);
-
-		//（3D描画）所持している武器モデルの描画・メイン武器
-		int display_main_weapon_id = weapon_paramid[selectweapon];
-		bool impact_grenade_display = false;
-
-		bool robot_execute_visual_weapon =
-			(myHuman != NULL) &&
-			((myHuman->GetSkillRobotExecuteFlag() == true) ||
-				(player_skill_robot_fire_queue_count > 0));
-
-		// 로봇 처형 프로토콜 중에는 실제 무기 슬롯/탄약/UI는 유지하고,
-// 오른쪽 아래 3D 무기 모델만 처형 프로토콜 전용 Mk14로 표시한다.
-		if (robot_execute_visual_weapon == true) {
-			display_main_weapon_id = ID_WEAPON_ROBOT_EXECUTE_RIFLE;
-		}
-
-		// 스킬 임시 무기 또는 DP28 스킬 무기 사용 중이면 오른쪽 아래 3D 무기 모델을 그리지 않는다.
-// 실제 정보는 2D HUD의 무기 이름 / 기존 무기 목록으로만 보여준다.
-		if ((IsPlayerTemporarySkillWeaponVisible() == true) ||
-			(IsPlayerDP28SkillWeaponActive() == true)) {
-			impact_grenade_display = true;
-		}
-
-		if (impact_grenade_display == false) {
-			GameParamInfo.GetWeapon(display_main_weapon_id, &weapon_paramdata);
-			Resource.GetWeaponModelTexture(display_main_weapon_id, &weaponmodel, &weapontexture);
-
-			d3dg->SetWorldTransformPlayerWeapon(
-				true,
-				camera_rx,
-				camera_ry,
-				DegreeToRadian(framecnt * 2),
-				weapon_paramdata.size,
-				sparam.ViewAngle
-			);
-			d3dg->RenderModel(weaponmodel, weapontexture, false, true, nomodel);
-
-			//（3D描画）所持している武器モデルの描画・サブ武器
-			GameParamInfo.GetWeapon(weapon_paramid[notselectweapon], &weapon_paramdata);
-			Resource.GetWeaponModelTexture(weapon_paramid[notselectweapon], &weaponmodel, &weapontexture);
-			d3dg->SetWorldTransformPlayerWeapon(false, camera_rx, camera_ry, 0.0f, weapon_paramdata.size, sparam.ViewAngle);
-			d3dg->RenderModel(weaponmodel, weapontexture, false, true, nomodel);
-		}
-	}
+	// 오른쪽 아래 3D 무기 모델 표시는 제거한다.
+// 현재 들고 있는 무기는 1인칭 모델로 이미 보이므로,
+// 우측 HUD는 1번/2번 무기 슬롯 정보만 담당한다.
 
 	//-----------------------------------
 
@@ -8967,8 +9159,8 @@ void maingame::Render2D()
 bool maingame::GetRadarPos(float in_x, float in_y, float in_z, int RadarPosX, int RadarPosY, int RadarSize, float RadarWorldR, int* out_x, int* out_y, float* local_y, bool check)
 {
 	bool outf = false;
-	float x, y, z, r, rx;
-	float x2, z2, r2, rx2;
+	float x, y, z;
+	float x2, z2;
 
 	//긇긽깋궴궻떁뿣귩똶럁
 	x = in_x - camera_x;
@@ -8977,21 +9169,45 @@ bool maingame::GetRadarPos(float in_x, float in_y, float in_z, int RadarPosX, in
 
 	//뗟궚귢궽룉뿚궥귡
 	if( (check == false) || ((fabsf(x) < RadarWorldR*2)&&(fabsf(z) < RadarWorldR*2)&&(fabsf(y) < 80.0f)) ){
-		//둷뱗귩떁뿣귩똶럁
-		rx = atan2f(z, x);
-		r = sqrtf(x*x + z*z);
+		// 레이더는 한 프레임 안에서 GetRadarPos()를 매우 많이 호출한다.
+// camera_rx가 같으면 sin/cos를 다시 계산하지 않고 재사용한다.
+		static bool radar_trig_cache_valid = false;
+		static float radar_trig_cache_rx = 0.0f;
+		static float radar_trig_cache_sin = 0.0f;
+		static float radar_trig_cache_cos = 1.0f;
 
-		//긇긽깋딈?궻띆뷭귩띋똶럁
-		rx2 = (rx - camera_rx)*-1 - (float)M_PI/2;
-		x2 = cosf(rx2) * r;
-		z2 = sinf(rx2) * r;
+		if ((radar_trig_cache_valid == false) || (radar_trig_cache_rx != camera_rx)) {
+			radar_trig_cache_rx = camera_rx;
+			radar_trig_cache_sin = sinf(camera_rx);
+			radar_trig_cache_cos = cosf(camera_rx);
+			radar_trig_cache_valid = true;
+		}
+
+		float sin_camera = radar_trig_cache_sin;
+		float cos_camera = radar_trig_cache_cos;
+
+		x2 = sin_camera * x - cos_camera * z;
+		z2 = -(cos_camera * x + sin_camera * z);
 
 		//뢁귏귡궔뵽믦
 		if( (check == false) || ((fabsf(x2) < RadarWorldR)&&(fabsf(z2) < RadarWorldR)) ){
 			//?됪띆뷭귩똶럁
-			r2 = r / RadarWorldR * (RadarSize/2);
-			*out_x = (int)(RadarPosX+RadarSize/2 + cosf(rx2) * r2);
-			*out_y = (int)(RadarPosY+RadarSize/2 + sinf(rx2) * r2);
+			static bool radar_scale_cache_valid = false;
+			static int radar_scale_cache_size = 0;
+			static float radar_scale_cache_world_r = 0.0f;
+			static float radar_scale_cache_value = 1.0f;
+
+			if ((radar_scale_cache_valid == false) ||
+				(radar_scale_cache_size != RadarSize) ||
+				(radar_scale_cache_world_r != RadarWorldR)) {
+				radar_scale_cache_size = RadarSize;
+				radar_scale_cache_world_r = RadarWorldR;
+				radar_scale_cache_value = (RadarSize / 2.0f) / RadarWorldR;
+				radar_scale_cache_valid = true;
+			}
+
+			*out_x = (int)(RadarPosX + RadarSize / 2 + x2 * radar_scale_cache_value);
+			*out_y = (int)(RadarPosY + RadarSize / 2 + z2 * radar_scale_cache_value);
 			if( local_y != NULL ){ *local_y = y; }
 			outf = true;
 		}
@@ -9200,6 +9416,42 @@ void maingame::RenderRadar()
 	int myteamid = -1;
 	radar_player->GetParamData(NULL, NULL, NULL, &myteamid);
 
+	// 레이더 벽 투과 OFF일 때 같은 적을 Pass 1/2에서 각각 다시 Ray 검사하지 않도록
+	// 이번 프레임의 표시 가능 여부를 한 번만 계산한다.
+	bool radar_human_visible[MAX_HUMAN];
+	for (int i = 0; i < MAX_HUMAN; i++) {
+		radar_human_visible[i] = false;
+	}
+
+	for (int i = 0; i < MAX_HUMAN; i++) {
+		human* thuman = ObjMgr.GetHumanObject(i);
+		if (thuman == NULL) { continue; }
+		if (thuman->GetEnableFlag() == false) { continue; }
+		if (thuman->GetDeadFlag() == true) { continue; }
+
+		int tteamid = -1;
+		thuman->GetParamData(NULL, NULL, NULL, &tteamid);
+
+		if ((i == PlayerID) ||
+			(tteamid == myteamid) ||
+			(GameConfig.GetRadarSeeThroughWallsFlag() == true)) {
+			radar_human_visible[i] = true;
+		}
+		else {
+			float tx, ty, tz;
+			thuman->GetPosData(&tx, &ty, &tz, NULL);
+
+			// 레이더 범위 밖의 적은 벽 투과 Ray 검사까지 할 필요가 없다.
+			if ((fabsf(tx - camera_x) >= RadarWorldR * 2) ||
+				(fabsf(tz - camera_z) >= RadarWorldR * 2) ||
+				(fabsf((ty + VIEW_HEIGHT) - camera_y) >= 80.0f)) {
+				continue;
+			}
+
+			radar_human_visible[i] = IsRadarTargetVisibleToTeam(myteamid, tx, ty + VIEW_HEIGHT, tz);
+		}
+	}
+
 	// -------------------------------------------------------------------------
 	// Pass 1: 부채꼴(Cone) 먼저 그리기 (배경 레이어)
 	// -------------------------------------------------------------------------
@@ -9220,11 +9472,7 @@ void maingame::RenderRadar()
 		thuman->GetPosData(&tx, &ty, &tz, &trx);
 		ty += VIEW_HEIGHT;
 
-		if ((tteamid != myteamid) && (GameConfig.GetRadarSeeThroughWallsFlag() == false)) {
-			if (IsRadarTargetVisibleToTeam(myteamid, tx, ty, tz) == false) {
-				continue;
-			}
-		}
+		if (radar_human_visible[i] == false) { continue; }
 
 		if (GetRadarPos(tx, ty, tz, RadarPosX, RadarPosY, RadarSize, RadarWorldR, &x_2d, &y_2d, &y, true) == true) {
 			if ((fabsf(y) < 40.0f)) alpha = 1.0f;
@@ -9286,11 +9534,7 @@ void maingame::RenderRadar()
 		thuman->GetParamData(NULL, NULL, NULL, &tteamid);
 		ty += VIEW_HEIGHT;
 
-		if ((i != PlayerID) && (tteamid != myteamid) && (GameConfig.GetRadarSeeThroughWallsFlag() == false)) {
-			if (IsRadarTargetVisibleToTeam(myteamid, tx, ty, tz) == false) {
-				continue;
-			}
-		}
+		if (radar_human_visible[i] == false) { continue; }
 
 		if (GetRadarPos(tx, ty, tz, RadarPosX, RadarPosY, RadarSize, RadarWorldR, &x_2d, &y_2d, &y, true) == true) {
 			if ((fabsf(y) < 40.0f)) alpha = 1.0f;
@@ -10972,222 +11216,259 @@ void InitScreen(WindowControl *WindowCtrl, opening *Opening, mainmenu *MainMenu,
 }
 
 //! @brief screen봦맯긏깋긚궻렳뛱
-void ProcessScreen(WindowControl *WindowCtrl, opening *Opening, mainmenu *MainMenu, briefing *Briefing, maingame *MainGame, result *Result, unsigned int framecnt)
+void ProcessScreen(
+	WindowControl* WindowCtrl,
+	opening* Opening,
+	mainmenu* MainMenu,
+	briefing* Briefing,
+	maingame* MainGame,
+	result* Result,
+	unsigned int framecnt,
+	bool do_logic,
+	bool do_render
+)
 {
-	if( WindowCtrl == NULL ){ return; }
-	if( Opening == NULL ){ return; }
-	if( MainMenu == NULL ){ return; }
-	if( Briefing == NULL ){ return; }
-	if( MainGame == NULL ){ return; }
-	if( Result == NULL ){ return; }
+	if (WindowCtrl == NULL) { return; }
+	if (Opening == NULL) { return; }
+	if (MainMenu == NULL) { return; }
+	if (Briefing == NULL) { return; }
+	if (MainGame == NULL) { return; }
+	if (Result == NULL) { return; }
+
+	// 로직도 렌더도 하지 않는 호출이면 바로 종료
+	if ((do_logic == false) && (do_render == false)) {
+		return;
+	}
 
 	int error;
 
-	switch(GameState.GetState()){
-		//긆?긵긦깛긐룊딖돸
-		case STATE_CREATE_OPENING:
+	switch (GameState.GetState()) {
+		// 긆?긵긦깛긐 룊딖돸
+	case STATE_CREATE_OPENING:
+		if (do_logic == true) {
 			error = Opening->Create();
-			if( error != 0 ){
-				if( (error&0x0001) != 0 ){
+			if (error != 0) {
+				if ((error & 0x0001) != 0) {
 					WindowCtrl->ErrorInfo("block data open failed");
 				}
-				if( (error&0x0002) != 0 ){
+				if ((error & 0x0002) != 0) {
 					WindowCtrl->ErrorInfo("point data open failed");
 				}
 				//WindowCtrl->CloseWindow();
 				GameState.PushBackSpaceKey();
 			}
-			break;
+		}
+		break;
 
-		//긆?긵긦깛긐렳뛱
-		case STATE_NOW_OPENING:
+		// 긆?긵긦깛긐 렳뛱
+	case STATE_NOW_OPENING:
+		if (do_logic == true) {
 			Opening->Input();
 			Opening->Process();
 			Opening->Sound();
-			if( (GameConfig.GetFrameskipFlag() == false)||(framecnt%2 == 0) ){
-				if( Opening->RenderMain() == true ){
-					int ReturnCode;
-					ReturnCode = ResetGame(WindowCtrl);
-					if( ReturnCode == 2 ){
-						WindowCtrl->ErrorInfo("Reset궸렪봲궢귏궢궫");
-						WindowCtrl->CloseWindow();
-					}
-					else if( ReturnCode == 0 ){
-						Opening->Recovery();
+		}
 
-						//뙸띪궻됪뽋귩띋긚??긣궠궧귡
-						//GameState.PushF12Key();
-					}
+		if (do_render == true) {
+			if (Opening->RenderMain() == true) {
+				int ReturnCode;
+				ReturnCode = ResetGame(WindowCtrl);
+				if (ReturnCode == 2) {
+					WindowCtrl->ErrorInfo("Reset궸렪봲궢귏궢궫");
+					WindowCtrl->CloseWindow();
+				}
+				else if (ReturnCode == 0) {
+					Opening->Recovery();
 				}
 			}
-			break;
+		}
+		break;
 
-		//긆?긵긦깛긐봯딙
-		case STATE_DESTROY_OPENING:
+		// 긆?긵긦깛긐 봯딙
+	case STATE_DESTROY_OPENING:
+		if (do_logic == true) {
 			Opening->Destroy();
-			break;
+		}
+		break;
 
-		//긽긦깄?룊딖돸
-		case STATE_CREATE_MENU:
+		// 긽긦깄? 룊딖돸
+	case STATE_CREATE_MENU:
+		if (do_logic == true) {
 			error = MainMenu->Create();
-			if( error != 0 ){
-				if( (error&0x0001) != 0 ){
+			if (error != 0) {
+				if ((error & 0x0001) != 0) {
 					WindowCtrl->ErrorInfo("block data open failed");
 				}
-				if( (error&0x0002) != 0 ){
+				if ((error & 0x0002) != 0) {
 					WindowCtrl->ErrorInfo("point data open failed");
 				}
 				WindowCtrl->CloseWindow();
 			}
-			break;
+		}
+		break;
 
-		//긽긦깄?렳뛱
-		case STATE_NOW_MENU:
+		// 긽긦깄? 렳뛱
+	case STATE_NOW_MENU:
+		if (do_logic == true) {
 			MainMenu->Input();
 			MainMenu->Process();
 			MainMenu->Sound();
-			if( (GameConfig.GetFrameskipFlag() == false)||(framecnt%2 == 0) ){
-				if( MainMenu->RenderMain() == true ){
-					int ReturnCode;
-					ReturnCode = ResetGame(WindowCtrl);
-					if( ReturnCode == 2 ){
-						WindowCtrl->ErrorInfo("Reset궸렪봲궢귏궢궫");
-						WindowCtrl->CloseWindow();
-					}
-					else if( ReturnCode == 0 ){
-						MainMenu->Recovery();
+		}
 
-						//뙸띪궻됪뽋귩띋긚??긣궠궧귡
-						//GameState.PushF12Key();
-					}
+		if (do_render == true) {
+			if (MainMenu->RenderMain() == true) {
+				int ReturnCode;
+				ReturnCode = ResetGame(WindowCtrl);
+				if (ReturnCode == 2) {
+					WindowCtrl->ErrorInfo("Reset궸렪봲궢귏궢궫");
+					WindowCtrl->CloseWindow();
+				}
+				else if (ReturnCode == 0) {
+					MainMenu->Recovery();
 				}
 			}
-			break;
+		}
+		break;
 
-		//긽긦깄?봯딙
-		case STATE_DESTROY_MENU:
+		// 긽긦깄? 봯딙
+	case STATE_DESTROY_MENU:
+		if (do_logic == true) {
 			MainMenu->Destroy();
-			break;
+		}
+		break;
 
-		//긳깏?긲귻깛긐룊딖돸
-		case STATE_CREATE_BRIEFING:
+		// 긳깏?긲귻깛긐 룊딖돸
+	case STATE_CREATE_BRIEFING:
+		if (do_logic == true) {
 			error = Briefing->Create();
-			if( error == 1 ){
+			if (error == 1) {
 				WindowCtrl->ErrorInfo("briefing data open failed");
 				WindowCtrl->CloseWindow();
 			}
-			break;
+		}
+		break;
 
-		//긳깏?긲귻깛긐렳뛱
-		case STATE_NOW_BRIEFING:
+		// 긳깏?긲귻깛긐 렳뛱
+	case STATE_NOW_BRIEFING:
+		if (do_logic == true) {
 			Briefing->Input();
 			Briefing->Process();
-			if( (GameConfig.GetFrameskipFlag() == false)||(framecnt%2 == 0) ){
-				if( Briefing->RenderMain() == true ){
-					int ReturnCode;
-					ReturnCode = ResetGame(WindowCtrl);
-					if( ReturnCode == 2 ){
-						WindowCtrl->ErrorInfo("Reset궸렪봲궢귏궢궫");
-						WindowCtrl->CloseWindow();
-					}
-					else if( ReturnCode == 0 ){
-						Briefing->Recovery();
+		}
 
-						//뙸띪궻됪뽋귩띋긚??긣궠궧귡
-						//GameState.PushF12Key();
-					}
+		if (do_render == true) {
+			if (Briefing->RenderMain() == true) {
+				int ReturnCode;
+				ReturnCode = ResetGame(WindowCtrl);
+				if (ReturnCode == 2) {
+					WindowCtrl->ErrorInfo("Reset궸렪봲궢귏궢궫");
+					WindowCtrl->CloseWindow();
+				}
+				else if (ReturnCode == 0) {
+					Briefing->Recovery();
 				}
 			}
-			break;
+		}
+		break;
 
-		//긳깏?긲귻깛긐봯딙
-		case STATE_DESTROY_BRIEFING:
+		// 긳깏?긲귻깛긐 봯딙
+	case STATE_DESTROY_BRIEFING:
+		if (do_logic == true) {
 			Briefing->Destroy();
-			break;
+		}
+		break;
 
-		//긽귽깛긒??룊딖돸
-		case STATE_CREATE_MAINGAME:
+		// 긽귽깛긒?? 룊딖돸
+	case STATE_CREATE_MAINGAME:
+		if (do_logic == true) {
 			error = MainGame->Create();
-			if( error != 0 ){
-				if( (error&0x0001) != 0 ){
+			if (error != 0) {
+				if ((error & 0x0001) != 0) {
 					WindowCtrl->ErrorInfo("block data open failed");
 				}
-				if( (error&0x0002) != 0 ){
+				if ((error & 0x0002) != 0) {
 					WindowCtrl->ErrorInfo("point data open failed");
 				}
 				WindowCtrl->CloseWindow();
 			}
-			break;
+		}
+		break;
 
-		//긽귽깛긒??렳뛱
-		case STATE_NOW_MAINGAME:
-			for(int i=0; i<MainGame->GetGameSpeed(); i++){
+		// 긽귽깛긒?? 렳뛱
+	case STATE_NOW_MAINGAME:
+		if (do_logic == true) {
+			for (int i = 0; i < MainGame->GetGameSpeed(); i++) {
 				MainGame->Input();
 				MainGame->Process();
 				MainGame->Sound();
 			}
-			if( (GameConfig.GetFrameskipFlag() == false)||(framecnt%2 == 0) ){
-				if( MainGame->RenderMain() == true ){
-					int ReturnCode;
-					ReturnCode = ResetGame(WindowCtrl);
-					if( ReturnCode == 2 ){
-						WindowCtrl->ErrorInfo("Reset궸렪봲궢귏궢궫");
-						WindowCtrl->CloseWindow();
-					}
-					else if( ReturnCode == 0 ){
-						MainGame->Recovery();
+		}
 
-						//뙸띪궻됪뽋귩띋긚??긣궠궧귡
-						//GameState.PushF12Key();
-					}
+		if (do_render == true) {
+			if (MainGame->RenderMain() == true) {
+				int ReturnCode;
+				ReturnCode = ResetGame(WindowCtrl);
+				if (ReturnCode == 2) {
+					WindowCtrl->ErrorInfo("Reset궸렪봲궢귏궢궫");
+					WindowCtrl->CloseWindow();
+				}
+				else if (ReturnCode == 0) {
+					MainGame->Recovery();
 				}
 			}
-			break;
+		}
+		break;
 
-		//긽귽깛긒??봯딙
-		case STATE_DESTROY_MAINGAME:
+		// 긽귽깛긒?? 봯딙
+	case STATE_DESTROY_MAINGAME:
+		if (do_logic == true) {
 			MainGame->Destroy();
-			break;
+		}
+		break;
 
-		//깏긗깑긣룊딖돸
-		case STATE_CREATE_RESULT:
+		// 깏긗깑긣 룊딖돸
+	case STATE_CREATE_RESULT:
+		if (do_logic == true) {
 			error = Result->Create();
-			break;
+		}
+		break;
 
-		//깏긗깑긣렳뛱
-		case STATE_NOW_RESULT:
+		// 깏긗깑긣 렳뛱
+	case STATE_NOW_RESULT:
+		if (do_logic == true) {
 			Result->Input();
 			Result->Process();
-			if( (GameConfig.GetFrameskipFlag() == false)||(framecnt%2 == 0) ){
-				if( Result->RenderMain() == true ){
-					int ReturnCode;
-					ReturnCode = ResetGame(WindowCtrl);
-					if( ReturnCode == 2 ){
-						WindowCtrl->ErrorInfo("Reset궸렪봲궢귏궢궫");
-						WindowCtrl->CloseWindow();
-					}
-					else if( ReturnCode == 0 ){
-						Result->Recovery();
+		}
 
-						//뙸띪궻됪뽋귩띋긚??긣궠궧귡
-						//GameState.PushF12Key();
-					}
+		if (do_render == true) {
+			if (Result->RenderMain() == true) {
+				int ReturnCode;
+				ReturnCode = ResetGame(WindowCtrl);
+				if (ReturnCode == 2) {
+					WindowCtrl->ErrorInfo("Reset궸렪봲궢귏궢궫");
+					WindowCtrl->CloseWindow();
+				}
+				else if (ReturnCode == 0) {
+					Result->Recovery();
 				}
 			}
-			break;
+		}
+		break;
 
-		//깏긗깑긣봯딙
-		case STATE_DESTROY_RESULT:
+		// 깏긗깑긣 봯딙
+	case STATE_DESTROY_RESULT:
+		if (do_logic == true) {
 			Result->Destroy();
-			break;
+		}
+		break;
 
-		//긒??뢎뿹
-		case STATE_EXIT:
+		// 긒?? 뢎뿹
+	case STATE_EXIT:
+		if (do_logic == true) {
 			WindowCtrl->CloseWindow();
-			break;
+		}
+		break;
 
-		default:
-			break;
+	default:
+		break;
 	}
 }
 

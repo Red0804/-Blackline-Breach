@@ -34,6 +34,9 @@
 
 #include "main.h"
 
+#include <mmsystem.h>
+#pragma comment(lib, "winmm.lib")
+
 #ifdef _DEBUG
  #include <shlwapi.h>
  #pragma comment(lib, "Shlwapi.lib")
@@ -52,6 +55,26 @@ Config GameConfig;
 
 //! 긽귽깛긂귻깛긤긂
 WindowControl MainWindow;
+
+// 렌더 FPS 제한용 고정밀 시간(ms)
+// timeGetTime()은 ms 정수 단위라 120FPS의 8.333ms를 정확히 표현할 수 없다.
+static double GetHighResolutionTimeMS()
+{
+	static bool initialized = false;
+	static LARGE_INTEGER frequency;
+
+	if (initialized == false) {
+		if (QueryPerformanceFrequency(&frequency) == FALSE) {
+			return (double)GetTimeMS();
+		}
+		initialized = true;
+	}
+
+	LARGE_INTEGER counter;
+	QueryPerformanceCounter(&counter);
+
+	return ((double)counter.QuadPart * 1000.0) / (double)frequency.QuadPart;
+}
 
 //! @brief WinMain()듫릶
 int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine, int nCmdShow)
@@ -262,17 +285,133 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 
 	unsigned int framecnt = 0;
 
-	for(int flag = 0; flag != -1; flag = MainWindow.CheckMainLoop()){
-		if( flag == 1 ){
-			//긽귽깛룉뿚
-			ProcessScreen(&MainWindow, &Opening, &MainMenu, &Briefing, &MainGame, &Result, framecnt);
+	// 고정 로직 업데이트용 누적 시간
+	unsigned int last_time = GetTimeMS();
+	double logic_accum = 0.0;
 
-			//FPS뮧맢
-			ControlFps();
+	// 렌더 제한용 다음 예정 시간
+	// 120FPS는 8.333ms이므로 unsigned int ms로는 정확히 제한할 수 없다.
+	double next_render_time = 0.0;
+	int last_render_fps = -1;
 
-			framecnt++;
+	// Sleep(1)의 정밀도를 올림
+	timeBeginPeriod(1);
+
+	for (int flag = 0; flag != -1; flag = MainWindow.CheckMainLoop()) {
+		if (flag == 1) {
+			unsigned int nowtime = GetTimeMS();
+			unsigned int elapsed = nowtime - last_time;
+			last_time = nowtime;
+
+			// Alt+Tab, 멈춤, 디버그 중단 뒤 한 번에 너무 많이 따라잡는 것 방지
+			if (elapsed > 250) {
+				elapsed = 250;
+			}
+
+			logic_accum += (double)elapsed;
+
+			int logic_steps = 0;
+
+			// 게임 로직은 기존처럼 30ms 단위로만 실행한다.
+			while ((logic_accum >= LOGICFRAMEMS_D) && (logic_steps < MAX_LOGIC_STEPS_PER_LOOP)) {
+				ProcessScreen(
+					&MainWindow,
+					&Opening,
+					&MainMenu,
+					&Briefing,
+					&MainGame,
+					&Result,
+					framecnt,
+					true,   // do_logic
+					false   // do_render
+				);
+
+				framecnt++;
+				logic_accum -= LOGICFRAMEMS_D;
+				logic_steps++;
+			}
+
+			// 너무 밀리면 게임이 무한히 따라잡으려 하지 않도록 버린다.
+			if (logic_steps >= MAX_LOGIC_STEPS_PER_LOOP) {
+				logic_accum = 0.0;
+			}
+
+			int render_fps = GameConfig.GetRenderFpsLimit();
+			double render_interval_ms = 0.0;
+
+			if (render_fps > 0) {
+				// 120FPS = 8.333ms, 144FPS = 6.944ms.
+				// 정수 ms로 올림 처리하면 120FPS가 9ms가 되어 111FPS로 떨어진다.
+				render_interval_ms = 1000.0 / (double)render_fps;
+			}
+
+			double render_nowtime = GetHighResolutionTimeMS();
+
+			// 옵션에서 RENDER FPS 값을 바꾼 직후에는 렌더 스케줄을 다시 맞춘다.
+			if (last_render_fps != render_fps) {
+				last_render_fps = render_fps;
+				next_render_time = render_nowtime;
+			}
+
+			if (render_interval_ms <= 0.0) {
+				ProcessScreen(
+					&MainWindow,
+					&Opening,
+					&MainMenu,
+					&Briefing,
+					&MainGame,
+					&Result,
+					framecnt,
+					false,          // do_logic
+					true            // do_render
+				);
+			}
+			else {
+				if (next_render_time <= 0.0) {
+					next_render_time = render_nowtime;
+				}
+
+				if (render_nowtime >= next_render_time) {
+					double render_begin_time = render_nowtime;
+
+					ProcessScreen(
+						&MainWindow,
+						&Opening,
+						&MainMenu,
+						&Briefing,
+						&MainGame,
+						&Result,
+						framecnt,
+						false,          // do_logic
+						true            // do_render
+					);
+
+					// 렌더 종료 시간이 아니라 예정 시각 기준으로 다음 렌더를 잡는다.
+					// 120FPS의 8.333ms 같은 소수 ms 간격을 유지하기 위해 double 누적을 사용한다.
+					next_render_time += render_interval_ms;
+
+					// Alt+Tab, 디버그 중단, 큰 렉 등으로 너무 뒤처진 경우 현재 시각 기준으로 재동기화한다.
+					if ((render_begin_time - next_render_time) > (render_interval_ms * 4.0)) {
+						next_render_time = render_begin_time + render_interval_ms;
+					}
+				}
+				else {
+					double wait_ms = next_render_time - render_nowtime;
+
+					// 너무 일찍 깨어나면 CPU를 많이 쓰고, 너무 늦게 깨어나면 120FPS 타이밍을 놓친다.
+					// 2ms 이상 남았을 때만 Sleep(1), 마감 직전에는 Sleep(0)으로 양보만 한다.
+					if (wait_ms > 2.0) {
+						Sleep(1);
+					}
+					else {
+						Sleep(0);
+					}
+				}
+			}
 		}
 	}
+
+	timeEndPeriod(1);
 
 #ifdef ENABLE_DEBUGLOG
 	//깓긐궸뢯쀍

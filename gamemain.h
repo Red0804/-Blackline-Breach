@@ -140,8 +140,8 @@
  #define OPTIONS_P3_X ((GameConfig.GetScreenWidth() - OPTIONS_P3_W)/2)				//!< 긆긵긘깈깛됪뽋 No.3?X띆뷭
  #define OPTIONS_P3_Y (105 + (GameConfig.GetScreenHeight()-105 - OPTIONS_P3_H)/2)	//!< 긆긵긘깈깛됪뽋 No.3?Y띆뷭
  #define OPTIONS_P3_DATAS 1															//!< 긆긵긘깈깛됪뽋 No.3?깏깛긏긡긌긚긣궻릶
-#define OPTIONS_ADVANCED_DATAS 19  // Gameplay Setting 항목 개수
-#define OPTIONS_TOGGLE_DATAS 11     // Toggle Setting 항목 개수
+#define OPTIONS_ADVANCED_DATAS 21  // Gameplay Setting 항목 개수
+#define OPTIONS_TOGGLE_DATAS 10     // Toggle Setting 항목 개수
 #define OPTIONS_CROSSHAIR_DATAS 23  // style10 + color10 + outline + reset + back
 
 // SKILLS 화면
@@ -341,6 +341,15 @@ class maingame : public D3Dscene
 	float view_ry;				//!< ?긂긚둷뱗궴긇긽깋둷뱗궻뜼걁릠뮳렡걂
 	float add_camera_rx;		//!< 긇긽깋됷?둷뱗 RX궻몵뙵쀊
 	float add_camera_ry;		//!< 긇긽깋됷?둷뱗 RY궻몵뙵쀊
+
+
+	// 이번 렌더 프레임에서 실제로 사용할 카메라
+	float draw_camera_x;
+	float draw_camera_y;
+	float draw_camera_z;
+	float draw_camera_rx;
+	float draw_camera_ry;
+
 	bool ShowInfo_Debugmode;	//!< 띆뷭궶궵귩?렑궥귡긢긫긞긏긾?긤
 	bool Camera_Debugmode;		//!< 긇긽깋긢긫긞긏긾?긤
 	bool tag;					//!< 긆긳긙긃긏긣궻?긐귩?렑
@@ -877,6 +886,8 @@ public:
 	maingame();
 	~maingame();
 	void SetShowInfoFlag(bool flag);
+	void SyncDrawCamera();
+	void ProcessVisualTimers();
 	int GetGameSpeed();
 	int Create();
 	int Recovery();
@@ -898,7 +909,17 @@ public:
 };
 
 void InitScreen(WindowControl *WindowCtrl, opening *Opening, mainmenu *MainMenu, briefing *Briefing, maingame *MainGame, result *Result);
-void ProcessScreen(WindowControl *WindowCtrl, opening *Opening, mainmenu *MainMenu, briefing *Briefing, maingame *MainGame, result *Result, unsigned int framecnt);
+void ProcessScreen(
+	WindowControl* WindowCtrl,
+	opening* Opening,
+	mainmenu* MainMenu,
+	briefing* Briefing,
+	maingame* MainGame,
+	result* Result,
+	unsigned int framecnt,
+	bool do_logic,
+	bool do_render
+);
 int ChangeWindowMode(WindowControl *WindowCtrl, D3DGraphics *d3dg, InputControl *inputCtrl, scene *RecoveryScene, bool fullscreen);
 
 #endif

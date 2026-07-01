@@ -282,13 +282,15 @@ int D3DGraphics::InitD3D(WindowControl *WindowCtrl, const char *TextureFontFilen
 
 
 	//HUD?뙸띪렃궯궲궋귡븧딇귩?됪궥귡띆뷭
-	HUD_myweapon_x[0] = GameConfig.GetScreenWidth() - 140.0f;
-	HUD_myweapon_y[0] = GameConfig.GetScreenHeight() - 40.0f;
+	// 선택 무기는 회전을 없앤 뒤에도 2번째 무기와 겹치지 않도록 더 왼쪽/아래에 둔다.
+	HUD_myweapon_x[0] = GameConfig.GetScreenWidth() - 190.0f;
+	HUD_myweapon_y[0] = GameConfig.GetScreenHeight() - 48.0f;
 	HUD_myweapon_z[0] = 0.86f;
 
 	//HUD??뷈궻븧딇귩?됪궥귡띆뷭
-	HUD_myweapon_x[1] = GameConfig.GetScreenWidth() - 72.0f;
-	HUD_myweapon_y[1] = GameConfig.GetScreenHeight() - 25.0f;
+	// 2번째 무기는 오른쪽 위에 유지해 선택 무기와 시각적으로 분리한다.
+	HUD_myweapon_x[1] = GameConfig.GetScreenWidth() - 70.0f;
+	HUD_myweapon_y[1] = GameConfig.GetScreenHeight() - 22.0f;
 	HUD_myweapon_z[1] = 0.93f;
 
 
@@ -2735,10 +2737,7 @@ void D3DGraphics::Draw2DDonutArc(float cx, float cy, float radius, float start_a
 {
 	if (StartRenderFlag == false) { return; }
 
-	// segments는 최소 1 이상이어야 삼각형 스트립을 만들 수 있음.
 	if (segments < 1) { return; }
-
-	// 너무 큰 값 방지. 실사용은 20~100 정도면 충분함.
 	if (segments > 360) { segments = 360; }
 
 	if (radius <= 0.0f) { return; }
@@ -2748,13 +2747,15 @@ void D3DGraphics::Draw2DDonutArc(float cx, float cy, float radius, float start_a
 	ResetWorldTransform();
 
 	int num_vertices = (segments + 1) * 2;
-	TLVERTX* vertices = new TLVERTX[num_vertices];
-	if (!vertices) {
-		End2DRender();
-		return;
-	}
+	TLVERTX vertices[(360 + 1) * 2];
 
 	float theta_step = (end_angle - start_angle) / (float)segments;
+	float inner_radius = radius - ((float)thickness / 2.0f);
+	float outer_radius = radius + ((float)thickness / 2.0f);
+
+	if (inner_radius < 0.0f) {
+		inner_radius = 0.0f;
+	}
 
 	for (int i = 0; i <= segments; ++i)
 	{
@@ -2764,9 +2765,6 @@ void D3DGraphics::Draw2DDonutArc(float cx, float cy, float radius, float start_a
 		float angle = start_angle + i * theta_step;
 		float cos_a = cosf(angle - (float)M_PI / 2);
 		float sin_a = sinf(angle - (float)M_PI / 2);
-
-		float inner_radius = radius - ((float)thickness / 2.0f);
-		float outer_radius = radius + ((float)thickness / 2.0f);
 
 		vertices[inner_index].x = cx + inner_radius * cos_a;
 		vertices[inner_index].y = cy + inner_radius * sin_a;
@@ -2794,8 +2792,6 @@ void D3DGraphics::Draw2DDonutArc(float cx, float cy, float radius, float start_a
 
 	pd3dDevice->SetFVF(D3DFVF_XYZRHW | D3DFVF_DIFFUSE | D3DFVF_TEX1);
 	pd3dDevice->DrawPrimitiveUP(D3DPT_TRIANGLESTRIP, num_vertices - 2, vertices, sizeof(TLVERTX));
-
-	delete[] vertices;
 
 	End2DRender();
 }

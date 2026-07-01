@@ -90,6 +90,7 @@ class Config
 	int ScreenWidth;					//!< 됪뽋됶몴뱗걁븴걂
 	int ScreenHeight;					//!< 됪뽋됶몴뱗걁뛼궠걂
 	bool MouseLimitFlag;				//!< ?긂긚댷벍쀊맕뙽긲깋긐
+	int RenderFpsLimit;					//!< 화면 렌더링 FPS 제한. 0이면 제한 없음
 	float mastervolume;					//!< 돶쀊
 
 	float DamageMultiplier;				//!< プレイヤ?の被ダメージ倍率
@@ -134,6 +135,10 @@ public:
 	int GetScreenWidth();
 	int GetScreenHeight();
 	bool GetMouseLimitFlag();
+
+	int GetRenderFpsLimit();
+	void SetRenderFpsLimit(int fps);
+
 	float GetVolume();
 	float GetDamageMultiplier();
 

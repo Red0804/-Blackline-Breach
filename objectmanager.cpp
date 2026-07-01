@@ -4639,8 +4639,26 @@ int ObjectManager::ShotWeapon(int human_id)
 
 
 			//뢤뭙귩뵯롅
-			newbullet->SetPosData(pos_x, shot_y, pos_z, rx2, ry2);
-			newbullet->SetParamData(attacks, ParamData.penetration, (float)ParamData.speed * BULLET_SPEEDSCALE, teamid, human_id, ontargetcnt, true);
+			// 판정용 총알은 카메라/팔 보간과 분리한다.
+			// 몸 중심(pos_x/pos_z)에서 바로 시작하면 3인칭에서 캐릭터 뒤에서 발사되어
+			// 몸을 통과하는 것처럼 보이므로, 사격 방향으로 상체 충돌 반지름만큼 앞에서 시작시킨다.
+			const float bullet_forward_offset = HUMAN_BULLETCOLLISION_UP_R + 0.8f;
+			float bullet_start_x = pos_x + cosf(rx2) * cosf(ry2) * bullet_forward_offset;
+			float bullet_start_y = shot_y + sinf(ry2) * bullet_forward_offset;
+			float bullet_start_z = pos_z + sinf(rx2) * cosf(ry2) * bullet_forward_offset;
+
+			newbullet->SetPosData(bullet_start_x, bullet_start_y, bullet_start_z, rx2, ry2);
+
+			newbullet->SetParamData(
+				attacks,
+				ParamData.penetration,
+				(float)ParamData.speed * BULLET_SPEEDSCALE,
+				teamid,
+				human_id,
+				ontargetcnt,
+				true
+			);
+
 			newbullet->SetSilencerFlag(ParamData.silencer);
 			newbullet->SetEnableFlag(true);
 
@@ -5134,7 +5152,7 @@ bool ObjectManager::DumpWeapon(int human_id)
 
 	Human_YakkyouCnt[human_id] = -1;
 
-	return HumanIndex[human_id].DumpWeapon();
+	return HumanIndex[human_id].DumpWeapon(CollD);
 }
 
 //! @brief 긚긓?긵긾?긤귩먛귟뫶궑
@@ -6285,6 +6303,8 @@ int ObjectManager::SortEffect(float camera_x, float camera_y, float camera_z, ef
 
 	return cnt;
 }
+
+
 
 
 //! @brief 긆긳긙긃긏긣궻?됪룉뿚

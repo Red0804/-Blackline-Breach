@@ -143,6 +143,7 @@ class ObjectManager
 	class ObjectManagerLog* ObjectLog;
 
 	bool ShowHitboxFlag;
+
 	void RenderDebugHumanHitbox();
 	void RenderDebugCylinder(float x, float y, float z, float r, float h, int color);
 	void RenderDebugShieldBox(float x, float y, float z, float rx, int color, int front_color);

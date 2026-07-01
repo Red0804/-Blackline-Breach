@@ -42,6 +42,7 @@ object::object(class ParameterInfo *in_Param, float x, float y, float z, float r
 	pos_y = y;
 	pos_z = z;
 	rotation_x = rx;
+
 	EnableFlag = flag;
 	model_size = size;
 
@@ -73,6 +74,7 @@ void object::SetPosData(float x, float y, float z, float rx)
 	pos_y = y;
 	pos_z = z;
 	rotation_x = rx;
+
 }
 
 //! @brief 띆뷭궴둷뱗귩롦벦
@@ -87,6 +89,7 @@ void object::GetPosData(float *x, float *y, float *z, float *rx)
 	if( z != NULL ){ *z = pos_z; }
 	if( rx != NULL ){ *rx = rotation_x; }
 }
+
 
 //! @brief 뾎뚼돸긲깋긐귩먠믦
 //! @param flag 먠믦궥귡긲깋긐
@@ -182,6 +185,7 @@ human::human(class ParameterInfo* in_Param, float x, float y, float z, float rx,
 	EnableFlag = flag;
 	rotation_y = 0.0f;
 	armrotation_y = 0.0f;
+
 	point_dataid = dataid;
 	point_p4 = p4;
 	teamid = team;
@@ -1376,7 +1380,7 @@ bool human::InstantReloadWeapon()
 //! @brief 븧딇귩롆궲귡
 //! @return 맟뚻갌true?렪봲갌false
 //! @attention 긒??뤵궔귞뮳먝뚁귂뢯궥궞궴궼뷃궚갂ObjectManager긏깋긚궔귞뚁귂뢯궢궲궘궬궠궋갃
-bool human::DumpWeapon()
+bool human::DumpWeapon(class Collision* CollD)
 {
 	// 무기 전환/모드 전환/볼트 동작 중이면 실패
 	if (selectweaponcnt > 0) { return false; }
@@ -1401,7 +1405,12 @@ bool human::DumpWeapon()
 		}
 
 		//븧딇귩롆궲갂몧뷈귩됶룣
-		weapon[selectweapon]->Dropoff(pos_x, pos_y, pos_z, rotation_x, 1.63f);
+		// 앞으로 움직이며 버릴 때 무기가 손에서 갑자기 뒤처져 보이지 않도록
+		// 플레이어 이동 속도를 일부 이어받게 한다.
+		float drop_inherit_x = move_x * 0.5f;
+		float drop_inherit_z = move_z * 0.5f;
+
+		weapon[selectweapon]->Dropoff(pos_x, pos_y, pos_z, rotation_x, 1.63f, drop_inherit_x, drop_inherit_z, CollD);
 		weapon[selectweapon] = NULL;
 
 		//뼟룋렃렄궻뭙릶륃뺪궼룊딖돸
@@ -1587,6 +1596,7 @@ bool human::IsShieldHitEffect()
 {
 	return shield_hit_effect_flag;
 }
+
 
 //! @brief 돘렡궴뢢렡궻뛀궖귩롦벦
 //! @param rx 돘렡귩롦벦궥귡?귽깛?
@@ -1956,7 +1966,7 @@ int human::CheckAndProcessDead(class Collision *CollD)
 			//룋렃궢궲궋귡븧딇귩멣궲롆궲귡
 			for(int i=0; i<TOTAL_HAVEWEAPON; i++){
 				if( weapon[i] != NULL ){
-					weapon[i]->Dropoff(pos_x, pos_y, pos_z, DegreeToRadian(10)*GetRand(36), 1.5f);
+					weapon[i]->Dropoff(pos_x, pos_y, pos_z, DegreeToRadian(10) * GetRand(36), 1.5f, 0.0f, 0.0f, CollD);
 					weapon[i] = NULL;
 
 					//뼟룋렃렄궻뭙릶륃뺪궼룊딖돸
@@ -2775,6 +2785,7 @@ bool human::CollisionBlockScratch(class Collision *CollD, class BlockDataInterfa
 //! @return 룉뿚궶궢갌0?믅륂룉뿚갌1??뻊궢궲?귢뢎귦궯궫뮳뚣갌2?먄?궢궫?뫬갌3?뭤?궸귝귟?뻊궢궫뮳뚣갌4
 int human::ProcessObject(class Collision* CollD, class BlockDataInterface* inblockdata, bool AddCollisionFlag, bool player, bool F5mode)
 {
+
 	if (CollD == NULL) { return 0; }
 	if (inblockdata == NULL) { return 0; }
 	if (EnableFlag == false) { return 0; }
@@ -3029,6 +3040,15 @@ void human::Render(class D3DGraphics* d3dg, class ResourceManager* Resource, boo
 
 	bool shadow_decoy_render = GetSkillShadowDecoyFlag();
 
+	// 렌더 보간 전체 비활성화.
+// 사람 모델은 NPC/플레이어/1인칭 팔 모두 현재 위치와 현재 모션만 사용한다.
+	float render_pos_x = pos_x;
+	float render_pos_y = pos_y;
+	float render_pos_z = pos_z;
+	float render_rotation_x = rotation_x;
+	float render_rotation_y = rotation_y;
+	float render_armrotation_y = armrotation_y;
+
 	// 그림자 잔상은 플레이어와 같은 외형을 유지하되, 살짝 반투명하게 보이게 한다.
 	if (shadow_decoy_render == true) {
 		if (human_alpha > 0.85f) { human_alpha = 0.85f; }
@@ -3061,6 +3081,9 @@ void human::Render(class D3DGraphics* d3dg, class ResourceManager* Resource, boo
 	float armry, legrx;
 	MotionCtrl->GetRenderMotion(&armry, &legrx, &upmodel, &armmodel, &legmodel);
 
+	float render_armry = armry;
+	float render_legrx = legrx;
+
 	bool draw_upper = ((render_parts_mask & HUMAN_RENDER_UPPER) != 0);
 	bool draw_leg = ((render_parts_mask & HUMAN_RENDER_LEG) != 0);
 	bool draw_arm = ((render_parts_mask & HUMAN_RENDER_ARM) != 0);
@@ -3088,24 +3111,18 @@ void human::Render(class D3DGraphics* d3dg, class ResourceManager* Resource, boo
 
 		if (moving == false) {
 			legmodel = sitlegmodel;
-			sitwalkcnt = 0;
 		}
 		else {
-			// sitwalkmodel[0] = sitwalkleft1.x
-			// sitwalkmodel[1] = sitwalkleft2.x
-			// sitwalkmodel[2] = sitwalkright1.x
-			// sitwalkmodel[3] = sitwalkright2.x
-			int sitframe = (sitwalkcnt / 5) % TOTAL_SITWALKMODE;
+			// Render() 안에서 sitwalkcnt를 증가시키면 144FPS 기준으로 너무 빨라진다.
+			// 대신 로직 프레임에서만 증가하는 MotionCtrl의 이동 모션 카운터를 사용한다.
+			int motioncnt = MotionCtrl->GetMoveMotionCnt();
+			int sitframe = (motioncnt / 5) % TOTAL_SITWALKMODE;
 			legmodel = sitwalkmodel[sitframe];
-			sitwalkcnt++;
 		}
-	}
-	else {
-		sitwalkcnt = 0;
 	}
 
 	// [최종] MotionCtrl에서 계산된 팔 각도(armry)에 반동 오프셋(recoil_y_offset)을 더해 최종 렌더링 각도를 계산
-	float final_arm_ry = armry + recoil_y_offset;
+	float final_arm_ry = render_armry + recoil_y_offset;
 
 	class weapon* nowweapon;
 	nowweapon = weapon[selectweapon];
@@ -3134,16 +3151,16 @@ void human::Render(class D3DGraphics* d3dg, class ResourceManager* Resource, boo
 	// 시점 상하 변화에 따라 같이 기울어지면 어색하므로
 	// 방패 전용 팔 모션에서 계산된 armry만 사용한다.
 	if (render_shield_weapon == true) {
-		final_arm_ry = armry;
+		final_arm_ry = render_armry;
 	}
 
 	if (DrawArmOnly == false) {
 		float add_x, add_y, add_z;
 
-		if (rotation_y != 0.0f) {
-			add_x = cosf(rotation_x * -1 - (float)M_PI / 2) * sinf(rotation_y) * -1.0f;
-			add_y = cosf(rotation_y) * -1.0f;
-			add_z = sinf(rotation_x * -1 - (float)M_PI / 2) * sinf(rotation_y) * -1.0f;
+		if (render_rotation_y != 0.0f) {
+			add_x = cosf(render_rotation_x * -1 - (float)M_PI / 2) * sinf(render_rotation_y) * -1.0f;
+			add_y = cosf(render_rotation_y) * -1.0f;
+			add_z = sinf(render_rotation_x * -1 - (float)M_PI / 2) * sinf(render_rotation_y) * -1.0f;
 		}
 		else {
 			add_x = 0.0f;
@@ -3151,14 +3168,14 @@ void human::Render(class D3DGraphics* d3dg, class ResourceManager* Resource, boo
 			add_z = 0.0f;
 		}
 		if (draw_upper == true) {
-			d3dg->SetWorldTransform(pos_x + add_x, pos_y + add_y + crouch_render_y, pos_z + add_z, rotation_x + (float)M_PI, rotation_y, upmodel_size);
+			d3dg->SetWorldTransform(render_pos_x + add_x, render_pos_y + add_y + crouch_render_y, render_pos_z + add_z, render_rotation_x + (float)M_PI, render_rotation_y, upmodel_size);
 			d3dg->RenderModel(upmodel, human_render_texture, human_render_dark, false, NoModel, false, human_alpha, human_render_brightness, human_alpha_zwrite);
 		}
 
-		if (rotation_y != 0.0f) {
-			add_x = cosf(rotation_x * -1 - (float)M_PI / 2) * sinf(rotation_y) * -0.2f;
-			add_y = cosf(rotation_y) * -0.2f;
-			add_z = sinf(rotation_x * -1 - (float)M_PI / 2) * sinf(rotation_y) * -0.2f;
+		if (render_rotation_y != 0.0f) {
+			add_x = cosf(render_rotation_x * -1 - (float)M_PI / 2) * sinf(render_rotation_y) * -0.2f;
+			add_y = cosf(render_rotation_y) * -0.2f;
+			add_z = sinf(render_rotation_x * -1 - (float)M_PI / 2) * sinf(render_rotation_y) * -0.2f;
 		}
 		else {
 			add_x = 0.0f;
@@ -3166,7 +3183,7 @@ void human::Render(class D3DGraphics* d3dg, class ResourceManager* Resource, boo
 			add_z = 0.0f;
 		}
 		if (draw_leg == true) {
-			d3dg->SetWorldTransform(pos_x + add_x, pos_y + add_y + crouch_leg_y, pos_z + add_z, legrx + (float)M_PI, rotation_y, legmodel_size);
+			d3dg->SetWorldTransform(render_pos_x + add_x, render_pos_y + add_y + crouch_leg_y, render_pos_z + add_z, render_legrx + (float)M_PI, render_rotation_y, legmodel_size);
 			d3dg->RenderModel(legmodel, human_render_texture, human_render_dark, false, NoModel, false, human_alpha, human_render_brightness, human_alpha_zwrite);
 		}
 	}
@@ -3176,18 +3193,18 @@ void human::Render(class D3DGraphics* d3dg, class ResourceManager* Resource, boo
 		return;
 	}
 
-	if ((rotation_y != 0.0f) && (render_shield_weapon == false)) {
+	if ((render_rotation_y != 0.0f) && (render_shield_weapon == false)) {
 		if (draw_arm == true) {
-			float add_x = cosf(rotation_x * -1 - (float)M_PI / 2) * sinf(rotation_y) * 16.0f;
-			float add_y = cosf(rotation_y) * 16.0f;
-			float add_z = sinf(rotation_x * -1 - (float)M_PI / 2) * sinf(rotation_y) * 16.0f;
-			d3dg->SetWorldTransform(pos_x + add_x, pos_y + add_y + crouch_arm_y, pos_z + add_z, rotation_x + (float)M_PI, armrotation_y + rotation_y, armmodel_size);
+			float add_x = cosf(render_rotation_x * -1 - (float)M_PI / 2) * sinf(render_rotation_y) * 16.0f;
+			float add_y = cosf(render_rotation_y) * 16.0f;
+			float add_z = sinf(render_rotation_x * -1 - (float)M_PI / 2) * sinf(render_rotation_y) * 16.0f;
+			d3dg->SetWorldTransform(render_pos_x + add_x, render_pos_y + add_y + crouch_arm_y, render_pos_z + add_z, render_rotation_x + (float)M_PI, render_armrotation_y + render_rotation_y, armmodel_size);
 			d3dg->RenderModel(armmodel, human_render_texture, human_render_dark, false, NoModel, false, human_arm_alpha, human_render_brightness, human_alpha_zwrite);
 		}
 	}
 	else if ((nowweapon == NULL) && (render_override_weapon == false)) {
 		if (draw_arm == true) {
-			d3dg->SetWorldTransform(pos_x, pos_y + 16.0f + crouch_arm_y, pos_z, rotation_x + (float)M_PI, final_arm_ry, armmodel_size);
+			d3dg->SetWorldTransform(render_pos_x, render_pos_y + 16.0f + crouch_arm_y, render_pos_z, render_rotation_x + (float)M_PI, final_arm_ry, armmodel_size);
 			d3dg->RenderModel(armmodel, human_render_texture, human_render_dark, false, NoModel, false, human_arm_alpha, human_render_brightness, human_alpha_zwrite);
 		}
 	}
@@ -3217,23 +3234,23 @@ void human::Render(class D3DGraphics* d3dg, class ResourceManager* Resource, boo
 
 		if (draw_weapon_first == true) {
 			if (draw_weapon == true) {
-				d3dg->SetWorldTransformHumanWeapon(pos_x, pos_y + 16.0f + crouch_arm_y, pos_z, render_weapon_mx, render_weapon_my, render_weapon_mz, rotation_x + (float)M_PI, final_arm_ry, paramdata.size);
+				d3dg->SetWorldTransformHumanWeapon(render_pos_x, render_pos_y + 16.0f + crouch_arm_y, render_pos_z, render_weapon_mx, render_weapon_my, render_weapon_mz, render_rotation_x + (float)M_PI, final_arm_ry, paramdata.size);
 				d3dg->RenderModel(model, texture, human_render_dark, false, NoModel, false, human_weapon_alpha, human_weapon_brightness, human_alpha_zwrite);
 			}
 
 			if (draw_arm == true) {
-				d3dg->SetWorldTransform(pos_x, pos_y + 16.0f + crouch_arm_y, pos_z, rotation_x + (float)M_PI, final_arm_ry, armmodel_size);
+				d3dg->SetWorldTransform(render_pos_x, render_pos_y + 16.0f + crouch_arm_y, render_pos_z, render_rotation_x + (float)M_PI, final_arm_ry, armmodel_size);
 				d3dg->RenderModel(armmodel, human_render_texture, human_render_dark, false, NoModel, false, human_arm_alpha, human_render_brightness, human_alpha_zwrite);
 			}
 		}
 		else {
 			if (draw_arm == true) {
-				d3dg->SetWorldTransform(pos_x, pos_y + 16.0f + crouch_arm_y, pos_z, rotation_x + (float)M_PI, final_arm_ry, armmodel_size);
+				d3dg->SetWorldTransform(render_pos_x, render_pos_y + 16.0f + crouch_arm_y, render_pos_z, render_rotation_x + (float)M_PI, final_arm_ry, armmodel_size);
 				d3dg->RenderModel(armmodel, human_render_texture, human_render_dark, false, NoModel, false, human_arm_alpha, human_render_brightness, human_alpha_zwrite);
 			}
 
 			if (draw_weapon == true) {
-				d3dg->SetWorldTransformHumanWeapon(pos_x, pos_y + 16.0f + crouch_arm_y, pos_z, render_weapon_mx, render_weapon_my, render_weapon_mz, rotation_x + (float)M_PI, final_arm_ry, paramdata.size);
+				d3dg->SetWorldTransformHumanWeapon(render_pos_x, render_pos_y + 16.0f + crouch_arm_y, render_pos_z, render_weapon_mx, render_weapon_my, render_weapon_mz, render_rotation_x + (float)M_PI, final_arm_ry, paramdata.size);
 				d3dg->RenderModel(model, texture, human_render_dark, false, NoModel, false, human_weapon_alpha, human_weapon_brightness, human_alpha_zwrite);
 			}
 		}
@@ -3342,6 +3359,7 @@ weapon::weapon(class ParameterInfo *in_Param, float x, float y, float z, float r
 	Loadbullets = 0;
 	motionflag = true;
 
+
 	if( Param != NULL ){
 		WeaponParameter ParamData;
 		if( Param->GetWeapon(id_param, &ParamData) == 0 ){
@@ -3372,6 +3390,7 @@ void weapon::SetPosData(float x, float y, float z, float rx)
 	move_y = 0.0f;
 	move_z = 0.0f;
 	rotation_x = rx;
+
 }
 
 //! @brief 먠믦뭠귩먠믦
@@ -3413,8 +3432,9 @@ bool weapon::GetUsingFlag()
 //! @return 맟뚻갌0?렪봲갌1
 int weapon::Pickup()
 {
-	if( usingflag == true ){ return 1; }
+	if (usingflag == true) { return 1; }
 	usingflag = true;
+
 	return 0;
 }
 
@@ -3424,18 +3444,65 @@ int weapon::Pickup()
 //! @param z Z띆뷭
 //! @param rx 돘렡됷?
 //! @param speed 롆궲귡룊뫊
-void weapon::Dropoff(float x, float y, float z, float rx, float speed)
+void weapon::Dropoff(float x, float y, float z, float rx, float speed, float add_move_x, float add_move_z, class Collision* CollD)
 {
 	//?됪궥귡띆뷭궴둷뱗귩먠믦
-	move_x = cosf(rx*-1 + (float)M_PI/2) * speed;
+	float drop_dir_x = cosf(rx * -1 + (float)M_PI / 2);
+	float drop_dir_z = sinf(rx * -1 + (float)M_PI / 2);
+
+	const float default_drop_offset = 7.0f;
+	const float wall_margin = 2.0f;
+
+	float drop_offset = default_drop_offset;
+	bool blocked_by_wall = false;
+
+	// 벽에 붙어서 무기를 버릴 때, 기본 드랍 위치가 벽 반대편으로 넘어가지 않도록 검사한다.
+	// 플레이어 몸 중심에서 드랍 방향으로 레이를 쏴서 벽이 있으면 벽 앞까지만 이동시킨다.
+	if (CollD != NULL) {
+		float hit_dist = 0.0f;
+
+		if (CollD->CheckALLBlockIntersectRay(
+			x,
+			y + 10.0f,
+			z,
+			drop_dir_x,
+			0.0f,
+			drop_dir_z,
+			NULL,
+			NULL,
+			&hit_dist,
+			default_drop_offset + wall_margin
+		) == true) {
+			blocked_by_wall = true;
+
+			drop_offset = hit_dist - wall_margin;
+			if (drop_offset < 0.0f) {
+				drop_offset = 0.0f;
+			}
+			if (drop_offset > default_drop_offset) {
+				drop_offset = default_drop_offset;
+			}
+		}
+	}
+
+	// 앞으로 움직이며 무기를 버릴 때, 무기가 플레이어 이동을 전혀 이어받지 않으면
+	// 손에서 떨어지는 순간 뒤에 남았다가 끊겨 보일 수 있다.
+	move_x = drop_dir_x * speed + add_move_x;
 	move_y = 0.0f;
-	move_z = sinf(rx*-1 + (float)M_PI/2) * speed;
-	pos_x = x + cosf(rx*-1 + (float)M_PI/2) * 5.0f;
+	move_z = drop_dir_z * speed + add_move_z;
+
+	// 단, 앞쪽에 벽이 있으면 무기를 앞으로 던지는 속도를 제거한다.
+	// 그렇지 않으면 드랍 위치는 벽 앞이어도 다음 물리 프레임에서 벽을 뚫고 넘어갈 수 있다.
+	if (blocked_by_wall == true) {
+		move_x = 0.0f;
+		move_z = 0.0f;
+	}
+
+	pos_x = x + drop_dir_x * drop_offset;
 	pos_y = y + 16.0f + move_y;
-	pos_z = z + sinf(rx*-1 + (float)M_PI/2) * 5.0f;
+	pos_z = z + drop_dir_z * drop_offset;
 	rotation_x = rx + (float)M_PI;
 
-	//뼟럊뾭걁뼟몧뷈걂궸먠믦궢갂띆뷭댷벍귩뾎뚼궸
 	usingflag = false;
 	motionflag = true;
 }
@@ -3668,13 +3735,13 @@ bool weapon::ResetWeaponParam(class ResourceManager *Resource, int id_param, int
 
 //! @brief 똶럁귩렳뛱걁렔뾕뿇돷걂
 //! @param CollD Collision궻?귽깛?
-int weapon::ProcessObject(class Collision *CollD)
+int weapon::ProcessObject(class Collision* CollD)
 {
 	//긏깋긚궕먠믦궠귢궲궋궶궚귢궽렪봲
-	if( CollD == NULL ){ return 0; }
+	if (CollD == NULL) { return 0; }
 
 	//룊딖돸궠귢궲궋궶궚귢궽갂렪봲
-	if( EnableFlag == false ){ return 0; }
+	if (EnableFlag == false) { return 0; }
 
 	//묿궸귖럊귦귢궲궓귞궦갂댷벍긲깋긐궕뾎뚼궶귞궽?
 	if( (usingflag == false)&&(motionflag == true) ){
@@ -3741,17 +3808,20 @@ int weapon::ProcessObject(class Collision *CollD)
 //! @brief ?됪
 //! @param d3dg D3DGraphics궻?귽깛?
 //! @param NoModel 긾긢깑?됪뼰뚼돸
-void weapon::Render(class D3DGraphics *d3dg, bool NoModel)
+void weapon::Render(class D3DGraphics* d3dg, bool NoModel)
 {
-	//긏깋긚궕먠믦궠귢궲궋궶궚귢궽렪봲
-	if( d3dg == NULL ){ return; }
+	if (d3dg == NULL) { return; }
 
-	//룊딖돸궠귢궲궶궋궔갂묿궔궸럊귦귢궲궋귢궽룉뿚궢궶궋
-	if( EnableFlag == false ){ return; }
-	if( usingflag == true ){ return; }
+	if (EnableFlag == false) { return; }
+	if (usingflag == true) { return; }
 
-	//븧딇귩?됪
-	d3dg->SetWorldTransform(pos_x, pos_y, pos_z, rotation_x, 0.0f, (float)M_PI/2, model_size);
+	// 렌더 보간 전체 비활성화.
+	float render_pos_x = pos_x;
+	float render_pos_y = pos_y;
+	float render_pos_z = pos_z;
+	float render_rotation_x = rotation_x;
+
+	d3dg->SetWorldTransform(render_pos_x, render_pos_y, render_pos_z, render_rotation_x, 0.0f, (float)M_PI / 2, model_size);
 	d3dg->RenderModel(id_model, id_texture, DarkModelFlag, false, NoModel);
 }
 
@@ -3973,19 +4043,25 @@ int smallobject::ProcessObject()
 	return 1;
 }
 
+
 //! @brief ?됪
 //! @param d3dg D3DGraphics궻?귽깛?
 //! @param NoModel 긾긢깑?됪뼰뚼돸
-void smallobject::Render(D3DGraphics *d3dg, bool NoModel)
+void smallobject::Render(D3DGraphics* d3dg, bool NoModel)
 {
-	//긏깋긚궕먠믦궠귢궲궋궶궚귢궽렪봲
-	if( d3dg == NULL ){ return; }
+	if (d3dg == NULL) { return; }
 
-	//룊딖돸궠귢궲궋궶궚귢궽룉뿚궢궶궋갃
-	if( EnableFlag == false ){ return; }
+	if (EnableFlag == false) { return; }
 
-	//?됪
-	d3dg->SetWorldTransform(pos_x, pos_y, pos_z, rotation_x, rotation_y, model_size);
+	// 렌더 보간 전체 비활성화.
+	float render_pos_x = pos_x;
+	float render_pos_y = pos_y;
+	float render_pos_z = pos_z;
+	float render_rotation_x = rotation_x;
+
+	float render_rotation_y = rotation_y;
+
+	d3dg->SetWorldTransform(render_pos_x, render_pos_y, render_pos_z, render_rotation_x, render_rotation_y, model_size);
 	d3dg->RenderModel(id_model, id_texture, DarkModelFlag, false, NoModel);
 }
 
@@ -3998,6 +4074,7 @@ bullet::bullet(int modelid, int textureid)
 	EnableFlag = false;
 
 	rotation_y = 0.0f;
+
 	attacks = 0;
 	penetration = 0;
 	speed = 0.0f;
@@ -4025,6 +4102,7 @@ void bullet::SetPosData(float x, float y, float z, float rx, float ry)
 	pos_z = z;
 	rotation_x = rx;
 	rotation_y = ry;
+
 }
 
 //! @brief 먠믦뭠귩먠믦
@@ -4116,20 +4194,32 @@ int bullet::ProcessObject()
 //! @brief ?됪
 //! @param d3dg D3DGraphics궻?귽깛?
 //! @param NoModel 긾긢깑?됪뼰뚼돸
-void bullet::Render(class D3DGraphics *d3dg, bool NoModel)
+void bullet::Render(class D3DGraphics* d3dg, bool NoModel)
 {
-	//긏깋긚궕먠믦궠귢궲궋궶궚귢궽렪봲
-	if( d3dg == NULL ){ return; }
+	if (d3dg == NULL) { return; }
 
-	//룊딖돸궠귢궲궋궶궚귢궽룉뿚궢궶궋갃
-	if( EnableFlag == false ){ return; }
+	if (EnableFlag == false) { return; }
 
-	//뭙귩댷벍멟궬궯궫귞?됪궢궶궋
-	//?뭙궕벆궔귞벺궖뵴궚궲뙥궑귡뫮랉
-	if( cnt == 0 ){ return; }
+	if (cnt == 0) { return; }
 
-	//?됪
-	d3dg->SetWorldTransform(pos_x, pos_y, pos_z, (rotation_x * -1 - (float)M_PI/2), rotation_y, model_size);
+	// 총알은 판정 오브젝트이므로 144Hz 렌더 보간 대상에서 제외한다.
+	// 현재 로직 프레임의 좌표만 사용한다.
+	float render_pos_x = pos_x;
+	float render_pos_y = pos_y;
+	float render_pos_z = pos_z;
+	float render_rotation_x = rotation_x;
+
+	float render_rotation_y = rotation_y;
+
+	d3dg->SetWorldTransform(
+		render_pos_x,
+		render_pos_y,
+		render_pos_z,
+		(render_rotation_x * -1 - (float)M_PI / 2),
+		render_rotation_y,
+		model_size
+	);
+
 	d3dg->RenderModel(id_model, id_texture, false, false, NoModel);
 }
 
@@ -4264,18 +4354,23 @@ void grenade::Render(class D3DGraphics* d3dg, bool NoModel)
 	if (d3dg == NULL) { return; }
 	if (EnableFlag == false) { return; }
 
-	// --- 여기부터 디버그 코드 추가 ---
-	/*
-	char debug_buffer[256];
-	sprintf(debug_buffer, "[Grenade Render] Pos: (%.2f, %.2f, %.2f), Size: %.2f, ModelID: %d, TextureID: %d\n",
-		pos_x, pos_y, pos_z, model_size, id_model, id_texture);
-	OutputDebugStringA(debug_buffer);
-	// --- 여기까지 디버그 코드 추가 ---
-	*/
+	// 렌더 보간 전체 비활성화.
+	float render_pos_x = pos_x;
+	float render_pos_y = pos_y;
+	float render_pos_z = pos_z;
+	float render_rotation_x = rotation_x;
 
-	d3dg->SetWorldTransform(pos_x, pos_y, pos_z, (rotation_x * -1 - (float)M_PI / 2), rotation_y, model_size);
+	float render_rotation_y = rotation_y;
 
-	// 후면 컬링 비활성화 코드는 문제 해결을 위해 그대로 유지합니다.
+	d3dg->SetWorldTransform(
+		render_pos_x,
+		render_pos_y,
+		render_pos_z,
+		(render_rotation_x * -1 - (float)M_PI / 2),
+		render_rotation_y,
+		model_size
+	);
+
 	d3dg->RenderModel(id_model, id_texture, DarkModelFlag, false, NoModel, true);
 }
 
@@ -4609,7 +4704,10 @@ void HumanMotionControl::ReloadWeapon(int weapon_paramid)
 //! @attention 궞궻듫릶궼둮뮗뾭궻???듫릶궳궥갃
 void HumanMotionControl::DumpWeapon()
 {
-	//
+	// 무기 버리기 시 팔이 갑자기 무기 보유 자세에서 맨손 자세로 튀지 않도록
+	// 무기 전환과 같은 손 내림 모션을 준다.
+	reaction_y = DegreeToRadian(-20);
+	slowarm = true;
 }
 
 //! @brief 긙긿깛긵
