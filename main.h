@@ -48,7 +48,7 @@
 
 //믦릶
 #define GAMENAME "Blackline Breach"				//!< 게임명
-#define GAMEVERSION "EX3"						//!< 게임의 버전
+#define GAMEVERSION "EX5"						//!< 게임의 버전
 #define GAMEFRAMEMS 30					//!< 기존 게임 내부 기준 프레임 시간(ms)
 #define GAMEFPS (1000.0f/GAMEFRAMEMS)	//!< 기존 게임 내부 기준 FPS. 1000 / 30 = 33.333FPS
 

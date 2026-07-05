@@ -74,8 +74,15 @@
 //! 긄긲긃긏긣?됪똶럁뾭?몾뫬
 typedef struct
 {
-	int id;		//!< 긢??붥뜂
-	float dist;	//!< 떁뿣
+	int id;
+	float dist;
+	bool state_override;
+	float x;
+	float y;
+	float z;
+	float rotation;
+	float size;
+	float alpha;
 } effectdata;
 
 //! @brief 긆긳긙긃긏긣듖뿚긏깋긚
@@ -97,6 +104,70 @@ class ObjectManager
 	int RuntimeLastTexture[MAX_HUMAN];
 	float RuntimeLastY[MAX_HUMAN];
 	int RuntimeGroundGrace[MAX_HUMAN];
+	int RuntimeFootstepTimer[MAX_HUMAN];	// Per-human footstep cadence; survives brief ground-detection gaps.
+
+	// 고정 로직 틱 사이에서 상대 인물의 월드 위치만 보간한다.
+	// 팔/다리 애니메이션과 실제 충돌/사격 좌표는 변경하지 않는다.
+	float Human_RenderInterpolationAlpha;
+	bool Human_RenderPreviousValid[MAX_HUMAN];
+	float Human_RenderPreviousX[MAX_HUMAN];
+	float Human_RenderPreviousY[MAX_HUMAN];
+	float Human_RenderPreviousZ[MAX_HUMAN];
+	float Human_RenderPreviousRX[MAX_HUMAN];
+	bool Human_RenderPreviousCrouch[MAX_HUMAN];
+	bool Human_RenderPreviousDead[MAX_HUMAN];
+	bool Human_RenderPreviousDeadMotion[MAX_HUMAN];
+	int Human_RenderPreviousParamID[MAX_HUMAN];
+	int Human_RenderPreviousDataID[MAX_HUMAN];
+	signed short int Human_RenderPreviousP4[MAX_HUMAN];
+	int Human_RenderPreviousTeam[MAX_HUMAN];
+	int Human_RenderPreviousGeneration[MAX_HUMAN];
+
+	// Render-only interpolation for dropped world weapons.
+	float Weapon_RenderInterpolationAlpha;
+	bool Weapon_RenderPreviousValid[MAX_WEAPON];
+	float Weapon_RenderPreviousX[MAX_WEAPON];
+	float Weapon_RenderPreviousY[MAX_WEAPON];
+	float Weapon_RenderPreviousZ[MAX_WEAPON];
+	float Weapon_RenderPreviousRX[MAX_WEAPON];
+	int Weapon_RenderPreviousParamID[MAX_WEAPON];
+	int Weapon_RenderPreviousGeneration[MAX_WEAPON];
+
+	// Render-only interpolation for destroyed/flying small objects.
+	float SmallObject_RenderInterpolationAlpha;
+	bool SmallObject_RenderPreviousValid[MAX_SMALLOBJECT];
+	float SmallObject_RenderPreviousX[MAX_SMALLOBJECT];
+	float SmallObject_RenderPreviousY[MAX_SMALLOBJECT];
+	float SmallObject_RenderPreviousZ[MAX_SMALLOBJECT];
+	float SmallObject_RenderPreviousRX[MAX_SMALLOBJECT];
+	float SmallObject_RenderPreviousRY[MAX_SMALLOBJECT];
+	int SmallObject_RenderPreviousParamID[MAX_SMALLOBJECT];
+	signed short int SmallObject_RenderPreviousP4[MAX_SMALLOBJECT];
+	int SmallObject_RenderPreviousGeneration[MAX_SMALLOBJECT];
+
+	// Grenade render-only interpolation state. Collision positions stay unchanged.
+	float Grenade_RenderInterpolationAlpha;
+	bool Grenade_RenderPreviousValid[MAX_GRENADE];
+	float Grenade_RenderPreviousX[MAX_GRENADE];
+	float Grenade_RenderPreviousY[MAX_GRENADE];
+	float Grenade_RenderPreviousZ[MAX_GRENADE];
+	float Grenade_RenderPreviousRX[MAX_GRENADE];
+	float Grenade_RenderPreviousRY[MAX_GRENADE];
+	int Grenade_RenderPreviousWeaponID[MAX_GRENADE];
+	int Grenade_RenderPreviousTeam[MAX_GRENADE];
+	int Grenade_RenderPreviousHuman[MAX_GRENADE];
+	int Grenade_RenderPreviousLifeCount[MAX_GRENADE];
+
+	// Render-only interpolation for shell casings, smoke, blood and moving particles.
+	float Effect_RenderInterpolationAlpha;
+	bool Effect_RenderPreviousValid[MAX_EFFECT];
+	float Effect_RenderPreviousX[MAX_EFFECT];
+	float Effect_RenderPreviousY[MAX_EFFECT];
+	float Effect_RenderPreviousZ[MAX_EFFECT];
+	float Effect_RenderPreviousRotation[MAX_EFFECT];
+	float Effect_RenderPreviousSize[MAX_EFFECT];
+	float Effect_RenderPreviousAlpha[MAX_EFFECT];
+	int Effect_RenderPreviousGeneration[MAX_EFFECT];
 
 	// 이펙트 슬롯 탐색 위치도 맵 전환 시 초기화
 	int RuntimeEffectLastIndex;
@@ -144,9 +215,77 @@ class ObjectManager
 
 	bool ShowHitboxFlag;
 
+	// Debug weapon / muzzle tuning state.
+	bool DebugMuzzleAdjustFlag;
+	bool DebugBulletTraceFlag;
+	bool DebugInfiniteAmmoFlag;
+	bool DebugNoReloadFlag;
+	bool DebugNoSpreadFlag;
+	bool DebugNoRecoilFlag;
+	float DebugMuzzleOffsetX[TOTAL_PARAMETERINFO_WEAPON];
+	float DebugMuzzleOffsetY[TOTAL_PARAMETERINFO_WEAPON];
+	float DebugMuzzleOffsetZ[TOTAL_PARAMETERINFO_WEAPON];
+
+	bool DebugLastTraceValid;
+	bool DebugLastMuzzleBlocked;
+	float DebugLastSafeX;
+	float DebugLastSafeY;
+	float DebugLastSafeZ;
+	float DebugLastMuzzleX;
+	float DebugLastMuzzleY;
+	float DebugLastMuzzleZ;
+	float DebugLastAimOriginX;
+	float DebugLastAimOriginY;
+	float DebugLastAimOriginZ;
+	float DebugLastAimTargetX;
+	float DebugLastAimTargetY;
+	float DebugLastAimTargetZ;
+	float DebugLastActualStartX;
+	float DebugLastActualStartY;
+	float DebugLastActualStartZ;
+	float DebugLastActualTargetX;
+	float DebugLastActualTargetY;
+	float DebugLastActualTargetZ;
+	float DebugLastBlockHitX;
+	float DebugLastBlockHitY;
+	float DebugLastBlockHitZ;
+
+	bool GetWeaponMuzzleWorldPos(int humanid, int weapon_paramid, float* x, float* y, float* z);
+	bool CheckMuzzleObstruction(
+		float safe_x,
+		float safe_y,
+		float safe_z,
+		float muzzle_x,
+		float muzzle_y,
+		float muzzle_z,
+		float* hit_x,
+		float* hit_y,
+		float* hit_z
+	);
+	bool ResolveMuzzleSafeOrigin(
+		float preferred_x,
+		float preferred_y,
+		float preferred_z,
+		float aim_dir_x,
+		float aim_dir_y,
+		float aim_dir_z,
+		float* safe_x,
+		float* safe_y,
+		float* safe_z
+	);
+	void MaintainDebugAmmoState();
+	void RenderDebugWeaponData();
+	void RenderDebugPointCross(float x, float y, float z, float size, int color);
+	bool GetCurrentPlayerWeaponObject(weapon** out_weapon, int* out_weapon_id);
+
 	void RenderDebugHumanHitbox();
 	void RenderDebugCylinder(float x, float y, float z, float r, float h, int color);
 	void RenderDebugShieldBox(float x, float y, float z, float rx, int color, int front_color);
+	bool GetHumanRenderPosition(int id, float* x, float* y, float* z);
+	bool GetHumanRenderYawOffset(int id, float* yaw_offset);
+	bool GetGrenadeRenderTransform(int id, float* x, float* y, float* z, float* rx, float* ry);
+	bool GetWeaponRenderTransform(int id, float* x, float* y, float* z, float* rx);
+	bool GetSmallObjectRenderTransform(int id, float* x, float* y, float* z, float* rx, float* ry);
 
 
 	int AddHumanIndex(pointdata data, pointdata infodata, bool RandomFlag);
@@ -191,7 +330,24 @@ public:
 	human* GetHumanObject(int id);
 	human* GetPlayerHumanObject();
 	int GetHumanObjectID(human* object);
+	bool GetHumanVisualRenderPosition(int id, float* x, float* y, float* z);
 	bool GetHumanForceNoAI(int id);
+	void SetHumanRenderInterpolationAlpha(float alpha);
+	void CaptureHumanRenderInterpolationState();
+	void ResetHumanRenderInterpolation();
+	void SetGrenadeRenderInterpolationAlpha(float alpha);
+	void CaptureGrenadeRenderInterpolationState();
+	void ResetGrenadeRenderInterpolation();
+	void SetEffectRenderInterpolationAlpha(float alpha);
+	void CaptureEffectRenderInterpolationState();
+	void ResetEffectRenderInterpolation();
+	void SetWeaponRenderInterpolationAlpha(float alpha);
+	void CaptureWeaponRenderInterpolationState();
+	void ResetWeaponRenderInterpolation();
+	void SetSmallObjectRenderInterpolationAlpha(float alpha);
+	void CaptureSmallObjectRenderInterpolationState();
+	void ResetSmallObjectRenderInterpolation();
+	bool GetEffectRenderState(int id, float* x, float* y, float* z, float* rotation, float* size, float* alpha);
 	weapon* GetWeaponObject(int id);
 	smallobject* GetSmallObject(int id);
 	bullet* GetBulletObject(int id);
@@ -248,6 +404,32 @@ public:
 	void RenderLog(int x, int y);
 	void SetShowHitboxFlag(bool flag);
 	bool GetShowHitboxFlag();
+
+	void SetDebugMuzzleAdjustFlag(bool flag);
+	bool GetDebugMuzzleAdjustFlag();
+	bool AdjustDebugMuzzle(int axis, float amount);
+	bool ResetDebugMuzzle();
+	bool GetDebugCurrentWeaponInfo(
+		int* weapon_id,
+		float* flash_x,
+		float* flash_y,
+		float* flash_z,
+		float* world_x,
+		float* world_y,
+		float* world_z,
+		bool* blocked
+	);
+	void SetDebugBulletTraceFlag(bool flag);
+	bool GetDebugBulletTraceFlag();
+	void SetDebugInfiniteAmmoFlag(bool flag);
+	bool GetDebugInfiniteAmmoFlag();
+	void SetDebugNoReloadFlag(bool flag);
+	bool GetDebugNoReloadFlag();
+	void SetDebugNoSpreadFlag(bool flag);
+	bool GetDebugNoSpreadFlag();
+	void SetDebugNoRecoilFlag(bool flag);
+	bool GetDebugNoRecoilFlag();
+	bool FillDebugCurrentMagazine();
 	// [추가됨] 무기 무작위 변경 함수 선언
 	void RandomizeMapWeaponsByCustomGroup(class ParameterInfo* Param, class ResourceManager* Resource);
 	void Cleanup();

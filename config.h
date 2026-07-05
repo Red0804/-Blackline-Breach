@@ -192,6 +192,8 @@ public:
 	bool CrosshairOutline; // [✨ 추가] 테두리 유무 (true/false)
 
 	bool SkillModeFlag;				//!< 플레이어 스킬 모드 사용 여부
+	bool EventTargetHPBoostFlag;	//!< 이벤트 대상 체력 증가 사용 여부
+	bool ControlGuideFlag;			//!< 플레이어/전체 지도 조작 안내 표시 여부
 	bool RadarEnabledFlag;			//!< 레이더 / 전체 지도 사용 여부
 	bool RadarInfoHudFlag;			//!< 레이더 아래 TIME / KILL / ENEMY 정보 표시 여부
 	bool RadarSeeThroughWallsFlag;	//!< 레이더가 벽 너머 적을 표시할지 여부
@@ -204,6 +206,12 @@ public:
 	// Getter & Setter
 	void SetSkillModeFlag(bool val) { SkillModeFlag = val; }
 	bool GetSkillModeFlag() { return SkillModeFlag; }
+
+	void SetEventTargetHPBoostFlag(bool val) { EventTargetHPBoostFlag = val; }
+	bool GetEventTargetHPBoostFlag() { return EventTargetHPBoostFlag; }
+
+	void SetControlGuideFlag(bool val) { ControlGuideFlag = val; }
+	bool GetControlGuideFlag() { return ControlGuideFlag; }
 
 	void SetRadarEnabledFlag(bool val) { RadarEnabledFlag = val; }
 	bool GetRadarEnabledFlag() { return RadarEnabledFlag; }

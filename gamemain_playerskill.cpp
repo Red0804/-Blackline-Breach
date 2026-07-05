@@ -1139,7 +1139,6 @@ static bool IsPlayerSkillDodgeLineBlocked(
 
 	float dist = sqrtf(dist_sq);
 	float dir_x = vx / dist;
-	float dir_y = vy / dist;
 	float dir_z = vz / dist;
 
 	float check_sy = sy + HUMAN_MAPCOLLISION_HEIGHT;
@@ -5689,10 +5688,6 @@ void maingame::ProcessPlayerHookSkill(human* myHuman)
 		return;
 	}
 
-	float dir_x = vx / dist;
-	float dir_y = vy / dist;
-	float dir_z = vz / dist;
-
 	if (player_skill_hook_prep_timer > 0) {
 		bool blocked = IsPlayerSkillHookLineBlocked(
 			hook_start_x,
@@ -6169,6 +6164,7 @@ bool maingame::ActivateDodgeSkill(human* myHuman)
 
 	myHuman->ResetVerticalMove();
 	myHuman->SetPosData(best_x, best_y, best_z, prx);
+	InvalidatePlayerRenderInterpolation();
 
 	myHuman->StartSkillDodge(PLAYER_SKILL_DODGE_INVINCIBLE_FRAMES);
 
@@ -6688,15 +6684,22 @@ static bool IsPlayerSkillAirGroundHeightAllowed(int skilltype, float player_y, f
 	return true;
 }
 
-static bool UpdatePlayerSkillAimTargetRaw(human* myHuman, int skilltype, float max_dist, bool need_ground, float* out_x, float* out_y, float* out_z)
+static bool UpdatePlayerSkillAimTargetRawFromPose(
+	human* myHuman,
+	int skilltype,
+	float max_dist,
+	bool need_ground,
+	float px,
+	float py,
+	float pz,
+	float aim_rx,
+	float aim_ry,
+	float* out_x,
+	float* out_y,
+	float* out_z
+)
 {
 	if (myHuman == NULL) { return false; }
-
-	float px, py, pz;
-	float rx, ry;
-
-	myHuman->GetPosData(&px, &py, &pz, NULL);
-	myHuman->GetRxRy(&rx, &ry);
 
 	float crouch_y = 0.0f;
 	if (myHuman->GetCrouchFlag() == true) {
@@ -6707,11 +6710,9 @@ static bool UpdatePlayerSkillAimTargetRaw(human* myHuman, int skilltype, float m
 	float sy = py + VIEW_HEIGHT + crouch_y;
 	float sz = pz;
 
-	float aim_rx = rx * -1.0f + (float)M_PI / 2.0f;
-
-	float dir_x = cosf(aim_rx) * cosf(ry);
-	float dir_y = sinf(ry);
-	float dir_z = sinf(aim_rx) * cosf(ry);
+	float dir_x = cosf(aim_rx) * cosf(aim_ry);
+	float dir_y = sinf(aim_ry);
+	float dir_z = sinf(aim_rx) * cosf(aim_ry);
 
 	int block_id = -1;
 	int face = -1;
@@ -6809,6 +6810,57 @@ static bool UpdatePlayerSkillAimTargetRaw(human* myHuman, int skilltype, float m
 	if (out_z != NULL) { *out_z = tz; }
 
 	return true;
+}
+
+static bool UpdatePlayerSkillAimTargetRaw(human* myHuman, int skilltype, float max_dist, bool need_ground, float* out_x, float* out_y, float* out_z)
+{
+	if (myHuman == NULL) { return false; }
+
+	float px, py, pz;
+	float rx, ry;
+
+	myHuman->GetPosData(&px, &py, &pz, NULL);
+	myHuman->GetRxRy(&rx, &ry);
+
+	float aim_rx = rx * -1.0f + (float)M_PI / 2.0f;
+
+	return UpdatePlayerSkillAimTargetRawFromPose(
+		myHuman,
+		skilltype,
+		max_dist,
+		need_ground,
+		px,
+		py,
+		pz,
+		aim_rx,
+		ry,
+		out_x,
+		out_y,
+		out_z
+	);
+}
+
+bool maingame::UpdatePlayerSkillAimTargetVisualRaw(human* myHuman, float max_dist, bool need_ground, float* out_x, float* out_y, float* out_z)
+{
+	if (myHuman == NULL) { return false; }
+
+	float px, py, pz;
+	GetSkillVisualHumanPosition(myHuman, &px, &py, &pz);
+
+	return UpdatePlayerSkillAimTargetRawFromPose(
+		myHuman,
+		player_skill_targeting_type,
+		max_dist,
+		need_ground,
+		px,
+		py,
+		pz,
+		draw_camera_rx,
+		draw_camera_ry,
+		out_x,
+		out_y,
+		out_z
+	);
 }
 
 bool maingame::UpdatePlayerSkillAimTarget(human* myHuman, float max_dist, bool need_ground, float* out_x, float* out_y, float* out_z)
@@ -7492,6 +7544,7 @@ void maingame::ProcessPlayerTeleportSkill(human* myHuman)
 
 	myHuman->ResetVerticalMove();
 	myHuman->SetPosData(tx, ty, tz, prx);
+	InvalidatePlayerRenderInterpolation();
 
 	player_skill_teleport_end_effect_timer = PLAYER_SKILL_TELEPORT_EFFECT_FRAMES;
 	player_skill_teleport_end_effect_x = tx;

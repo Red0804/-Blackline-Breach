@@ -103,9 +103,14 @@ public:
 	void GetInputState(bool mousemode);
 	void MoveMouseCenter();
 	bool CheckKeyNow(int id);
+	// 렌더 프레임에서 논리 입력 상태를 변경하지 않고 현재 키 눌림 상태만 확인한다.
+	bool CheckKeyNowRealtime(int id);
 	bool CheckKeyDown(int id);
 	bool CheckKeyUp(int id);
 	void GetMouseMovement(int *x, int *y);
+	// 게임 로직의 키/버튼 상태를 건드리지 않고 현재 마우스 이동량만 읽는다.
+	// 읽은 이동량은 즉시 소비되며 커서를 화면 중앙으로 되돌린다.
+	void GetMouseMovementRealtime(int *x, int *y);
 	bool CheckMouseButtonNowL();
 	bool CheckMouseButtonDownL();
 	bool CheckMouseButtonUpL();

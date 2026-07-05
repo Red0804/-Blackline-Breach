@@ -816,6 +816,16 @@ mainmenu::mainmenu()
 	IsDraggingSlider = false;
 	DraggingID = -1;
 
+	for (int i = 0; i < OPTIONS_HUD_DATAS; i++) {
+		Options_HudLinkData[i].enable = false;
+		Options_HudLinkData[i].text[0] = '\0';
+		Options_HudLinkData[i].pos_x = 0;
+		Options_HudLinkData[i].pos_y = 0;
+		Options_HudLinkData[i].text_defaultcolor = 0;
+		Options_HudLinkData[i].text_cursorcolor = 0;
+	}
+	Options_HudID = -1;
+
 	for (int i = 0; i < OPTIONS_TOGGLE_DATAS; i++) {
 		Options_ToggleLinkData[i].enable = false;
 		Options_ToggleLinkData[i].text[0] = '\0';
@@ -2638,6 +2648,7 @@ void mainmenu::CreateOptions()
 	"CONFIG",
 	"SOFTWARE LICENSE",
 	"GAMEPLAY SETTING",
+	"HUD SETTING",
 	"TOGGLE SETTING",
 	"CROSSHAIR SETTING",
 	"< EXIT >"
@@ -2832,6 +2843,7 @@ void mainmenu::CreateOptions()
 	strcpy(Options_AdvancedLinkData[18].text, "< CANCEL >");
 	strcpy(Options_AdvancedLinkData[19].text, "RENDER FPS");
 	strcpy(Options_AdvancedLinkData[20].text, "SKILL MODE");
+	strcpy(Options_AdvancedLinkData[21].text, "EVENT HP");
 
 	for (int i = 0; i < OPTIONS_ADVANCED_DATAS; i++) {
 		Options_AdvancedLinkData[i].enable = true;
@@ -2849,9 +2861,14 @@ void mainmenu::CreateOptions()
 	Options_AdvancedLinkData[19].pos_x = 0;
 	Options_AdvancedLinkData[19].pos_y = 0;
 
-	// SKILL MODE는 RENDER FPS 오른쪽에 배치한다.
-	Options_AdvancedLinkData[20].pos_x = 500;
-	Options_AdvancedLinkData[20].pos_y = 0;
+	// 오른쪽 열: Gameplay 규칙 토글만 위쪽에 배치한다.
+	const int gameplay_right_x = 500;
+	const int gameplay_right_step = 26;
+
+	for (int i = 20; i <= 21; i++) {
+		Options_AdvancedLinkData[i].pos_x = gameplay_right_x;
+		Options_AdvancedLinkData[i].pos_y = (i - 20) * gameplay_right_step;
+	}
 
 	// RENDER FPS가 맨 위에 들어가므로 기존 슬라이더는 한 줄 아래부터 배치한다.
 	// 버튼 영역과 겹치지 않도록 28 간격을 사용한다.
@@ -2861,9 +2878,9 @@ void mainmenu::CreateOptions()
 	}
 
 	for (int i = 10; i <= 15; i++) {
-		// 기존 320은 슬라이더/값 표시 영역과 겹치므로 오른쪽으로 이동
-		Options_AdvancedLinkData[i].pos_x = 500;
-		Options_AdvancedLinkData[i].pos_y = (i - 10 + 1) * 30;
+		// Gameplay 토글 2개 아래부터 키 설정을 배치한다.
+		Options_AdvancedLinkData[i].pos_x = gameplay_right_x;
+		Options_AdvancedLinkData[i].pos_y = (2 + i - 10) * gameplay_right_step;
 	}
 
 	// 아래 버튼들은 창의 가장 아래줄에 맞춘다.
@@ -2876,18 +2893,47 @@ void mainmenu::CreateOptions()
 	Options_AdvancedLinkData[18].pos_x = 650;
 	Options_AdvancedLinkData[18].pos_y = 325;
 
-	// Toggle Setting 항목
-	// SKILL MODE는 Gameplay Setting의 RENDER FPS 오른쪽으로 이동했다.
-	strcpy(Options_ToggleLinkData[0].text, "RADAR");
-	strcpy(Options_ToggleLinkData[1].text, "RADAR INFO");
-	strcpy(Options_ToggleLinkData[2].text, "RADAR SEE THROUGH WALLS");
-	strcpy(Options_ToggleLinkData[3].text, "GRENADE TRAJECTORY");
-	strcpy(Options_ToggleLinkData[4].text, "SCOPE AIM");
-	strcpy(Options_ToggleLinkData[5].text, "RUN");
-	strcpy(Options_ToggleLinkData[6].text, "CROUCH");
-	strcpy(Options_ToggleLinkData[7].text, "[ RESET DEFAULTS ]");
-	strcpy(Options_ToggleLinkData[8].text, "< SAVE >");
-	strcpy(Options_ToggleLinkData[9].text, "< CANCEL >");
+	Options_HudID = -1;
+
+	// HUD Setting 항목: 화면 표시 관련 설정만 모은다.
+	strcpy(Options_HudLinkData[0].text, "CONTROL GUIDE");
+	strcpy(Options_HudLinkData[1].text, "RADAR");
+	strcpy(Options_HudLinkData[2].text, "RADAR INFO");
+	strcpy(Options_HudLinkData[3].text, "RADAR WALLS");
+	strcpy(Options_HudLinkData[4].text, "[ RESET DEFAULTS ]");
+	strcpy(Options_HudLinkData[5].text, "< SAVE >");
+	strcpy(Options_HudLinkData[6].text, "< CANCEL >");
+
+	for (int i = 0; i < OPTIONS_HUD_DATAS; i++) {
+		Options_HudLinkData[i].enable = true;
+		Options_HudLinkData[i].text_w = 14;
+		Options_HudLinkData[i].text_h = 18;
+		Options_HudLinkData[i].text_defaultcolor = d3dg->GetColorCode(0.8f, 0.8f, 0.8f, 1.0f);
+		Options_HudLinkData[i].text_cursorcolor = d3dg->GetColorCode(0.0f, 1.0f, 1.0f, 1.0f);
+	}
+
+	for (int i = 0; i <= 3; i++) {
+		Options_HudLinkData[i].pos_x = 0;
+		Options_HudLinkData[i].pos_y = i * 34;
+	}
+
+	Options_HudLinkData[4].pos_x = 0;
+	Options_HudLinkData[4].pos_y = 170;
+
+	Options_HudLinkData[5].pos_x = 270;
+	Options_HudLinkData[5].pos_y = 170;
+
+	Options_HudLinkData[6].pos_x = 400;
+	Options_HudLinkData[6].pos_y = 170;
+
+	// Toggle Setting 항목: 입력 방식 설정만 남긴다.
+	strcpy(Options_ToggleLinkData[0].text, "GRENADE TRAJECTORY");
+	strcpy(Options_ToggleLinkData[1].text, "SCOPE AIM");
+	strcpy(Options_ToggleLinkData[2].text, "RUN");
+	strcpy(Options_ToggleLinkData[3].text, "CROUCH");
+	strcpy(Options_ToggleLinkData[4].text, "[ RESET DEFAULTS ]");
+	strcpy(Options_ToggleLinkData[5].text, "< SAVE >");
+	strcpy(Options_ToggleLinkData[6].text, "< CANCEL >");
 
 	for (int i = 0; i < OPTIONS_TOGGLE_DATAS; i++) {
 		Options_ToggleLinkData[i].enable = true;
@@ -2897,21 +2943,20 @@ void mainmenu::CreateOptions()
 		Options_ToggleLinkData[i].text_cursorcolor = d3dg->GetColorCode(0.0f, 1.0f, 1.0f, 1.0f);
 	}
 
-	for (int i = 0; i <= 6; i++) {
+	for (int i = 0; i <= 3; i++) {
 		Options_ToggleLinkData[i].pos_x = 0;
 		Options_ToggleLinkData[i].pos_y = i * 34;
 	}
 
-	// 아래 버튼들은 창의 가장 아래줄에 맞춘다.
-	// SAVE / CANCEL은 기존 위치보다 살짝 왼쪽으로 평행이동한다.
-	Options_ToggleLinkData[7].pos_x = 0;
-	Options_ToggleLinkData[7].pos_y = 325;
+	// 항목 수가 줄어든 높이에 맞춰 아래 버튼을 올린다.
+	Options_ToggleLinkData[4].pos_x = 0;
+	Options_ToggleLinkData[4].pos_y = 170;
 
-	Options_ToggleLinkData[8].pos_x = 270;
-	Options_ToggleLinkData[8].pos_y = 325;
+	Options_ToggleLinkData[5].pos_x = 270;
+	Options_ToggleLinkData[5].pos_y = 170;
 
-	Options_ToggleLinkData[9].pos_x = 400;
-	Options_ToggleLinkData[9].pos_y = 325;
+	Options_ToggleLinkData[6].pos_x = 400;
+	Options_ToggleLinkData[6].pos_y = 170;
 
 	// SKILLS 그룹 목록 버튼
 	for (int i = 0; i < SKILLINFO_GROUP_DATAS; i++) {
@@ -3046,7 +3091,7 @@ void mainmenu::InputOptions()
 	if (ui_scale > 1.35f) { ui_scale = 1.35f; }
 
 	int scaled_p1_w = (int)(520 * ui_scale);
-	int scaled_p1_h = (int)(370 * ui_scale);
+	int scaled_p1_h = (int)(425 * ui_scale);
 	int scaled_p1_x = GameConfig.GetScreenWidth() - scaled_p1_w - (int)(40 * ui_scale);
 	int scaled_p1_y = GameConfig.GetScreenHeight() - scaled_p1_h - (int)(40 * ui_scale);
 
@@ -3076,11 +3121,15 @@ void mainmenu::InputOptions()
 			DraggingID = -1;
 		}
 		if (ButtonID == 3) {
+			modescreen = 9; // HUD SETTING
+			Options_HudID = -1;
+		}
+		if (ButtonID == 4) {
 			modescreen = 6; // TOGGLE SETTING
 			Options_ToggleID = -1;
 		}
-		if (ButtonID == 4) modescreen = 5; // CROSSHAIR SETTING
-		if (ButtonID == 5) modescreen = 0; // EXIT
+		if (ButtonID == 5) modescreen = 5; // CROSSHAIR SETTING
+		if (ButtonID == 6) modescreen = 0; // EXIT
 
 		if (inputCtrl->CheckKeyDown(GetEscKeycode())) { modescreen = 0; }
 	}
@@ -3326,14 +3375,14 @@ void mainmenu::InputOptions()
 			int y = startY + (int)(Options_AdvancedLinkData[i].pos_y * ui_scale);
 
 			int hit_w = (int)(500 * ui_scale);
-			int hit_h = (int)(28 * ui_scale);
+			int hit_h = (int)(24 * ui_scale);
 
 			if (i == 19) {
 				// RENDER FPS는 이름 + 값 표시 영역까지 클릭 가능하게 한다.
 				hit_w = (int)(500 * ui_scale);
 			}
-			else if (i == 20) {
-				// SKILL MODE는 RENDER FPS 오른쪽에 있으므로 이름 + ON/OFF 값까지 클릭 가능하게 한다.
+			else if ((20 <= i) && (i <= 21)) {
+				// 오른쪽 열 토글은 이름과 같은 X에 정렬된 ON/OFF 값까지 클릭 가능하게 한다.
 				hit_w = (int)(330 * ui_scale);
 			}
 			else if ((10 <= i) && (i <= 15)) {
@@ -3424,6 +3473,10 @@ void mainmenu::InputOptions()
 				GameConfig.SetSkillModeFlag(!GameConfig.GetSkillModeFlag());
 			}
 
+			if (Options_AdvancedID == 21) {
+				GameConfig.SetEventTargetHPBoostFlag(!GameConfig.GetEventTargetHPBoostFlag());
+			}
+
 			if (Options_AdvancedID == 16) {
 				GameConfig.SetMasterVolume(1.0f);
 				SoundCtrl.SetVolume(1.0f);
@@ -3439,11 +3492,12 @@ void mainmenu::InputOptions()
 				GameConfig.SetRecoilAimMultiplier(1.0f);
 				GameConfig.SetRecoilSideMultiplier(0.0f);
 
-				// RENDER FPS와 SKILL MODE는 Gameplay Setting 화면에 있으므로 여기서 초기화한다.
+				// RENDER FPS와 Gameplay 규칙 토글은 여기서 초기화한다.
 				GameConfig.SetRenderFpsLimit(RENDERFPS_DEFAULT);
-				GameConfig.SetSkillModeFlag(false);
+				GameConfig.SetSkillModeFlag(true);
+				GameConfig.SetEventTargetHPBoostFlag(true);
 
-				// 나머지 토글 계열 설정은 TOGGLE SETTING 화면에서 초기화한다.
+				// HUD 표시 설정과 입력 방식 설정은 각각의 화면에서 초기화한다.
 
 // WALK는 이 화면에서 제거했으므로 여기서 초기화하지 않는 것을 추천
 				// GameConfig.SetKeycode(KEY_WALK, 0x10);
@@ -3553,6 +3607,89 @@ void mainmenu::InputOptions()
 			GameConfig.LoadFile("config.dat"); IsDraggingSlider = false; DraggingID = -1; modescreen = 1;
 		}
 	}
+		else if (modescreen == 9) {
+			float cfg_scale = ((float)GameConfig.GetScreenHeight() / 480.0f) * 0.7f;
+
+			// Gameplay Setting과 같은 크기 기준을 사용한다.
+			if (cfg_scale > 1.15f) { cfg_scale = 1.15f; }
+
+			float ui_scale = cfg_scale;
+			int scaled_menuW = (int)(560 * cfg_scale);
+			int scaled_menuH = (int)(180 * cfg_scale);
+			int startX = (GameConfig.GetScreenWidth() - scaled_menuW) / 2;
+			int startY = (GameConfig.GetScreenHeight() - scaled_menuH) / 2 + (int)(50 * cfg_scale);
+
+			Options_HudID = -1;
+			for (int i = 0; i < OPTIONS_HUD_DATAS; i++) {
+				int x = startX + (int)(Options_HudLinkData[i].pos_x * ui_scale);
+				int y = startY + (int)(Options_HudLinkData[i].pos_y * ui_scale);
+
+				int hit_w = (int)(520 * ui_scale);
+				int hit_h = (int)(30 * ui_scale);
+
+				if (i <= 3) {
+					// 설정 항목은 이름 + 값 표시 영역까지 클릭 가능하게 한다.
+					hit_w = (int)(520 * ui_scale);
+				}
+				else if (i == 4) {
+					hit_w = (int)(270 * ui_scale);
+				}
+				else if (i == 5) {
+					hit_w = (int)(115 * ui_scale);
+				}
+				else if (i == 6) {
+					hit_w = (int)(145 * ui_scale);
+				}
+
+				if ((x <= mainmenu_mouseX) && (mainmenu_mouseX <= x + hit_w) &&
+					(y <= mainmenu_mouseY) && (mainmenu_mouseY <= y + hit_h)) {
+					Options_HudID = i;
+				}
+			}
+
+			if (inputCtrl->CheckMouseButtonUpL()) {
+				if (Options_HudID == 0) {
+					GameConfig.SetControlGuideFlag(!GameConfig.GetControlGuideFlag());
+				}
+
+				if (Options_HudID == 1) {
+					GameConfig.SetRadarEnabledFlag(!GameConfig.GetRadarEnabledFlag());
+				}
+
+				if (Options_HudID == 2) {
+					GameConfig.SetRadarInfoHudFlag(!GameConfig.GetRadarInfoHudFlag());
+				}
+
+				if (Options_HudID == 3) {
+					GameConfig.SetRadarSeeThroughWallsFlag(!GameConfig.GetRadarSeeThroughWallsFlag());
+				}
+
+				if (Options_HudID == 4) {
+					GameConfig.SetControlGuideFlag(true);
+					GameConfig.SetRadarEnabledFlag(true);
+					GameConfig.SetRadarInfoHudFlag(true);
+					GameConfig.SetRadarSeeThroughWallsFlag(true);
+				}
+
+				if (Options_HudID == 5) {
+					GameConfig.SaveFile("config.dat");
+					modescreen = 1;
+					return;
+				}
+
+				if (Options_HudID == 6) {
+					GameConfig.LoadFile("config.dat");
+					modescreen = 1;
+					return;
+				}
+			}
+
+			if (inputCtrl->CheckKeyDown(GetEscKeycode())) {
+				GameConfig.LoadFile("config.dat");
+				modescreen = 1;
+				return;
+			}
+	}
 		else if (modescreen == 6) {
 			float cfg_scale = ((float)GameConfig.GetScreenHeight() / 480.0f) * 0.7f;
 
@@ -3560,11 +3697,9 @@ void mainmenu::InputOptions()
 			if (cfg_scale > 1.15f) { cfg_scale = 1.15f; }
 
 			float ui_scale = cfg_scale;
-
-			// Toggle Setting은 가장 긴 항목인 RADAR SEE THROUGH WALLS와 값 표시 기준으로 맞춘다.
-// 620도 아직 약간 넓으므로 560으로 축소한다.
+			// 입력 방식 4개만 남았으므로 Toggle Setting 박스 높이를 줄인다.
 			int scaled_menuW = (int)(560 * cfg_scale);
-			int scaled_menuH = (int)(350 * cfg_scale);
+			int scaled_menuH = (int)(180 * cfg_scale);
 			int startX = (GameConfig.GetScreenWidth() - scaled_menuW) / 2;
 			int startY = (GameConfig.GetScreenHeight() - scaled_menuH) / 2 + (int)(50 * cfg_scale);
 
@@ -3576,19 +3711,19 @@ void mainmenu::InputOptions()
 				int hit_w = (int)(520 * ui_scale);
 				int hit_h = (int)(30 * ui_scale);
 
-				if (i <= 6) {
+				if (i <= 3) {
 					// 설정 항목은 이름 + 값 표시 영역까지 클릭 가능하게 한다.
 					hit_w = (int)(520 * ui_scale);
 				}
-				else if (i == 7) {
+				else if (i == 4) {
 					// [ RESET DEFAULTS ]
 					hit_w = (int)(270 * ui_scale);
 				}
-				else if (i == 8) {
+				else if (i == 5) {
 					// < SAVE >
 					hit_w = (int)(115 * ui_scale);
 				}
-				else if (i == 9) {
+				else if (i == 6) {
 					// < CANCEL >
 					hit_w = (int)(145 * ui_scale);
 				}
@@ -3601,50 +3736,35 @@ void mainmenu::InputOptions()
 
 			if (inputCtrl->CheckMouseButtonUpL()) {
 				if (Options_ToggleID == 0) {
-					GameConfig.SetRadarEnabledFlag(!GameConfig.GetRadarEnabledFlag());
-				}
-
-				if (Options_ToggleID == 1) {
-					GameConfig.SetRadarInfoHudFlag(!GameConfig.GetRadarInfoHudFlag());
-				}
-
-				if (Options_ToggleID == 2) {
-					GameConfig.SetRadarSeeThroughWallsFlag(!GameConfig.GetRadarSeeThroughWallsFlag());
-				}
-
-				if (Options_ToggleID == 3) {
 					GameConfig.SetGrenadeTrajectoryToggleFlag(!GameConfig.GetGrenadeTrajectoryToggleFlag());
 				}
 
-				if (Options_ToggleID == 4) {
+				if (Options_ToggleID == 1) {
 					GameConfig.SetScopeAimToggleFlag(!GameConfig.GetScopeAimToggleFlag());
 				}
 
-				if (Options_ToggleID == 5) {
+				if (Options_ToggleID == 2) {
 					GameConfig.SetRunToggleFlag(!GameConfig.GetRunToggleFlag());
 				}
 
-				if (Options_ToggleID == 6) {
+				if (Options_ToggleID == 3) {
 					GameConfig.SetCrouchToggleFlag(!GameConfig.GetCrouchToggleFlag());
 				}
 
-				if (Options_ToggleID == 7) {
-					GameConfig.SetRadarEnabledFlag(true);
-					GameConfig.SetRadarInfoHudFlag(true);
-					GameConfig.SetRadarSeeThroughWallsFlag(true);
+				if (Options_ToggleID == 4) {
 					GameConfig.SetGrenadeTrajectoryToggleFlag(true);
 					GameConfig.SetScopeAimToggleFlag(true);
 					GameConfig.SetRunToggleFlag(false);
 					GameConfig.SetCrouchToggleFlag(false);
 				}
 
-				if (Options_ToggleID == 8) {
+				if (Options_ToggleID == 5) {
 					GameConfig.SaveFile("config.dat");
 					modescreen = 1;
 					return;
 				}
 
-				if (Options_ToggleID == 9) {
+				if (Options_ToggleID == 6) {
 					GameConfig.LoadFile("config.dat");
 					modescreen = 1;
 					return;
@@ -3900,7 +4020,7 @@ void mainmenu::RenderOptions()
 	if (ui_scale > 1.35f) { ui_scale = 1.35f; }
 
 	int scaled_p1_w = (int)(520 * ui_scale);
-	int scaled_p1_h = (int)(370 * ui_scale);
+	int scaled_p1_h = (int)(425 * ui_scale);
 	int scaled_p1_x = GameConfig.GetScreenWidth() - scaled_p1_w - (int)(40 * ui_scale);
 	int scaled_p1_y = GameConfig.GetScreenHeight() - scaled_p1_h - (int)(40 * ui_scale);
 
@@ -4273,14 +4393,23 @@ void mainmenu::RenderOptions()
 				continue;
 			}
 
-			if (i == 20) {
-				const char* skillModeText = GameConfig.GetSkillModeFlag() ? "[ ON ]" : "[ OFF ]";
-				int skillModeTextX = x + (int)(190 * ui_scale);
+			if ((20 <= i) && (i <= 21)) {
+				const char* modeText = "[ OFF ]";
+
+				if (i == 20) {
+					modeText = GameConfig.GetSkillModeFlag() ? "[ ON ]" : "[ OFF ]";
+				}
+				else if (i == 21) {
+					modeText = GameConfig.GetEventTargetHPBoostFlag() ? "[ ON ]" : "[ OFF ]";
+				}
+
+				// 오른쪽 열의 모든 ON/OFF 값을 같은 X 좌표에 맞춘다.
+				int modeTextX = x + (int)(190 * ui_scale);
 
 				d3dg->Draw2DTextureFontText(
-					skillModeTextX,
+					modeTextX,
 					y,
-					skillModeText,
+					modeText,
 					d3dg->GetColorCode(1.0f, 1.0f, 0.0f, 1.0f),
 					(int)(14 * ui_scale),
 					(int)(18 * ui_scale)
@@ -4397,6 +4526,82 @@ void mainmenu::RenderOptions()
 		}
 	}
 
+	if (modescreen == 9) {
+		float cfg_scale = ((float)GameConfig.GetScreenHeight() / 480.0f) * 0.7f;
+
+		// Gameplay Setting과 같은 크기 기준을 사용한다.
+		if (cfg_scale > 1.15f) { cfg_scale = 1.15f; }
+
+		float ui_scale = cfg_scale;
+		int f_w = (int)(14 * ui_scale);
+		int f_h = (int)(18 * ui_scale);
+		int scaled_menuW = (int)(560 * cfg_scale);
+		int scaled_menuH = (int)(180 * cfg_scale);
+		int startX = (GameConfig.GetScreenWidth() - scaled_menuW) / 2;
+		int startY = (GameConfig.GetScreenHeight() - scaled_menuH) / 2 + (int)(50 * cfg_scale);
+
+		d3dg->Draw2DBox(
+			startX - (int)(20 * ui_scale),
+			startY - (int)(30 * ui_scale),
+			startX + scaled_menuW + (int)(20 * ui_scale),
+			startY + scaled_menuH + (int)(30 * ui_scale),
+			d3dg->GetColorCode(0.0f, 0.0f, 0.0f, 0.8f)
+		);
+
+		for (int i = 0; i < OPTIONS_HUD_DATAS; i++) {
+			int x = startX + (int)(Options_HudLinkData[i].pos_x * ui_scale);
+			int y = startY + (int)(Options_HudLinkData[i].pos_y * ui_scale);
+
+			int color = (i == Options_HudID) ? Options_HudLinkData[i].text_cursorcolor : Options_HudLinkData[i].text_defaultcolor;
+
+			d3dg->Draw2DTextureFontText(
+				x + 1,
+				y + 1,
+				Options_HudLinkData[i].text,
+				d3dg->GetColorCode(0.0f, 0.0f, 0.0f, 1.0f),
+				f_w,
+				f_h
+			);
+			d3dg->Draw2DTextureFontText(
+				x,
+				y,
+				Options_HudLinkData[i].text,
+				color,
+				f_w,
+				f_h
+			);
+
+			if (i <= 3) {
+				const char* modeText = "[ OFF ]";
+
+				if (i == 0) {
+					modeText = GameConfig.GetControlGuideFlag() ? "[ ON ]" : "[ OFF ]";
+				}
+				else if (i == 1) {
+					modeText = GameConfig.GetRadarEnabledFlag() ? "[ ON ]" : "[ OFF ]";
+				}
+				else if (i == 2) {
+					modeText = GameConfig.GetRadarInfoHudFlag() ? "[ ON ]" : "[ OFF ]";
+				}
+				else if (i == 3) {
+					modeText = GameConfig.GetRadarSeeThroughWallsFlag() ? "[ ON ]" : "[ OFF ]";
+				}
+
+				// 모든 설정값의 괄호 위치를 같은 X 좌표에 맞춘다.
+				int modeTextX = startX + (int)(360 * ui_scale);
+
+				d3dg->Draw2DTextureFontText(
+					modeTextX,
+					y,
+					modeText,
+					d3dg->GetColorCode(1.0f, 1.0f, 0.0f, 1.0f),
+					f_w,
+					f_h
+				);
+			}
+		}
+	}
+
 	if (modescreen == 6) {
 		float cfg_scale = ((float)GameConfig.GetScreenHeight() / 480.0f) * 0.7f;
 
@@ -4407,7 +4612,7 @@ void mainmenu::RenderOptions()
 		int f_w = (int)(14 * ui_scale);
 		int f_h = (int)(18 * ui_scale);
 		int scaled_menuW = (int)(560 * cfg_scale);
-		int scaled_menuH = (int)(350 * cfg_scale);
+		int scaled_menuH = (int)(180 * cfg_scale);
 		int startX = (GameConfig.GetScreenWidth() - scaled_menuW) / 2;
 		int startY = (GameConfig.GetScreenHeight() - scaled_menuH) / 2 + (int)(50 * cfg_scale);
 
@@ -4442,28 +4647,19 @@ void mainmenu::RenderOptions()
 				f_h
 			);
 
-			if (i <= 6) {
-				const char* modeText = "[ OFF ]";
+			if (i <= 3) {
+				const char* modeText = "[ HOLD ]";
 
 				if (i == 0) {
-					modeText = GameConfig.GetRadarEnabledFlag() ? "[ ON ]" : "[ OFF ]";
-				}
-				else if (i == 1) {
-					modeText = GameConfig.GetRadarInfoHudFlag() ? "[ ON ]" : "[ OFF ]";
-				}
-				else if (i == 2) {
-					modeText = GameConfig.GetRadarSeeThroughWallsFlag() ? "[ ON ]" : "[ OFF ]";
-				}
-				else if (i == 3) {
 					modeText = GameConfig.GetGrenadeTrajectoryToggleFlag() ? "[ TOGGLE ]" : "[ HOLD ]";
 				}
-				else if (i == 4) {
+				else if (i == 1) {
 					modeText = GameConfig.GetScopeAimToggleFlag() ? "[ TOGGLE ]" : "[ HOLD ]";
 				}
-				else if (i == 5) {
+				else if (i == 2) {
 					modeText = GameConfig.GetRunToggleFlag() ? "[ TOGGLE ]" : "[ HOLD ]";
 				}
-				else if (i == 6) {
+				else if (i == 3) {
 					modeText = GameConfig.GetCrouchToggleFlag() ? "[ TOGGLE ]" : "[ HOLD ]";
 				}
 
@@ -4858,12 +5054,47 @@ maingame::maingame()
 	view_ry = 0.0f;
 	add_camera_rx = 0.0f;
 	add_camera_ry = 0.0f;
+	render_interpolation_alpha = 1.0f;
+	render_interpolation_valid = false;
+	render_previous_player = NULL;
+	render_previous_player_x = 0.0f;
+	render_previous_player_y = 0.0f;
+	render_previous_player_z = 0.0f;
+	render_visual_player_x = 0.0f;
+	render_visual_player_y = 0.0f;
+	render_visual_player_z = 0.0f;
+	render_visual_player_rx = 0.0f;
+	render_visual_player_ry = 0.0f;
+	render_visual_player_valid = false;
+	render_pending_mouse_x = 0;
+	render_pending_mouse_y = 0;
+	render_previous_crouch = false;
+	render_previous_dead = false;
+	render_previous_dead_motion = false;
+	render_previous_f1mode = false;
+	render_previous_debugmode = false;
+	render_smooth_zoom = 1.5f;
+	render_previous_scope = 0;
+	render_previous_weapon = -1;
+	render_view_state_valid = false;
+	render_view_state_player = NULL;
+	render_view_state_dead = false;
+	render_view_state_dead_motion = false;
+	render_view_state_f1mode = false;
+	render_view_state_debugmode = false;
 	ShowInfo_Debugmode = false;
 	Camera_Debugmode = false;
 	tag = false;
 	radar = true;
 	ShowFullMap = false;
 	FullMapWorldR = 500.0f;
+	ResetFullMapFloorSelection();
+	RadarFloorReferenceValid = false;
+	RadarFloorReferenceY = 0.0f;
+	RadarFloorReferencePlayerID = -1;
+	for (int i = 0; i < MAX_HUMAN; i++) {
+		radar_human_height_layer[i] = 0;
+	}
 	wireframe = false;
 	nomodel = false;
 	CenterLine = false;
@@ -4925,15 +5156,167 @@ void maingame::SetShowInfoFlag(bool flag)
 	ShowInfo_Debugmode = flag;
 }
 
+void maingame::SetRenderInterpolationAlpha(float alpha)
+{
+	if (alpha < 0.0f) { alpha = 0.0f; }
+	if (alpha > 1.0f) { alpha = 1.0f; }
+	render_interpolation_alpha = alpha;
+	ObjMgr.SetHumanRenderInterpolationAlpha(alpha);
+	ObjMgr.SetGrenadeRenderInterpolationAlpha(alpha);
+	ObjMgr.SetEffectRenderInterpolationAlpha(alpha);
+	ObjMgr.SetWeaponRenderInterpolationAlpha(alpha);
+	ObjMgr.SetSmallObjectRenderInterpolationAlpha(alpha);
+}
+
+void maingame::PollRenderMouseInput()
+{
+	int x = 0;
+	int y = 0;
+
+	inputCtrl->GetMouseMovementRealtime(&x, &y);
+
+	// AI 조작 중에는 사용자가 움직인 마우스를 카메라에 누적하지 않는다.
+	// 다만 입력 장치에서는 읽어서 AI 해제 직후 큰 값이 한꺼번에 들어오는 것을 막는다.
+	if (PlayerAI == true) {
+		render_pending_mouse_x = 0;
+		render_pending_mouse_y = 0;
+		return;
+	}
+
+	if (GameConfig.GetInvertMouseFlag() == true) {
+		y *= -1;
+	}
+
+	render_pending_mouse_x += x;
+	render_pending_mouse_y += y;
+
+	// 포커스 복귀나 장치 오류에서 비정상적으로 큰 값이 들어오는 경우만 제한한다.
+	// 일반적인 빠른 마우스 이동은 그대로 보존해 인위적인 가속/감속을 만들지 않는다.
+	if (render_pending_mouse_x > 2048) { render_pending_mouse_x = 2048; }
+	if (render_pending_mouse_x < -2048) { render_pending_mouse_x = -2048; }
+	if (render_pending_mouse_y > 2048) { render_pending_mouse_y = 2048; }
+	if (render_pending_mouse_y < -2048) { render_pending_mouse_y = -2048; }
+}
+
+void maingame::CaptureRenderInterpolationState()
+{
+	// Save the previous logic state for all interpolated world objects.
+	ObjMgr.CaptureHumanRenderInterpolationState();
+	ObjMgr.CaptureGrenadeRenderInterpolationState();
+	ObjMgr.CaptureEffectRenderInterpolationState();
+	ObjMgr.CaptureWeaponRenderInterpolationState();
+	ObjMgr.CaptureSmallObjectRenderInterpolationState();
+
+	human* player = ObjMgr.GetPlayerHumanObject();
+
+	if (player == NULL) {
+		ResetRenderInterpolation();
+		return;
+	}
+
+	player->GetPosData(
+		&render_previous_player_x,
+		&render_previous_player_y,
+		&render_previous_player_z,
+		NULL
+	);
+	render_previous_player = player;
+	render_previous_crouch = player->GetCrouchFlag();
+	render_previous_dead = player->GetDeadFlag();
+	render_previous_dead_motion = player->GetDeadMotionFlag();
+	render_previous_f1mode = Camera_F1mode;
+	render_previous_debugmode = Camera_Debugmode;
+	render_interpolation_valid = true;
+}
+
+void maingame::ResetRenderInterpolation()
+{
+	render_interpolation_alpha = 1.0f;
+	render_interpolation_valid = false;
+	render_previous_player = NULL;
+	render_visual_player_rx = 0.0f;
+	render_visual_player_ry = 0.0f;
+	render_visual_player_valid = false;
+	render_pending_mouse_x = 0;
+	render_pending_mouse_y = 0;
+	render_smooth_zoom = 1.5f;
+	render_previous_scope = 0;
+	render_previous_weapon = -1;
+	render_view_state_valid = false;
+	render_view_state_player = NULL;
+	render_view_state_dead = false;
+	render_view_state_dead_motion = false;
+	render_view_state_f1mode = false;
+	render_view_state_debugmode = false;
+	ObjMgr.ResetHumanRenderInterpolation();
+	ObjMgr.ResetGrenadeRenderInterpolation();
+	ObjMgr.ResetEffectRenderInterpolation();
+	ObjMgr.ResetWeaponRenderInterpolation();
+	ObjMgr.ResetSmallObjectRenderInterpolation();
+}
+
+void maingame::HandleApplicationFocusChange(bool active)
+{
+	// Alt+Tab 직전의 위치, 확대, 마우스 누적값을 복귀 화면에 이어 붙이지 않는다.
+	ResetRenderInterpolation();
+	SyncDrawCamera();
+
+	if (inputCtrl == NULL) { return; }
+
+	if (active == true) {
+		// 복귀 첫 PollRenderMouseInput()보다 먼저 커서 기준점을 중앙에 맞춘다.
+		inputCtrl->MoveMouseCenter();
+	}
+	else {
+		// 비활성화 순간에 남아 있는 키/버튼/이동 상태를 즉시 해제한다.
+		inputCtrl->GetInputState(true);
+	}
+}
+
+void maingame::InvalidatePlayerRenderInterpolation()
+{
+	// 순간이동/회피는 실제 위치를 즉시 사용하되, 다른 월드 오브젝트 보간은 유지한다.
+	render_interpolation_valid = false;
+	render_previous_player = NULL;
+	render_visual_player_valid = false;
+}
+
+void maingame::GetSkillVisualHumanPosition(human* target, float* x, float* y, float* z)
+{
+	if ((x == NULL) || (y == NULL) || (z == NULL)) { return; }
+
+	*x = 0.0f;
+	*y = 0.0f;
+	*z = 0.0f;
+
+	if (target == NULL) { return; }
+
+	// The player is interpolated in maingame::Render3D() together with the camera.
+	if ((target == ObjMgr.GetPlayerHumanObject()) &&
+		(render_visual_player_valid == true)) {
+		*x = render_visual_player_x;
+		*y = render_visual_player_y;
+		*z = render_visual_player_z;
+		return;
+	}
+
+	int human_id = ObjMgr.GetHumanObjectID(target);
+	if (human_id >= 0) {
+		ObjMgr.GetHumanVisualRenderPosition(human_id, x, y, z);
+		return;
+	}
+
+	target->GetPosData(x, y, z, NULL);
+}
+
 void maingame::SyncDrawCamera()
 {
-	// 현재 카메라 값을 2D/HUD/1인칭 무기 표시용 draw_camera에 맞춘다.
+	// 보간을 사용하지 않아야 하는 순간에는 현재 카메라에 즉시 맞춘다.
 	draw_camera_x = camera_x;
 	draw_camera_y = camera_y;
 	draw_camera_z = camera_z;
 	draw_camera_rx = camera_rx;
 	draw_camera_ry = camera_ry;
-
 }
 
 void maingame::ProcessVisualTimers()
@@ -5036,6 +5419,9 @@ int maingame::Create()
 	//?귽깛긣긢??룊딖돸
 	ObjMgr.LoadPointData();
 
+	// 이벤트 진행에 영향을 주는 사망 대상을 분류한다.
+	SetupMissionEventTargets();
+
 	// ==========================================================
 	// ★ [추가할 코드] 맵 로딩 직후, 무기 랜덤 변경 함수 호출 ★
 	// ==========================================================
@@ -5090,8 +5476,12 @@ int maingame::Create()
 	radar = true;
 	ShowFullMap = false;
 
-	// 미션이 새로 시작될 때 전체 지도 확대 상태를 현재 기본값으로 복구
+	// 미션이 새로 시작될 때 전체 지도 확대 상태와 레이더 층 기준을 복구
 	FullMapWorldR = 500.0f;
+	ResetFullMapFloorSelection();
+	RadarFloorReferenceValid = false;
+	RadarFloorReferenceY = 0.0f;
+	RadarFloorReferencePlayerID = -1;
 
 	wireframe = false;
 	nomodel = false;
@@ -5137,8 +5527,9 @@ int maingame::Create()
 	//?긂긚긇??깑귩뭷돍귉댷벍
 	inputCtrl->MoveMouseCenter();
 
-	// 미션 시작 직후 이전 카메라 값이 튀지 않도록 초기화
+	// 미션 시작 직후 이전 위치가 섞이지 않도록 보간 이력을 초기화한다.
 	SyncDrawCamera();
+	ResetRenderInterpolation();
 
 	GameState->NextState();
 	return 0;
@@ -5171,6 +5562,9 @@ int maingame::Recovery()
 	//?귽깛긣긢??룊딖돸
 	ObjMgr.Recovery();
 
+	// 재시작 시 초기화된 인물 체력과 대상 표시를 다시 적용한다.
+	SetupMissionEventTargets();
+
 	ResetPlayerSkillState();
 
 		// ★ [추가] 재시작 시에도 무기 랜덤 변경 실행 ★
@@ -5180,12 +5574,42 @@ int maingame::Recovery()
 	Resource.CleanupSkyModelTexture();
 	Resource.LoadSkyModelTexture(SkyNumber);
 
+	ResetRenderInterpolation();
 	return 0;
 }
 
 //! @brief 벫믦?띿궻볺쀍귩?긃긞긏
+#ifdef ENABLE_DEBUGCONSOLE
+bool maingame::IsDebugMuzzleAdjustInputActive()
+{
+	if (ObjMgr.GetDebugMuzzleAdjustFlag() == false) { return false; }
+	if (Show_Console == true) { return false; }
+
+	// Dedicated muzzle-tuning keys. While one is held, normal gameplay
+	// bindings are suppressed so custom controls cannot run simultaneously.
+	const int adjust_key[6] = {
+	OriginalkeycodeToDinputdef(0x08), // NUM4 : X-
+	OriginalkeycodeToDinputdef(0x0A), // NUM6 : X+
+	OriginalkeycodeToDinputdef(0x06), // NUM2 : Y-
+	OriginalkeycodeToDinputdef(0x0C), // NUM8 : Y+
+	OriginalkeycodeToDinputdef(0x0B), // NUM7 : Z-
+	OriginalkeycodeToDinputdef(0x0D)  // NUM9 : Z+
+	};
+
+	for (int i = 0; i < 6; i++) {
+		if (inputCtrl->CheckKeyNow(adjust_key[i]) == true) {
+			return true;
+		}
+	}
+	return false;
+}
+#endif
+
 bool maingame::CheckInputControl(int CheckKey, int mode)
 {
+#ifdef ENABLE_DEBUGCONSOLE
+	if (IsDebugMuzzleAdjustInputActive() == true) { return false; }
+#endif
 	int KeyCode = OriginalkeycodeToDinputdef(GameConfig.GetKeycode(CheckKey));
 	if( KeyCode == -1 ){
 		if( mode == 0 ){
@@ -5265,6 +5689,39 @@ bool maingame::CheckInputControl(int CheckKey, int mode)
 	//}
 }
 
+// 렌더 프레임에서 사용할 현재 키 상태를 읽는다.
+// 기존 keys/keys_lt를 갱신하지 않으므로 로직 틱의 Down/Up 판정을 망가뜨리지 않는다.
+bool maingame::CheckInputControlRealtime(int CheckKey)
+{
+#ifdef ENABLE_DEBUGCONSOLE
+	if (IsDebugMuzzleAdjustInputActive() == true) { return false; }
+#endif
+
+	int KeyCode = OriginalkeycodeToDinputdef(GameConfig.GetKeycode(CheckKey));
+
+	// 마우스 버튼에 회전 키를 배정한 특수 설정은 기존 현재 상태를 사용한다.
+	if (KeyCode == -1) {
+		return inputCtrl->CheckMouseButtonNowL();
+	}
+	if (KeyCode == -2) {
+		return inputCtrl->CheckMouseButtonNowR();
+	}
+	if (KeyCode == -3) {
+		int CodeL, CodeR;
+		GetDoubleKeyCode(0, &CodeL, &CodeR);
+		return inputCtrl->CheckKeyNowRealtime(CodeL) ||
+			inputCtrl->CheckKeyNowRealtime(CodeR);
+	}
+	if (KeyCode == -4) {
+		int CodeL, CodeR;
+		GetDoubleKeyCode(1, &CodeL, &CodeR);
+		return inputCtrl->CheckKeyNowRealtime(CodeL) ||
+			inputCtrl->CheckKeyNowRealtime(CodeR);
+	}
+
+	return inputCtrl->CheckKeyNowRealtime(KeyCode);
+}
+
 void maingame::Input()
 {
 	time = GetTimeMS();
@@ -5272,24 +5729,26 @@ void maingame::Input()
 	//긵깒귽깂?궻긏깋긚귩롦벦
 	human *myHuman = ObjMgr.GetPlayerHumanObject();
 
-	//긌?볺쀍귩롦벦
+	// 렌더 프레임 이후 로직 틱까지 들어온 마우스 이동도 빠짐없이 수집한다.
+	// 이 함수는 키/버튼의 Down/Up 상태를 변경하지 않는다.
+	PollRenderMouseInput();
+
+	// 키와 마우스 버튼 상태는 기존 33FPS 로직에서 처리한다.
 	inputCtrl->GetInputState(true);
 	inputCtrl->MoveMouseCenter();
 
-	//?긂긚궻댷벍쀊롦벦
-	int x, y;
+	// 렌더 프레임에서 미리 수집한 이동량을 이번 로직 틱에서 실제 조준 방향에 반영한다.
+	int x = render_pending_mouse_x;
+	int y = render_pending_mouse_y;
+	render_pending_mouse_x = 0;
+	render_pending_mouse_y = 0;
+
 	float MouseSensitivity;
-	inputCtrl->GetMouseMovement(&x, &y);
 
 	//럨?궻댷벍쀊똶럁
 	ScopeParameter sparam;
 	GameParamInfo.GetScopeParam(myHuman->GetScopeMode(), &sparam);
 	MouseSensitivity = DegreeToRadian(1) * sparam.MouseRange * GameConfig.GetMouseSensitivity();
-
-	//?긂긚뵿?걁긆긵긘깈깛먠믦걂궕뾎뚼궶귞궽갂뵿?궥귡갃
-	if( GameConfig.GetInvertMouseFlag() == true ){
-		y *= -1;
-	}
 
 	if (inputCtrl->CheckKeyDown(GetEscKeycode())) {
 		myHuman->NightVision = false;
@@ -5307,20 +5766,53 @@ void maingame::Input()
 	}
 
 	// M키(전체 지도) 토글 처리
-// 레이더가 비활성화된 경우 전체 지도도 사용할 수 없다.
-	if (GameConfig.GetRadarEnabledFlag() == false) {
-		ShowFullMap = false;
-	}
-	else if (CheckInputControl(KEY_MAP, 1) == true) {
-		ShowFullMap = !ShowFullMap;
+	// 레이더가 비활성화된 경우 전체 지도도 사용할 수 없다.
+#ifdef ENABLE_DEBUGCONSOLE
+	// Handle F11 before the map key. This prevents the console key or text
+	// typed into the console from also opening the full map.
+	bool console_toggle_pressed = inputCtrl->CheckKeyDown(GetFunctionKeycode(11));
+	if (console_toggle_pressed == true) {
+		if (Show_Console == false) {
+			Show_Console = true;
+			ConsoleTextBoxControl.SetTextBoxStr("");
+		}
+		else {
+			Show_Console = false;
+		}
 	}
 
-	// 전체 지도 표시 중에는 마우스 휠로 지도 확대/축소
+	if ((Show_Console == true) && (ShowFullMap == true)) {
+		ShowFullMap = false;
+		ResetFullMapFloorSelection();
+	}
+#endif
+
+	bool allow_full_map_input = true;
+#ifdef ENABLE_DEBUGCONSOLE
+	allow_full_map_input =
+		(Show_Console == false) &&
+		(console_toggle_pressed == false) &&
+		(ObjMgr.GetDebugMuzzleAdjustFlag() == false);
+#endif
+
+	if (GameConfig.GetRadarEnabledFlag() == false) {
+		ShowFullMap = false;
+		ResetFullMapFloorSelection();
+	}
+	else if ((allow_full_map_input == true) &&
+		(CheckInputControl(KEY_MAP, 1) == true)) {
+		ShowFullMap = !ShowFullMap;
+
+		// 전체 지도는 열 때마다 AUTO에서 시작하고, 닫을 때도 수동 선택을 남기지 않는다.
+		ResetFullMapFloorSelection();
+	}
+
+	// 전체 지도 표시 중에는 마우스 휠로 확대/축소하고 [ / ] 키로 층을 선택한다.
 	if (ShowFullMap == true) {
 		int wheel = inputCtrl->GetMouseWheel();
 
 		if (wheel != 0) {
-			// wheel > 0 : 확대, 현재 기본 상태 쪽으로 복귀
+			// wheel > 0 : 확대, 더 좁은 월드 범위를 표시
 			// wheel < 0 : 축소, 더 넓은 범위를 표시
 			if (wheel > 0) {
 				FullMapWorldR -= 100.0f;
@@ -5329,9 +5821,9 @@ void maingame::Input()
 				FullMapWorldR += 100.0f;
 			}
 
-			// 500.0f = 현재 전체 지도 상태, 즉 가장 확대된 상태
-			if (FullMapWorldR < 500.0f) {
-				FullMapWorldR = 500.0f;
+			// 500.0f = 기존 기본 확대 상태, 400.0f / 300.0f로 두 단계 더 확대 가능
+			if (FullMapWorldR < 300.0f) {
+				FullMapWorldR = 300.0f;
 			}
 
 			// 최대로 축소했을 때 표시할 월드 범위
@@ -5340,6 +5832,14 @@ void maingame::Input()
 			}
 
 			inputCtrl->SetMouseWheel(0);
+		}
+
+		// 왼쪽 대괄호: 아래층, 오른쪽 대괄호: 위층
+		if (inputCtrl->CheckKeyDown(OriginalkeycodeToDinputdef(0x3F)) == true) {
+			ChangeFullMapFloor(-1, myHuman);
+		}
+		if (inputCtrl->CheckKeyDown(OriginalkeycodeToDinputdef(0x40)) == true) {
+			ChangeFullMapFloor(1, myHuman);
 		}
 	}
 
@@ -5371,19 +5871,11 @@ void maingame::Input()
 	}
 
 	//긢긫긞긏뾭긓깛??깑궻?렑?띿궔?긃긞긏
-	if( inputCtrl->CheckKeyDown( GetFunctionKeycode(11) ) ){
-		if( Show_Console == false ){
-			Show_Console = true;
-
-			ConsoleTextBoxControl.SetTextBoxStr("");
-		}
-		else{
-			Show_Console = false;
-		}
-	}
-
 	if( Show_Console == true ){
 		InputConsole();
+	}
+	else{
+		ProcessDebugMuzzleInput();
 	}
 #endif
 
@@ -5555,6 +6047,15 @@ void maingame::InputPlayer(human* myHuman, int mouse_x, int mouse_y, float Mouse
 	int PlayerID = ObjMgr.GetPlayerID();
 
 	if (myHuman->GetHP() > 0) {
+
+		// 실제 3인칭에서는 조준 상태를 유지하지 않는다.
+		// 입력 처리 앞에서 먼저 해제해 조준 감도와 조준 전용 효과도 남지 않게 한다.
+		if (Camera_F1mode == true) {
+			if (myHuman->GetScopeMode() != 0) {
+				myHuman->SetDisableScope();
+			}
+			myHuman->NightVision = false;
+		}
 
 		// 플레이어 전용 스킬 입력
 		bool skill_input_locked = TryUsePlayerSkill(myHuman);
@@ -6301,7 +6802,16 @@ void maingame::InputPlayer(human* myHuman, int mouse_x, int mouse_y, float Mouse
 
 			// 미니건 우클릭 예열은 스코프 설정의 영향을 받으면 안 된다.
 			if (isPlayerMinigun == false) {
-				if (GameConfig.GetScopeAimToggleFlag() == true) {
+				// 실제 3인칭(Camera_F1mode == true)에서는 조준 입력을 받지 않는다.
+				// 조준키를 누른 채 1인칭으로 돌아와도 자동으로 조준되지 않고,
+				// 키를 다시 눌러야 조준이 시작된다.
+				if (Camera_F1mode == true) {
+					if (myHuman->GetScopeMode() != 0) {
+						myHuman->SetDisableScope();
+					}
+					myHuman->NightVision = false;
+				}
+				else if (GameConfig.GetScopeAimToggleFlag() == true) {
 					// TOGGLE: 기존 방식
 					if (zoom_down == true) {
 						ObjMgr.ChangeScopeMode(PlayerID);
@@ -6394,6 +6904,13 @@ void maingame::InputPlayer(human* myHuman, int mouse_x, int mouse_y, float Mouse
 			Camera_F1mode = true;
 			view_rx = 0.0f;
 			view_ry = VIEW_F1MODE_ANGLE;
+
+			// 조준 중 3인칭으로 전환하면 즉시 조준과 조준 전용 야간투시를 해제한다.
+			// 1인칭으로 돌아와도 조준 상태는 자동 복구하지 않는다.
+			if (myHuman->GetScopeMode() != 0) {
+				myHuman->SetDisableScope();
+			}
+			myHuman->NightVision = false;
 		}
 		else {
 			Camera_F1mode = false;
@@ -6652,7 +7169,7 @@ void maingame::Process()
 		if (GameParamInfo.GetHuman(idParam, &HParam) != 0) { continue; }
 
 		int oldHP = h->GetHP();
-		int max_hp = HParam.hp;
+		int max_hp = h->GetMaxHP();
 
 		if (h->GetEnableFlag() == false) { continue; }
 		if (h->GetDeadFlag() == true) { continue; }
@@ -6950,20 +7467,469 @@ void maingame::Render3D()
 	int skymodel, skytexture;
 	human* myHuman = ObjMgr.GetPlayerHumanObject();
 
-	// [✨ 추가] 요청하신 플레이어 좌표 및 각도 변수 선언 및 가져오기
+	// 로직 틱 사이에 발생한 마우스 이동을 렌더 프레임에서 즉시 읽는다.
+	// 수집된 값은 화면에 먼저 반영되고 다음 로직 틱에서 실제 조준 방향에도 동일하게 적용된다.
+	PollRenderMouseInput();
+
+	// 실제 판정 위치는 그대로 두고, 이번 렌더에 사용할 위치만 계산한다.
 	float px, py, pz, prx, pry;
 	myHuman->GetPosData(&px, &py, &pz, &prx);
 	myHuman->GetRxRy(&prx, &pry);
+
+	float render_player_x = px;
+	float render_player_y = py;
+	float render_player_z = pz;
+	bool allow_player_interpolation = render_interpolation_valid;
+
+	// 마지막으로 실제 렌더된 화면과 비교한다.
+	// 한 루프에서 로직이 여러 번 실행되어 Capture 상태가 덮여도 전환을 놓치지 않는다.
+	bool reset_render_view_state =
+		(render_view_state_valid == false) ||
+		(render_view_state_player != myHuman) ||
+		(render_view_state_dead != myHuman->GetDeadFlag()) ||
+		(render_view_state_dead_motion != myHuman->GetDeadMotionFlag()) ||
+		(render_view_state_f1mode != Camera_F1mode) ||
+		(render_view_state_debugmode != Camera_Debugmode);
+
+	if (render_previous_player != myHuman) { allow_player_interpolation = false; }
+	if (render_previous_crouch != myHuman->GetCrouchFlag()) { allow_player_interpolation = false; }
+	if (render_previous_dead != myHuman->GetDeadFlag()) { allow_player_interpolation = false; }
+	if (render_previous_dead_motion != myHuman->GetDeadMotionFlag()) { allow_player_interpolation = false; }
+	if (render_previous_f1mode != Camera_F1mode) { allow_player_interpolation = false; }
+	if (render_previous_debugmode != Camera_Debugmode) { allow_player_interpolation = false; }
+	if (Camera_Debugmode == true || myHuman->GetDeadFlag() == true || myHuman->GetDeadMotionFlag() == true) {
+		allow_player_interpolation = false;
+	}
+
+	float move_dx = px - render_previous_player_x;
+	float move_dy = py - render_previous_player_y;
+	float move_dz = pz - render_previous_player_z;
+
+	// 텔레포트, 강제 이동, 큰 낙하 보정은 중간 위치를 만들지 않고 즉시 이동한다.
+	if ((move_dx * move_dx + move_dy * move_dy + move_dz * move_dz) > (16.0f * 16.0f)) {
+		allow_player_interpolation = false;
+	}
+
+	if (allow_player_interpolation == true) {
+		float alpha = render_interpolation_alpha;
+		render_player_x = render_previous_player_x + move_dx * alpha;
+		render_player_y = render_previous_player_y + move_dy * alpha;
+		render_player_z = render_previous_player_z + move_dz * alpha;
+	}
+
+	// 이후에 그리는 스킬 이펙트와 HUD 마커가 캐릭터 모델과 정확히 같은
+	// 렌더 위치를 사용하도록 이번 프레임의 플레이어 표시 위치를 보관한다.
+	render_visual_player_x = render_player_x;
+	render_visual_player_y = render_player_y;
+	render_visual_player_z = render_player_z;
+	render_visual_player_rx = prx;
+	render_visual_player_ry = pry;
+	render_visual_player_valid = true;
+
+	// 위치 이동 보정값은 1인칭 및 특수 카메라에서도 그대로 사용할 수 있다.
+	float render_offset_x = render_player_x - px;
+	float render_offset_y = render_player_y - py;
+	float render_offset_z = render_player_z - pz;
+
+	// 기본값은 기존 로직 카메라다.
+	draw_camera_x = camera_x + render_offset_x;
+	draw_camera_y = camera_y + render_offset_y;
+	draw_camera_z = camera_z + render_offset_z;
+	draw_camera_rx = camera_rx;
+	draw_camera_ry = camera_ry;
+
+	float render_player_yaw_offset = 0.0f;
+	float render_player_pitch_offset = 0.0f;
+	bool use_realtime_thirdperson_mouse = false;
+
+	// 실제 게임 로직에서 사용하는 현재 반동값.
+	float actual_recoil_x = myHuman->GetRecoilXOffset();
+	float actual_recoil_y = myHuman->GetRecoilYOffset();
+
+	// 이번 렌더 프레임에 표시할 반동값.
+	float render_recoil_x = actual_recoil_x;
+	float render_recoil_y = actual_recoil_y;
+
+	float recoil_render_alpha = 0.0f;
+
+	if (render_interpolation_valid == true) {
+		recoil_render_alpha = render_interpolation_alpha;
+	}
+
+	// 아직 로직 틱에 반영되지 않은 마우스 하향 입력이 있으면
+	// 자동 회복 예측은 하지 않고 마우스 반동 제어만 먼저 표시한다.
+	if (render_pending_mouse_y > 0) {
+		recoil_render_alpha = 0.0f;
+	}
+
+	myHuman->GetRenderRecoilOffset(
+		recoil_render_alpha,
+		&render_recoil_x,
+		&render_recoil_y
+	);
+
+	// 방향키 회전도 다음 33FPS 로직 틱의 회전량을 미리 계산해
+	// 현재 렌더 보간 비율만큼 화면에 반영한다.
+	// 실제 판정 각도는 기존 로직 틱에서만 변경하므로 게임 속도에는 영향을 주지 않는다.
+	bool allow_realtime_rotation_input = true;
+#ifdef ENABLE_DEBUGCONSOLE
+	if (Show_Console == true) {
+		allow_realtime_rotation_input = false;
+	}
+#endif
+
+	float render_key_yaw_offset = 0.0f;
+	float render_key_pitch_offset = 0.0f;
+
+	if ((allow_realtime_rotation_input == true) &&
+		(Camera_Debugmode == false) &&
+		(PlayerAI == false) &&
+		(myHuman->GetDeadFlag() == false) &&
+		(myHuman->GetDeadMotionFlag() == false)) {
+
+		bool turn_up = CheckInputControlRealtime(KEY_TURNUP);
+		bool turn_down = CheckInputControlRealtime(KEY_TURNDOWN);
+		bool turn_left = CheckInputControlRealtime(KEY_TURNLEFT);
+		bool turn_right = CheckInputControlRealtime(KEY_TURNRIGHT);
+
+		float next_add_rx = 0.0f;
+		float next_add_ry = 0.0f;
+
+		if ((turn_left == true) && (turn_right == false)) {
+			next_add_rx =
+				add_camera_rx +
+				(INPUT_ARROWKEYS_ANGLE * -1.0f - add_camera_rx) * 0.2f;
+		}
+		else if ((turn_right == true) && (turn_left == false)) {
+			next_add_rx =
+				add_camera_rx +
+				(INPUT_ARROWKEYS_ANGLE - add_camera_rx) * 0.2f;
+		}
+
+		if ((turn_up == true) && (turn_down == false)) {
+			next_add_ry =
+				add_camera_ry +
+				(INPUT_ARROWKEYS_ANGLE - add_camera_ry) * 0.2f;
+		}
+		else if ((turn_down == true) && (turn_up == false)) {
+			next_add_ry =
+				add_camera_ry +
+				(INPUT_ARROWKEYS_ANGLE * -1.0f - add_camera_ry) * 0.2f;
+		}
+
+		render_key_yaw_offset =
+			next_add_rx * render_interpolation_alpha;
+		render_key_pitch_offset =
+			next_add_ry * render_interpolation_alpha;
+	}
+
+	// 자유 카메라의 방향키 회전도 논리 틱 사이를 렌더링에서 보간한다.
+	if ((Camera_Debugmode == true) &&
+		(allow_realtime_rotation_input == true)) {
+
+		float preview_camera_rx = camera_rx;
+		float preview_camera_ry = camera_ry;
+		float key_step =
+			INPUT_ARROWKEYS_ANGLE * render_interpolation_alpha;
+
+		if (CheckInputControlRealtime(KEY_TURNUP) == true) {
+			preview_camera_ry += key_step;
+		}
+		if (CheckInputControlRealtime(KEY_TURNDOWN) == true) {
+			preview_camera_ry -= key_step;
+		}
+		if (CheckInputControlRealtime(KEY_TURNLEFT) == true) {
+			preview_camera_rx += key_step;
+		}
+		if (CheckInputControlRealtime(KEY_TURNRIGHT) == true) {
+			preview_camera_rx -= key_step;
+		}
+
+		if (preview_camera_ry > DegreeToRadian(70)) {
+			preview_camera_ry = DegreeToRadian(70);
+		}
+		if (preview_camera_ry < DegreeToRadian(-70)) {
+			preview_camera_ry = DegreeToRadian(-70);
+		}
+
+		draw_camera_rx = preview_camera_rx;
+		draw_camera_ry = preview_camera_ry;
+	}
+
+	// 1인칭에서도 렌더 주기에 들어온 최신 마우스 입력을
+	// 카메라 위치와 방향에 즉시 반영한다.
+	// 각도만 바꾸거나 이전/현재 각도를 보간하면 카메라 위치와 방향이 어긋난다.
+	// 렌더 프레임에서 수집한 최신 마우스 이동량으로 각도와 카메라 위치를 함께 다시 계산한다.
+	if ((Camera_F1mode == false) &&
+		(Camera_Debugmode == false) &&
+		(PlayerAI == false) &&
+		(myHuman->GetDeadFlag() == false) &&
+		(myHuman->GetDeadMotionFlag() == false)) {
+
+		float preview_mouse_rx = mouse_rx;
+		float preview_mouse_ry = mouse_ry;
+
+		ScopeParameter mouse_scope_param;
+		int mouse_scope_mode = myHuman->GetScopeMode();
+		GameParamInfo.GetScopeParam(mouse_scope_mode, &mouse_scope_param);
+
+		float preview_sensitivity =
+			DegreeToRadian(1) *
+			mouse_scope_param.MouseRange *
+			GameConfig.GetMouseSensitivity();
+
+		// InputPlayer()와 동일한 조준 감도 보정을 사용한다.
+		if (mouse_scope_mode != 0) {
+			if (mouse_scope_mode == 7) {
+				float zoom = myHuman->CustomZoom;
+				if (zoom < 1.5f) { zoom = 1.5f; }
+				if (zoom > 10.0f) { zoom = 10.0f; }
+
+				float zoom_scale = 2.0f / sqrtf(zoom);
+				if (zoom_scale < 0.35f) { zoom_scale = 0.35f; }
+				preview_sensitivity *= zoom_scale;
+			}
+			else {
+				preview_sensitivity *= 0.75f;
+			}
+		}
+
+		preview_mouse_rx +=
+			(float)render_pending_mouse_x * preview_sensitivity;
+		preview_mouse_rx += render_key_yaw_offset;
+
+		float preview_recoil_y = render_recoil_y;
+		float preview_pull_down =
+			(float)render_pending_mouse_y * preview_sensitivity;
+
+		// 실제 로직을 변경하지 않고 InputPlayer()의 반동 상쇄 결과만 미리 계산한다.
+		if ((preview_pull_down > 0.0f) && (preview_recoil_y > 0.0f)) {
+			if (preview_recoil_y >= preview_pull_down) {
+				preview_recoil_y -= preview_pull_down;
+				preview_pull_down = 0.0f;
+			}
+			else {
+				preview_pull_down -= preview_recoil_y;
+				preview_recoil_y = 0.0f;
+			}
+		}
+
+		preview_mouse_ry -= preview_pull_down;
+		preview_mouse_ry += render_key_pitch_offset;
+
+		if (preview_mouse_ry > DegreeToRadian(70)) {
+			preview_mouse_ry = DegreeToRadian(70);
+		}
+		if (preview_mouse_ry < DegreeToRadian(-70)) {
+			preview_mouse_ry = DegreeToRadian(-70);
+		}
+
+		float render_crx =
+			view_rx + preview_mouse_rx * -1 +
+			(float)M_PI / 2 + render_recoil_x;
+
+		float render_cry =
+			view_ry + preview_mouse_ry + preview_recoil_y;
+
+		float view_height = VIEW_HEIGHT;
+		if (myHuman->GetCrouchFlag() == true) {
+			view_height -= 2.0f;
+		}
+
+		// 카메라 위치와 방향을 반드시 같은 렌더 각도에서 계산한다.
+		draw_camera_x =
+			render_player_x + cosf(render_crx) * cosf(render_cry) * VIEW_DIST;
+		draw_camera_y =
+			render_player_y + view_height + sinf(render_cry) * VIEW_DIST;
+		draw_camera_z =
+			render_player_z + sinf(render_crx) * cosf(render_cry) * VIEW_DIST;
+		draw_camera_rx = render_crx;
+		draw_camera_ry = render_cry;
+
+		// 캐릭터 전체 회전도 같은 최신 입력을 사용한다.
+		// 이전/현재 각도를 섞는 보간이 아니라 아직 로직에 반영되지 않은 실제 입력만 더한다.
+		render_player_yaw_offset = preview_mouse_rx - mouse_rx;
+		while (render_player_yaw_offset > (float)M_PI) {
+			render_player_yaw_offset -= (float)M_PI * 2.0f;
+		}
+		while (render_player_yaw_offset < (float)-M_PI) {
+			render_player_yaw_offset += (float)M_PI * 2.0f;
+		}
+
+		render_player_pitch_offset =
+			(preview_mouse_ry + preview_recoil_y) -
+			(mouse_ry + actual_recoil_y);
+
+		use_realtime_thirdperson_mouse = true;
+	}
+
+
+	// 실제 3인칭은 Camera_F1mode == true이다.
+	// 기존 실시간 마우스 처리는 1인칭(Camera_F1mode == false)에만 적용되어
+	// 3인칭 카메라 위치와 방향이 계속 33FPS 로직 값으로 갱신되고 있었다.
+	if ((Camera_F1mode == true) &&
+		(Camera_Debugmode == false) &&
+		(PlayerAI == false) &&
+		(myHuman->GetDeadFlag() == false) &&
+		(myHuman->GetDeadMotionFlag() == false)) {
+
+		float preview_mouse_rx = mouse_rx;
+		float preview_mouse_ry = mouse_ry;
+
+		ScopeParameter mouse_scope_param;
+		int mouse_scope_mode = myHuman->GetScopeMode();
+		GameParamInfo.GetScopeParam(mouse_scope_mode, &mouse_scope_param);
+
+		float preview_sensitivity =
+			DegreeToRadian(1) *
+			mouse_scope_param.MouseRange *
+			GameConfig.GetMouseSensitivity();
+
+		if (mouse_scope_mode != 0) {
+			if (mouse_scope_mode == 7) {
+				float zoom = myHuman->CustomZoom;
+				if (zoom < 1.5f) { zoom = 1.5f; }
+				if (zoom > 10.0f) { zoom = 10.0f; }
+
+				float zoom_scale = 2.0f / sqrtf(zoom);
+				if (zoom_scale < 0.35f) { zoom_scale = 0.35f; }
+				preview_sensitivity *= zoom_scale;
+			}
+			else {
+				preview_sensitivity *= 0.75f;
+			}
+		}
+
+		preview_mouse_rx +=
+			(float)render_pending_mouse_x * preview_sensitivity;
+		preview_mouse_ry -=
+			(float)render_pending_mouse_y * preview_sensitivity;
+		preview_mouse_rx += render_key_yaw_offset;
+		preview_mouse_ry += render_key_pitch_offset;
+
+		if (preview_mouse_ry > DegreeToRadian(70)) {
+			preview_mouse_ry = DegreeToRadian(70);
+		}
+		if (preview_mouse_ry < DegreeToRadian(-70)) {
+			preview_mouse_ry = DegreeToRadian(-70);
+		}
+
+		// 3인칭 궤도 카메라의 숫자 키패드 회전도 다음 로직 틱까지
+		// 기다리지 않고 현재 렌더 비율만큼 미리 반영한다.
+		float preview_view_rx = view_rx;
+		float preview_view_ry = view_ry;
+
+		if (allow_realtime_rotation_input == true) {
+			float keypad_step =
+				INPUT_F1NUMKEYS_ANGLE * render_interpolation_alpha;
+
+			if (inputCtrl->CheckKeyNowRealtime(
+				OriginalkeycodeToDinputdef(0x0C)) == true) { // NUM8
+				preview_view_ry -= keypad_step;
+			}
+			if (inputCtrl->CheckKeyNowRealtime(
+				OriginalkeycodeToDinputdef(0x09)) == true) { // NUM5
+				preview_view_ry += keypad_step;
+			}
+			if (inputCtrl->CheckKeyNowRealtime(
+				OriginalkeycodeToDinputdef(0x08)) == true) { // NUM4
+				preview_view_rx -= keypad_step;
+			}
+			if (inputCtrl->CheckKeyNowRealtime(
+				OriginalkeycodeToDinputdef(0x0A)) == true) { // NUM6
+				preview_view_rx += keypad_step;
+			}
+		}
+
+		float render_crx =
+			preview_view_rx + preview_mouse_rx * -1 +
+			(float)M_PI / 2;
+
+		// Process()의 F1 카메라와 같은 계산을 렌더 시점의 최신 각도로 다시 수행한다.
+		float render_cry_base =
+			preview_view_ry + preview_mouse_ry -
+			(float)M_PI / 2;
+
+		float ccx =
+			render_player_x -
+			cosf(render_crx) * cosf(render_cry_base) * 3.0f;
+		float ccy =
+			render_player_y + HUMAN_HEIGHT - 0.5f +
+			sinf(render_cry_base * -1.0f) * 2.5f;
+		float ccz =
+			render_player_z -
+			sinf(render_crx) * cosf(render_cry_base) * 3.0f;
+
+		float render_cry = render_cry_base + (float)M_PI / 2;
+		float dist = VIEW_F1MODE_DIST;
+
+		if (CollD.CheckALLBlockIntersectRay(
+			ccx,
+			ccy,
+			ccz,
+			cosf(render_crx) * cosf(render_cry) * -1.0f,
+			sinf(render_cry * -1.0f),
+			sinf(render_crx) * cosf(render_cry) * -1.0f,
+			NULL,
+			NULL,
+			&dist,
+			VIEW_F1MODE_DIST
+		) == true) {
+			dist -= 1.0f;
+			if (dist < 0.0f) { dist = 0.0f; }
+		}
+		else {
+			dist = VIEW_F1MODE_DIST;
+		}
+
+		draw_camera_x =
+			ccx - cosf(render_crx) * cosf(render_cry) * dist;
+		draw_camera_y =
+			ccy + sinf(render_cry * -1.0f) * dist;
+		draw_camera_z =
+			ccz - sinf(render_crx) * cosf(render_cry) * dist;
+		draw_camera_rx = render_crx;
+		draw_camera_ry = render_cry;
+
+		// 화면에 보이는 플레이어 모델도 같은 최신 마우스 방향을 사용한다.
+		render_player_yaw_offset = preview_mouse_rx - mouse_rx;
+		while (render_player_yaw_offset > (float)M_PI) {
+			render_player_yaw_offset -= (float)M_PI * 2.0f;
+		}
+		while (render_player_yaw_offset < (float)-M_PI) {
+			render_player_yaw_offset += (float)M_PI * 2.0f;
+		}
+
+		render_player_pitch_offset =
+			(preview_mouse_ry - mouse_ry) +
+			(render_recoil_y - actual_recoil_y);
+
+		use_realtime_thirdperson_mouse = true;
+	}
+
+	// 수류탄 궤적 등 플레이어 기준 직접 렌더링도 모델과 같은 최신 각도를 사용한다.
+	render_visual_player_rx = prx + render_player_yaw_offset;
+	while (render_visual_player_rx > (float)M_PI) {
+		render_visual_player_rx -= (float)M_PI * 2.0f;
+	}
+	while (render_visual_player_rx < (float)-M_PI) {
+		render_visual_player_rx += (float)M_PI * 2.0f;
+	}
+	render_visual_player_ry = pry + render_player_pitch_offset;
 
 	// [✨ 추가] 최종 시야각(View Angle) 계산 로직
 	// 1. 기본 시야각 설정 (기존 38도)
 	float final_viewangle = DegreeToRadian(65.0f);
 	int current_scope = myHuman->GetScopeMode();   // 현재 조준 상태 (0이면 비조준)
-	static float smooth_zoom = 1.5f;
-	static int prev_scope = 0;
-	static int prev_weapon = -1;
-
 	int current_weapon = myHuman->GetMainWeaponTypeNO();
+
+	// 함수 내부 static 값은 맵 재시작이나 플레이어 교체 뒤에도 남는다.
+	// 화면 기준이 바뀐 첫 렌더에서는 이전 확대 보간을 폐기한다.
+	if (reset_render_view_state == true) {
+		render_smooth_zoom = 1.5f;
+		render_previous_scope = 0;
+		render_previous_weapon = -1;
+	}
 
 	if ((Camera_F1mode == false) && (Camera_Debugmode == false)) {
 		// [핵심] 조준 중일 때만(current_scope != 0) 확대 로직을 실행합니다.
@@ -6979,17 +7945,21 @@ void maingame::Render3D()
 
 				// 조준에 막 진입했거나 무기가 바뀐 순간에는 보간하지 않고 즉시 맞춤
 				// 이걸 안 하면 1프레임 정도 FOV가 튀면서 화면이 흔들릴 수 있음
-				if (prev_scope == 0 || prev_weapon != current_weapon) {
-					smooth_zoom = target_zoom;
+				if (render_previous_scope == 0 ||
+					render_previous_weapon != current_weapon) {
+					render_smooth_zoom = target_zoom;
 				}
 				else {
-					smooth_zoom += (target_zoom - smooth_zoom) * 0.22f;
+					render_smooth_zoom +=
+						(target_zoom - render_smooth_zoom) * 0.22f;
 				}
 
-				final_viewangle = DegreeToRadian(65.0f) / smooth_zoom;
+				final_viewangle =
+					DegreeToRadian(65.0f) / render_smooth_zoom;
 			}
 			else {
-				smooth_zoom += (1.0f - smooth_zoom) * 0.25f;
+				render_smooth_zoom +=
+					(1.0f - render_smooth_zoom) * 0.25f;
 
 				ScopeParameter sparam;
 				GameParamInfo.GetScopeParam(current_scope, &sparam);
@@ -7002,13 +7972,17 @@ void maingame::Render3D()
 		final_viewangle = DegreeToRadian(65.0f);
 	}
 
-	prev_scope = current_scope;
-	prev_weapon = current_weapon;
+	render_previous_scope = current_scope;
+	render_previous_weapon = current_weapon;
+	render_view_state_player = myHuman;
+	render_view_state_dead = myHuman->GetDeadFlag();
+	render_view_state_dead_motion = myHuman->GetDeadMotionFlag();
+	render_view_state_f1mode = Camera_F1mode;
+	render_view_state_debugmode = Camera_Debugmode;
+	render_view_state_valid = true;
 
-	// 현재 카메라 기준으로 월드와 HUD를 그린다.
-	SyncDrawCamera();
-
-	d3dg->SetCamera(camera_x, camera_y, camera_z, camera_rx, camera_ry, final_viewangle);
+	// 보간된 카메라 기준으로 월드와 HUD를 그린다.
+	d3dg->SetCamera(draw_camera_x, draw_camera_y, draw_camera_z, draw_camera_rx, draw_camera_ry, final_viewangle);
 
 	//긲긅긐궴긇긽깋귩먠믦
 	bool currentFog = FogFlag;
@@ -7033,20 +8007,9 @@ void maingame::Render3D()
 	}
 
 	d3dg->SetFog(currentFog, SkyNumber);
-	if ((Camera_F1mode == false) && (Camera_Debugmode == false)) {
-		ScopeParameter sparam;
-		int scopemode = myHuman->GetScopeMode();
-		GameParamInfo.GetScopeParam(scopemode, &sparam);
-
-	}
-	else {
-		ScopeParameter sparam;
-		GameParamInfo.GetScopeParam(0, &sparam);
-
-	}
 
 	//긇긽깋띆뷭궸봶똧뗴귩?됪
-	d3dg->SetWorldTransform(camera_x, camera_y, camera_z, 0.0f, 0.0f, 2.0f);
+	d3dg->SetWorldTransform(draw_camera_x, draw_camera_y, draw_camera_z, 0.0f, 0.0f, 2.0f);
 	Resource.GetSkyModelTexture(&skymodel, &skytexture);
 	d3dg->RenderModel(skymodel, skytexture, DarkScreenFlag, false, false);
 
@@ -7075,9 +8038,38 @@ void maingame::Render3D()
 
 
 
-	//긆긳긙긃긏긣귩?됪
-	// 오브젝트 보간도 전체 비활성화한다.
-	ObjMgr.Render(camera_x, camera_y, camera_z, camera_rx, camera_ry, DrawPlayer, nomodel);
+	// 플레이어 몸통/다리/팔/무기에 같은 보간 위치를 적용한다.
+	// 실제 pos_x/y/z는 바꾸지 않으므로 충돌, AI, 사격 판정에는 영향이 없다.
+// 위치만 보간한다.
+// 몸통, 팔, 다리, 무기의 회전과 애니메이션은 현재 로직값을 그대로 사용한다.
+	myHuman->SetRenderPositionOverride(
+		render_player_x,
+		render_player_y,
+		render_player_z
+	);
+
+	if (use_realtime_thirdperson_mouse == true) {
+		myHuman->SetRenderAngleOffset(
+			render_player_yaw_offset,
+			render_player_pitch_offset
+		);
+	}
+
+	ObjMgr.Render(
+		draw_camera_x,
+		draw_camera_y,
+		draw_camera_z,
+		draw_camera_rx,
+		draw_camera_ry,
+		DrawPlayer,
+		nomodel
+	);
+
+	if (use_realtime_thirdperson_mouse == true) {
+		myHuman->ClearRenderAngleOffset();
+	}
+
+	myHuman->ClearRenderPositionOverride();
 
 	// 시민A 응급 치료 성공 이펙트 표시
 	RenderPlayerHealEffect(myHuman);
@@ -7569,26 +8561,87 @@ void maingame::RenderMapControlGuide(int map_x, int map_y, int map_size)
 
 	int line_h = 14;
 	int padding = 6;
-	int box_w = 230;
-	int box_h = line_h * 2 + padding * 2;
+	int guide_box_w = 230;
+	int guide_box_h = line_h * 3 + padding * 2;
+	int status_box_h = line_h + padding * 2;
 
-	int x = map_x + 12;
-	int y = map_y + 12;
+	// 현재 층 상태는 기존처럼 지도 왼쪽 위에 둔다.
+	int status_x = map_x + 12;
+	int status_y = map_y + 12;
+
+	// 조작법은 상태와 분리하여 지도 오른쪽 위에 표시한다.
+	int guide_x = map_x + map_size - guide_box_w - 12;
+	int guide_y = map_y + 12;
 
 	int bg_color = d3dg->GetColorCode(0.0f, 0.0f, 0.0f, 0.55f);
 	int border_color = d3dg->GetColorCode(0.55f, 0.95f, 1.00f, 0.60f);
 	int text_color = d3dg->GetColorCode(0.55f, 0.95f, 1.00f, 0.95f);
+	int shadow_color = d3dg->GetColorCode(0.0f, 0.0f, 0.0f, 1.0f);
 
-	d3dg->Draw2DBox(x, y, x + box_w, y + box_h, bg_color);
+	char floor_status[48];
 
-	d3dg->Draw2DBox(x, y, x + box_w, y + 1, border_color);
-	d3dg->Draw2DBox(x, y + box_h - 1, x + box_w, y + box_h, border_color);
-	d3dg->Draw2DBox(x, y, x + 1, y + box_h, border_color);
-	d3dg->Draw2DBox(x + box_w - 1, y, x + box_w, y + box_h, border_color);
+	if (FullMapFloorManual == false) {
+		strcpy(floor_status, "FLOOR: AUTO");
+	}
+	else {
+		sprintf(floor_status, "FLOOR: %+d", FullMapFloorOffset);
+	}
+
+	// 현재 문자열 길이에 맞춰 상태창 너비를 정한다.
+	// 제거된 CURRENT 표시를 기준으로 남아 있던 오른쪽 여백을 없앤다.
+	int status_box_w =
+		(int)strlen(floor_status) * 8 +
+		padding * 2;
+
+	// 왼쪽 위: 현재 상태만 표시한다.
+	d3dg->Draw2DBox(
+		status_x,
+		status_y,
+		status_x + status_box_w,
+		status_y + status_box_h,
+		bg_color
+	);
+
+	d3dg->Draw2DBox(status_x, status_y, status_x + status_box_w, status_y + 1, border_color);
+	d3dg->Draw2DBox(status_x, status_y + status_box_h - 1, status_x + status_box_w, status_y + status_box_h, border_color);
+	d3dg->Draw2DBox(status_x, status_y, status_x + 1, status_y + status_box_h, border_color);
+	d3dg->Draw2DBox(status_x + status_box_w - 1, status_y, status_x + status_box_w, status_y + status_box_h, border_color);
+
+	d3dg->Draw2DTextureDebugFontText(
+		status_x + padding + 1,
+		status_y + padding + 1,
+		floor_status,
+		shadow_color
+	);
+	d3dg->Draw2DTextureDebugFontText(
+		status_x + padding,
+		status_y + padding,
+		floor_status,
+		text_color
+	);
+
+	// 조작 안내를 꺼도 왼쪽 위의 현재 층 상태는 계속 표시한다.
+	if (GameConfig.GetControlGuideFlag() == false) {
+		return;
+	}
+
+	// 오른쪽 위: 지도 조작법만 표시한다.
+	d3dg->Draw2DBox(
+		guide_x,
+		guide_y,
+		guide_x + guide_box_w,
+		guide_y + guide_box_h,
+		bg_color
+	);
+
+	d3dg->Draw2DBox(guide_x, guide_y, guide_x + guide_box_w, guide_y + 1, border_color);
+	d3dg->Draw2DBox(guide_x, guide_y + guide_box_h - 1, guide_x + guide_box_w, guide_y + guide_box_h, border_color);
+	d3dg->Draw2DBox(guide_x, guide_y, guide_x + 1, guide_y + guide_box_h, border_color);
+	d3dg->Draw2DBox(guide_x + guide_box_w - 1, guide_y, guide_x + guide_box_w, guide_y + guide_box_h, border_color);
 
 	DrawControlGuideLine(
-		x + padding,
-		y + padding,
+		guide_x + padding,
+		guide_y + padding,
 		"CLOSE MAP",
 		GetControlGuideKeyName(KEY_MAP),
 		text_color,
@@ -7596,10 +8649,19 @@ void maingame::RenderMapControlGuide(int map_x, int map_y, int map_size)
 	);
 
 	DrawControlGuideLine(
-		x + padding,
-		y + padding + line_h,
+		guide_x + padding,
+		guide_y + padding + line_h,
 		"MAP ZOOM",
 		"MOUSE WHEEL",
+		text_color,
+		text_color
+	);
+
+	DrawControlGuideLine(
+		guide_x + padding,
+		guide_y + padding + line_h * 2,
+		"FLOOR SELECT",
+		" / ",
 		text_color,
 		text_color
 	);
@@ -7911,7 +8973,7 @@ void maingame::Render2D()
 	int selectweaponcnt = 0;
 	int changeweaponidcnt = 0;
 	int changeweaponid_total_time = 0;
-	int weaponmodel, weapontexture;
+	//int weaponmodel, weapontexture;
 	char weaponname[24 + 1];
 	int hp;
 	int param_scopemode;
@@ -8539,8 +9601,10 @@ void maingame::Render2D()
 			}
 		}
 
-		// 무기 HUD 위에 현재 사용 가능한 조작키를 표시한다.
-		RenderPlayerControlGuide(myHuman, display_hud_weapon_id);
+		// 설정이 켜져 있을 때만 무기 HUD 위에 현재 사용 가능한 조작키를 표시한다.
+		if (GameConfig.GetControlGuideFlag() == true) {
+			RenderPlayerControlGuide(myHuman, display_hud_weapon_id);
+		}
 	}
 
 	// 플레이어 스킬 화면 효과
@@ -9038,6 +10102,8 @@ void maingame::Render2D()
 	}
 
 #ifdef ENABLE_DEBUGCONSOLE
+	RenderDebugWeaponOverlay();
+
 	//AI긢긫긞긏륃뺪?렑
 	if( AIdebuginfoID != -1 ){
 		if( (0 <= AIdebuginfoID)&&(AIdebuginfoID < MAX_HUMAN) ){
@@ -9216,6 +10282,971 @@ bool maingame::GetRadarPos(float in_x, float in_y, float in_z, int RadarPosX, in
 	return outf;
 }
 
+void maingame::ResetFullMapFloorSelection()
+{
+	FullMapFloorManual = false;
+	FullMapFloorOffset = 0;
+	FullMapFloorCurrentIndex = -1;
+	FullMapFloorSelectedIndex = -1;
+	FullMapFloorCount = 0;
+	FullMapFloorReferenceY = 0.0f;
+	FullMapFloorSyncValid = false;
+	FullMapFloorSyncX = 0.0f;
+	FullMapFloorSyncY = 0.0f;
+	FullMapFloorSyncZ = 0.0f;
+
+	for (int i = 0; i < MAX_FULLMAP_FLOORS; i++) {
+		FullMapFloorHeight[i] = 0.0f;
+	}
+}
+
+bool maingame::GetRadarSupportFloorHeight(human* radar_player, float* floor_y)
+{
+	if ((radar_player == NULL) || (floor_y == NULL)) {
+		return false;
+	}
+
+	float player_x, player_y, player_z;
+	radar_player->GetPosData(
+		&player_x,
+		&player_y,
+		&player_z,
+		NULL
+	);
+
+	int underblock_id = -1;
+	int underblock_face = -1;
+	radar_player->GetUnderBlock(
+		&underblock_id,
+		&underblock_face
+	);
+
+	if ((underblock_id < 0) ||
+		(underblock_id >= BlockData.GetTotaldatas()) ||
+		(underblock_face < 0) ||
+		(underblock_face >= 6)) {
+		return false;
+	}
+
+	blockdata data;
+	BlockData.Getdata(&data, underblock_id);
+
+	int vertex_id[4];
+	if (blockdataface(underblock_face, vertex_id, NULL) == false) {
+		return false;
+	}
+
+	// 평평한 바닥에서는 충돌면의 실제 높이를 사용한다.
+	// 경사면에서는 면 중앙 높이가 플레이어 위치의 높이와 다를 수 있으므로
+	// 기존처럼 플레이어 발 높이를 사용한다.
+	if (data.material[underblock_face].vy >= 0.98f) {
+		*floor_y =
+			(data.y[vertex_id[0]] +
+				data.y[vertex_id[1]] +
+				data.y[vertex_id[2]] +
+				data.y[vertex_id[3]]) * 0.25f;
+	}
+	else {
+		*floor_y = player_y;
+	}
+
+	return true;
+}
+
+void maingame::UpdateRadarFloorReference(human* radar_player)
+{
+	if (radar_player == NULL) {
+		return;
+	}
+
+	// 조작 플레이어가 바뀌면 이전 플레이어의 층 높이와 수동 선택을 이어받지 않는다.
+	// 디버그 캐릭터 전환과 콘솔 player 명령 등 모든 SetPlayerID 경로를 한곳에서 처리한다.
+	int current_player_id = ObjMgr.GetPlayerID();
+	if (RadarFloorReferencePlayerID != current_player_id) {
+		ResetFullMapFloorSelection();
+		RadarFloorReferenceValid = false;
+		RadarFloorReferenceY = 0.0f;
+		RadarFloorReferencePlayerID = current_player_id;
+
+		for (int i = 0; i < MAX_HUMAN; i++) {
+			radar_human_height_layer[i] = 0;
+		}
+	}
+
+	float player_x, player_y, player_z;
+	radar_player->GetPosData(
+		&player_x,
+		&player_y,
+		&player_z,
+		NULL
+	);
+
+	float support_floor_y;
+	bool support_floor_valid =
+		GetRadarSupportFloorHeight(
+			radar_player,
+			&support_floor_y
+		);
+
+	if (RadarFloorReferenceValid == false) {
+		if (support_floor_valid == true) {
+			RadarFloorReferenceY =
+				support_floor_y + VIEW_HEIGHT;
+		}
+		else {
+			RadarFloorReferenceY =
+				player_y + VIEW_HEIGHT;
+		}
+
+		RadarFloorReferenceValid = true;
+		return;
+	}
+
+	// 실제 바닥에 접촉한 프레임에서만 기준 높이를 갱신한다.
+	// 평평한 바닥에서는 충돌면 자체의 높이를 사용하므로 플레이어 좌표의
+	// 작은 오차 때문에 선택 층 도착 판정이 누락되는 것을 막는다.
+	// 점프하거나 낙하하는 동안에는 마지막 바닥 높이를 유지한다.
+	if (support_floor_valid == true) {
+		RadarFloorReferenceY =
+			support_floor_y + VIEW_HEIGHT;
+	}
+}
+
+void maingame::BuildFullMapFloorList(float player_x, float player_y, float player_z)
+{
+	const int max_candidates = 128;
+	const float horizontal_normal_min = 0.98f;
+	const float floor_merge_height = 4.0f;
+	const float minimum_floor_separation = 30.0f;
+	const float minimum_face_area = 16.0f;
+
+	// 상자, 책상, 좁은 발판의 윗면이 층으로 등록되지 않도록
+	// 한 개의 충분히 넓은 면이 있거나 같은 높이의 면적 합계가
+	// 실제 방 바닥 규모에 도달한 후보만 층으로 사용한다.
+	const float minimum_single_floor_face_area = 800.0f;
+	const float minimum_merged_floor_area = 1400.0f;
+
+	const float floor_search_radius = 600.0f;
+	const float floor_search_height = 400.0f;
+
+	float candidate_height[max_candidates];
+	float candidate_area[max_candidates];
+	float candidate_largest_face_area[max_candidates];
+	int candidate_count = 0;
+
+	int block_count = BlockData.GetTotaldatas();
+
+	for (int block_id = 0; block_id < block_count; block_id++) {
+		blockdata data;
+		BlockData.Getdata(&data, block_id);
+
+		for (int face = 0; face < 6; face++) {
+			// 위를 향하고 수평에 가까운 면만 바닥 후보로 사용한다.
+			// 완만한 야외 경사와 언덕이 별도 층으로 잡히는 것을 줄이기 위한 제한이다.
+			if (data.material[face].vy < horizontal_normal_min) {
+				continue;
+			}
+
+			int vertex_id[4];
+			if (blockdataface(face, vertex_id, NULL) == false) {
+				continue;
+			}
+
+			float min_x = data.x[vertex_id[0]];
+			float max_x = min_x;
+			float min_z = data.z[vertex_id[0]];
+			float max_z = min_z;
+			float face_height = 0.0f;
+			float twice_area = 0.0f;
+
+			for (int i = 0; i < 4; i++) {
+				int next = (i + 1) % 4;
+				int id = vertex_id[i];
+				int next_id = vertex_id[next];
+
+				if (data.x[id] < min_x) { min_x = data.x[id]; }
+				if (data.x[id] > max_x) { max_x = data.x[id]; }
+				if (data.z[id] < min_z) { min_z = data.z[id]; }
+				if (data.z[id] > max_z) { max_z = data.z[id]; }
+
+				face_height += data.y[id];
+				twice_area +=
+					data.x[id] * data.z[next_id] -
+					data.x[next_id] * data.z[id];
+			}
+
+			// 플레이어 주변과 겹치는 수평 면만 조사한다.
+			// 전체 맵의 먼 언덕이나 건물 높이가 현재 건물의 층 목록에 섞이는 것을 막는다.
+			if ((max_x < player_x - floor_search_radius) ||
+				(min_x > player_x + floor_search_radius) ||
+				(max_z < player_z - floor_search_radius) ||
+				(min_z > player_z + floor_search_radius)) {
+				continue;
+			}
+
+			face_height *= 0.25f;
+
+			if (fabsf(face_height - player_y) > floor_search_height) {
+				continue;
+			}
+
+			float face_area = fabsf(twice_area) * 0.5f;
+			if (face_area < minimum_face_area) {
+				continue;
+			}
+
+			int merge_id = -1;
+			float nearest_height_difference =
+				floor_merge_height + 1.0f;
+
+			for (int i = 0; i < candidate_count; i++) {
+				float height_difference =
+					fabsf(candidate_height[i] - face_height);
+
+				if ((height_difference <= floor_merge_height) &&
+					(height_difference < nearest_height_difference)) {
+					merge_id = i;
+					nearest_height_difference = height_difference;
+				}
+			}
+
+			if (merge_id >= 0) {
+				float combined_area =
+					candidate_area[merge_id] + face_area;
+
+				candidate_height[merge_id] =
+					(candidate_height[merge_id] *
+						candidate_area[merge_id] +
+						face_height * face_area) /
+					combined_area;
+
+				candidate_area[merge_id] = combined_area;
+
+				if (face_area >
+					candidate_largest_face_area[merge_id]) {
+					candidate_largest_face_area[merge_id] =
+						face_area;
+				}
+
+			}
+			else if (candidate_count < max_candidates) {
+				candidate_height[candidate_count] =
+					face_height;
+				candidate_area[candidate_count] =
+					face_area;
+				candidate_largest_face_area[candidate_count] =
+					face_area;
+				candidate_count++;
+			}
+		}
+	}
+
+	// 높이 순서로 정렬한다.
+	for (int i = 1; i < candidate_count; i++) {
+		float height = candidate_height[i];
+		float area = candidate_area[i];
+		float largest_face_area =
+			candidate_largest_face_area[i];
+		int j = i - 1;
+
+		while ((j >= 0) &&
+			(candidate_height[j] > height)) {
+			candidate_height[j + 1] =
+				candidate_height[j];
+			candidate_area[j + 1] =
+				candidate_area[j];
+			candidate_largest_face_area[j + 1] =
+				candidate_largest_face_area[j];
+			j--;
+		}
+
+		candidate_height[j + 1] = height;
+		candidate_area[j + 1] = area;
+		candidate_largest_face_area[j + 1] =
+			largest_face_area;
+	}
+
+	// 현재 층은 주변의 임의 수평면에 스냅하지 않고,
+	// 실제 플레이어가 접촉한 바닥 높이를 그대로 사용한다.
+	// 가까운 책상이나 상자 윗면이 현재 층으로 바뀌는 것을 막는다.
+	float current_floor_height = player_y;
+
+	float lower_floor[MAX_FULLMAP_FLOORS];
+	float upper_floor[MAX_FULLMAP_FLOORS];
+	int lower_count = 0;
+	int upper_count = 0;
+	float previous_height = current_floor_height;
+
+	// 현재 층에서 가까운 아래층부터 수집한다.
+	for (int i = candidate_count - 1; i >= 0; i--) {
+		bool floor_surface_large_enough =
+			(candidate_largest_face_area[i] >=
+				minimum_single_floor_face_area) ||
+			(candidate_area[i] >=
+				minimum_merged_floor_area);
+
+		if (floor_surface_large_enough == false) {
+			continue;
+		}
+		if ((current_floor_height - candidate_height[i]) <
+			minimum_floor_separation) {
+			continue;
+		}
+		if ((previous_height - candidate_height[i]) <
+			minimum_floor_separation) {
+			continue;
+		}
+
+		if (lower_count < MAX_FULLMAP_FLOORS) {
+			lower_floor[lower_count] =
+				candidate_height[i];
+			lower_count++;
+			previous_height =
+				candidate_height[i];
+		}
+	}
+
+	previous_height = current_floor_height;
+
+	// 현재 층에서 가까운 위층부터 수집한다.
+	for (int i = 0; i < candidate_count; i++) {
+		bool floor_surface_large_enough =
+			(candidate_largest_face_area[i] >=
+				minimum_single_floor_face_area) ||
+			(candidate_area[i] >=
+				minimum_merged_floor_area);
+
+		if (floor_surface_large_enough == false) {
+			continue;
+		}
+		if ((candidate_height[i] - current_floor_height) <
+			minimum_floor_separation) {
+			continue;
+		}
+		if ((candidate_height[i] - previous_height) <
+			minimum_floor_separation) {
+			continue;
+		}
+
+		if (upper_count < MAX_FULLMAP_FLOORS) {
+			upper_floor[upper_count] =
+				candidate_height[i];
+			upper_count++;
+			previous_height =
+				candidate_height[i];
+		}
+	}
+
+	// 배열 용량을 넘는 맵에서는 현재 층에 가까운 층을 우선 남긴다.
+	int copy_lower_count = lower_count;
+	int copy_upper_count = upper_count;
+
+	while ((copy_lower_count +
+		copy_upper_count + 1) >
+		MAX_FULLMAP_FLOORS) {
+		if (copy_lower_count >
+			copy_upper_count) {
+			copy_lower_count--;
+		}
+		else {
+			copy_upper_count--;
+		}
+	}
+
+	FullMapFloorCount = 0;
+
+	// lower_floor는 가까운 층부터 저장되어 있으므로 역순으로 넣어 전체 배열을 오름차순으로 만든다.
+	for (int i = copy_lower_count - 1; i >= 0; i--) {
+		FullMapFloorHeight[FullMapFloorCount] =
+			lower_floor[i];
+		FullMapFloorCount++;
+	}
+
+	FullMapFloorCurrentIndex =
+		FullMapFloorCount;
+	FullMapFloorHeight[FullMapFloorCount] =
+		current_floor_height;
+	FullMapFloorCount++;
+
+	for (int i = 0; i < copy_upper_count; i++) {
+		FullMapFloorHeight[FullMapFloorCount] =
+			upper_floor[i];
+		FullMapFloorCount++;
+	}
+
+	FullMapFloorSelectedIndex =
+		FullMapFloorCurrentIndex;
+	FullMapFloorOffset = 0;
+
+	// 다음 재탐색 시 이동 거리와 실제 층 변경 여부를 비교할 기준 위치를 보관한다.
+	FullMapFloorSyncValid = true;
+	FullMapFloorSyncX = player_x;
+	FullMapFloorSyncY =
+		current_floor_height;
+	FullMapFloorSyncZ = player_z;
+}
+
+void maingame::SyncFullMapFloorSelection(human* myHuman)
+{
+	if (ShowFullMap == false) {
+		return;
+	}
+	if (myHuman == NULL) {
+		return;
+	}
+	if (FullMapFloorManual == false) {
+		return;
+	}
+	if ((FullMapFloorCount <= 0) ||
+		(FullMapFloorCount > MAX_FULLMAP_FLOORS) ||
+		(FullMapFloorCurrentIndex < 0) ||
+		(FullMapFloorCurrentIndex >= FullMapFloorCount) ||
+		(FullMapFloorCurrentIndex >= MAX_FULLMAP_FLOORS) ||
+		(FullMapFloorSelectedIndex < 0) ||
+		(FullMapFloorSelectedIndex >= FullMapFloorCount) ||
+		(FullMapFloorSelectedIndex >= MAX_FULLMAP_FLOORS)) {
+		ResetFullMapFloorSelection();
+		return;
+	}
+
+	UpdateRadarFloorReference(myHuman);
+
+	// UpdateRadarFloorReference()에서 조작 플레이어 변경을 감지하면
+	// 수동 선택이 초기화되므로 이후 배열 접근 전에 다시 확인한다.
+	if (FullMapFloorManual == false) {
+		return;
+	}
+	if ((FullMapFloorCount <= 0) ||
+		(FullMapFloorCount > MAX_FULLMAP_FLOORS) ||
+		(FullMapFloorCurrentIndex < 0) ||
+		(FullMapFloorCurrentIndex >= FullMapFloorCount) ||
+		(FullMapFloorCurrentIndex >= MAX_FULLMAP_FLOORS) ||
+		(FullMapFloorSelectedIndex < 0) ||
+		(FullMapFloorSelectedIndex >= FullMapFloorCount) ||
+		(FullMapFloorSelectedIndex >= MAX_FULLMAP_FLOORS)) {
+		ResetFullMapFloorSelection();
+		return;
+	}
+
+	float player_x, player_y, player_z;
+	myHuman->GetPosData(
+		&player_x,
+		&player_y,
+		&player_z,
+		NULL
+	);
+
+	if (RadarFloorReferenceValid == true) {
+		player_y = RadarFloorReferenceY - VIEW_HEIGHT;
+	}
+
+	// 선택한 층에 실제로 도착했는지는 목록 재탐색 주기와 관계없이
+	// 현재 접촉 바닥 높이로 먼저 판정한다.
+	// 구조물 후보 때문에 현재 층 인덱스가 달라져도 AUTO 복귀가 누락되지 않는다.
+	const float selected_floor_arrival_height = 10.0f;
+	float selected_floor_height =
+		FullMapFloorHeight[FullMapFloorSelectedIndex];
+
+	if (fabsf(player_y - selected_floor_height) <=
+		selected_floor_arrival_height) {
+		ResetFullMapFloorSelection();
+		return;
+	}
+
+	const float refresh_distance = 120.0f;
+	const float refresh_height = 12.0f;
+	float move_x = player_x - FullMapFloorSyncX;
+	float move_z = player_z - FullMapFloorSyncZ;
+
+	if ((FullMapFloorSyncValid == true) &&
+		(move_x * move_x + move_z * move_z <
+			refresh_distance * refresh_distance) &&
+		(fabsf(player_y - FullMapFloorSyncY) < refresh_height)) {
+		return;
+	}
+
+	// 재탐색 전 수동으로 보고 있던 실제 바닥 높이는 위에서 보존했다.
+	BuildFullMapFloorList(
+		player_x,
+		player_y,
+		player_z
+	);
+
+	// 층 목록을 다시 만든 직후 목록 크기와 인덱스를 다시 검사한다.
+	if ((FullMapFloorCount <= 0) ||
+		(FullMapFloorCount > MAX_FULLMAP_FLOORS) ||
+		(FullMapFloorCurrentIndex < 0) ||
+		(FullMapFloorCurrentIndex >= FullMapFloorCount) ||
+		(FullMapFloorCurrentIndex >= MAX_FULLMAP_FLOORS) ||
+		(FullMapFloorSelectedIndex < 0) ||
+		(FullMapFloorSelectedIndex >= FullMapFloorCount) ||
+		(FullMapFloorSelectedIndex >= MAX_FULLMAP_FLOORS)) {
+		ResetFullMapFloorSelection();
+		return;
+	}
+
+	const float selected_floor_match_height = 12.0f;
+	int nearest_selected_index = -1;
+	float nearest_selected_difference =
+		selected_floor_match_height + 1.0f;
+
+	for (int i = 0; i < FullMapFloorCount; i++) {
+		float height_difference =
+			fabsf(FullMapFloorHeight[i] - selected_floor_height);
+
+		if (height_difference < nearest_selected_difference) {
+			nearest_selected_index = i;
+			nearest_selected_difference = height_difference;
+		}
+	}
+
+	// 이동한 구역에서 기존 선택 층을 찾지 못했거나 플레이어가 그 층에 도착한 경우 AUTO로 돌아간다.
+	if ((nearest_selected_index < 0) ||
+		(nearest_selected_difference > selected_floor_match_height) ||
+		(nearest_selected_index == FullMapFloorCurrentIndex)) {
+		ResetFullMapFloorSelection();
+		return;
+	}
+
+	FullMapFloorManual = true;
+	FullMapFloorSelectedIndex = nearest_selected_index;
+	FullMapFloorOffset =
+		FullMapFloorSelectedIndex -
+		FullMapFloorCurrentIndex;
+
+	float base_reference_y = player_y + VIEW_HEIGHT;
+	if (RadarFloorReferenceValid == true) {
+		base_reference_y = RadarFloorReferenceY;
+	}
+
+	// 배열 접근 직전에 인덱스를 지역 변수로 고정한다.
+	// Visual Studio 코드 분석기도 범위 검사를 더 정확하게 추적할 수 있다.
+	const int selected_index =
+		FullMapFloorSelectedIndex;
+	const int current_index =
+		FullMapFloorCurrentIndex;
+
+	if ((FullMapFloorCount <= 0) ||
+		(FullMapFloorCount > MAX_FULLMAP_FLOORS) ||
+		(selected_index < 0) ||
+		(selected_index >= FullMapFloorCount) ||
+		(selected_index >= MAX_FULLMAP_FLOORS) ||
+		(current_index < 0) ||
+		(current_index >= FullMapFloorCount) ||
+		(current_index >= MAX_FULLMAP_FLOORS)) {
+		ResetFullMapFloorSelection();
+		return;
+	}
+
+	FullMapFloorReferenceY =
+		base_reference_y +
+		(FullMapFloorHeight[selected_index] -
+			FullMapFloorHeight[current_index]);
+}
+
+bool maingame::ChangeFullMapFloor(int direction, human* myHuman)
+{
+	if (ShowFullMap == false) {
+		return false;
+	}
+	if (myHuman == NULL) {
+		return false;
+	}
+	if (direction == 0) {
+		return false;
+	}
+
+	UpdateRadarFloorReference(myHuman);
+	SyncFullMapFloorSelection(myHuman);
+
+	// AUTO에서는 키를 누른 현재 위치를 기준으로 층 목록을 새로 만든다.
+	// 이전에 끝 층에서 입력해 남아 있던 목록이 이동 뒤 재사용되는 것을 막는다.
+	if ((FullMapFloorManual == false) ||
+		(FullMapFloorCount <= 0)) {
+		float player_x, player_y, player_z;
+		myHuman->GetPosData(
+			&player_x,
+			&player_y,
+			&player_z,
+			NULL
+		);
+
+		if (RadarFloorReferenceValid == true) {
+			player_y = RadarFloorReferenceY - VIEW_HEIGHT;
+		}
+
+		BuildFullMapFloorList(
+			player_x,
+			player_y,
+			player_z
+		);
+	}
+
+	// FullMapFloorCount만 정상이라고 해서 인덱스도 정상인 것은 아니다.
+	if ((FullMapFloorCount <= 0) ||
+		(FullMapFloorCount > MAX_FULLMAP_FLOORS) ||
+		(FullMapFloorCurrentIndex < 0) ||
+		(FullMapFloorCurrentIndex >= FullMapFloorCount) ||
+		(FullMapFloorCurrentIndex >= MAX_FULLMAP_FLOORS) ||
+		(FullMapFloorSelectedIndex < 0) ||
+		(FullMapFloorSelectedIndex >= FullMapFloorCount) ||
+		(FullMapFloorSelectedIndex >= MAX_FULLMAP_FLOORS)) {
+		ResetFullMapFloorSelection();
+		return false;
+	}
+
+	int base_index;
+
+	if (FullMapFloorManual == true) {
+		base_index = FullMapFloorSelectedIndex;
+	}
+	else {
+		base_index = FullMapFloorCurrentIndex;
+	}
+
+	int target_index =
+		base_index + ((direction > 0) ? 1 : -1);
+
+	if ((target_index < 0) ||
+		(target_index >= FullMapFloorCount)) {
+		return false;
+	}
+
+	// 수동 선택으로 현재 층까지 돌아오면 별도의 CURRENT 상태를 남기지 않고
+	// 즉시 AUTO로 복귀한다. 이후 실제 층 이동도 레이더 기준 높이가 따라간다.
+	if (target_index == FullMapFloorCurrentIndex) {
+		ResetFullMapFloorSelection();
+		return true;
+	}
+
+	FullMapFloorManual = true;
+	FullMapFloorSelectedIndex = target_index;
+	FullMapFloorOffset =
+		FullMapFloorSelectedIndex -
+		FullMapFloorCurrentIndex;
+
+	// 점프와 시점 각도에 영향을 받지 않는 레이더 기준 높이에서
+	// 선택한 층과 현재 층의 실제 높이 차이만 적용한다.
+	float base_reference_y = camera_y;
+	if (RadarFloorReferenceValid == true) {
+		base_reference_y = RadarFloorReferenceY;
+	}
+
+	const int selected_index =
+		FullMapFloorSelectedIndex;
+	const int current_index =
+		FullMapFloorCurrentIndex;
+
+	if ((FullMapFloorCount <= 0) ||
+		(FullMapFloorCount > MAX_FULLMAP_FLOORS) ||
+		(selected_index < 0) ||
+		(selected_index >= FullMapFloorCount) ||
+		(selected_index >= MAX_FULLMAP_FLOORS) ||
+		(current_index < 0) ||
+		(current_index >= FullMapFloorCount) ||
+		(current_index >= MAX_FULLMAP_FLOORS)) {
+		ResetFullMapFloorSelection();
+		return false;
+	}
+
+	FullMapFloorReferenceY =
+		base_reference_y +
+		(FullMapFloorHeight[selected_index] -
+			FullMapFloorHeight[current_index]);
+
+	return true;
+}
+
+int maingame::GetRadarHeightLayer(float local_y)
+{
+	const float same_floor_height = 20.0f;
+
+	if (local_y > same_floor_height) {
+		return 1;		// 위층
+	}
+
+	if (local_y < -same_floor_height) {
+		return -1;	// 아래층
+	}
+
+	return 0;		// 현재 층
+}
+
+int maingame::GetRadarHeightLayerWithHysteresis(float local_y, int previous_layer)
+{
+	// 계단이나 경사로에서 층 표시가 반복해서 바뀌지 않도록
+	// 다른 층 진입 기준과 현재 층 복귀 기준을 다르게 사용한다.
+	const float enter_other_floor_height = 24.0f;
+	const float return_same_floor_height = 16.0f;
+
+	if (previous_layer > 0) {
+		if (local_y < -enter_other_floor_height) {
+			return -1;
+		}
+		if (local_y < return_same_floor_height) {
+			return 0;
+		}
+		return 1;
+	}
+
+	if (previous_layer < 0) {
+		if (local_y > enter_other_floor_height) {
+			return 1;
+		}
+		if (local_y > -return_same_floor_height) {
+			return 0;
+		}
+		return -1;
+	}
+
+	if (local_y > enter_other_floor_height) {
+		return 1;
+	}
+
+	if (local_y < -enter_other_floor_height) {
+		return -1;
+	}
+
+	return 0;
+}
+
+void maingame::DrawRadarHeightMarker(
+	int x,
+	int y,
+	int height_layer,
+	int color,
+	int marker_size
+)
+{
+	if (height_layer == 0) {
+		return;
+	}
+
+	// 다른 층 표시는 기존 사각형 점과 정확히 같은 바운딩 크기의
+	// 채움 삼각형 하나만 그린다. 중심점, 간격, 별도 외곽선은 사용하지 않는다.
+	if (marker_size < 1) {
+		marker_size = 1;
+	}
+
+	// 기존 사각형 점보다 반지름을 1픽셀만 늘려
+	// 가로와 세로를 각각 2픽셀 크게 표시한다.
+	marker_size += 1;
+
+	const int top_y = y - marker_size;
+	const int bottom_y = y + marker_size;
+	const int triangle_height = bottom_y - top_y;
+
+	if (triangle_height <= 0) {
+		d3dg->Draw2DLine(x, y, x, y, color);
+		return;
+	}
+
+	for (int row = 0; row <= triangle_height; row++) {
+		int row_half_width;
+		int draw_y = top_y + row;
+
+		if (height_layer > 0) {
+			// 위층 ▲
+			// 꼭짓점은 기존 사각형의 윗변 중앙에 있고,
+			// 밑변은 기존 사각형의 아랫변과 정확히 일치한다.
+			row_half_width =
+				(marker_size * row) / triangle_height;
+		}
+		else {
+			// 아래층 ▼
+			// 윗변은 기존 사각형의 윗변과 정확히 일치하고,
+			// 꼭짓점은 기존 사각형의 아랫변 중앙에 있다.
+			row_half_width =
+				(marker_size * (triangle_height - row)) /
+				triangle_height;
+		}
+
+		d3dg->Draw2DLine(
+			x - row_half_width,
+			draw_y,
+			x + row_half_width,
+			draw_y,
+			color
+		);
+	}
+}
+
+void maingame::DrawRadarPlayerDirectionMarker(
+	int x,
+	int y,
+	float dir_x,
+	float dir_y,
+	int color
+)
+{
+	float direction_length = sqrtf(dir_x * dir_x + dir_y * dir_y);
+	if (direction_length <= 0.0001f) {
+		return;
+	}
+
+	dir_x /= direction_length;
+	dir_y /= direction_length;
+
+	float perpendicular_x = -dir_y;
+	float perpendicular_y = dir_x;
+
+	// 다른 층 캐릭터 삼각형과 비슷한 크기를 사용한다.
+	float ui_scale =
+		(float)GameConfig.GetScreenHeight() / 1080.0f;
+
+	int marker_size =
+		(int)(3.0f * ui_scale);
+
+	if (marker_size < 1) {
+		marker_size = 1;
+	}
+
+	marker_size += 2;
+
+	// 앞쪽 꼭짓점과 좌우 밑변 사이에 안쪽 홈을 둔 화살촉 형태로 만든다.
+	//
+	// 정점 순서:
+	//   0: 앞쪽 꼭짓점
+	//   1: 오른쪽 밑변
+	//   2: 안쪽으로 들어간 밑면 중앙
+	//   3: 왼쪽 밑변
+	const int vertex_count = 4;
+
+	float vertex_x[vertex_count];
+	float vertex_y[vertex_count];
+
+	float front_length = (float)marker_size + 1.0f;
+	float rear_length = (float)marker_size;
+	float half_width = (float)marker_size;
+
+	// 홈이 너무 얕아 사라지거나 너무 깊어 V자처럼 보이지 않도록 제한한다.
+	float notch_depth = (float)marker_size * 0.55f;
+	if (notch_depth < 1.0f) {
+		notch_depth = 1.0f;
+	}
+
+	float base_center_x =
+		(float)x - dir_x * rear_length;
+	float base_center_y =
+		(float)y - dir_y * rear_length;
+
+	// 앞쪽 꼭짓점
+	vertex_x[0] =
+		(float)x + dir_x * front_length;
+	vertex_y[0] =
+		(float)y + dir_y * front_length;
+
+	// 오른쪽 밑변
+	vertex_x[1] =
+		base_center_x +
+		perpendicular_x * half_width;
+	vertex_y[1] =
+		base_center_y +
+		perpendicular_y * half_width;
+
+	// 밑면 중앙의 안쪽 홈
+	vertex_x[2] =
+		base_center_x +
+		dir_x * notch_depth;
+	vertex_y[2] =
+		base_center_y +
+		dir_y * notch_depth;
+
+	// 왼쪽 밑변
+	vertex_x[3] =
+		base_center_x -
+		perpendicular_x * half_width;
+	vertex_y[3] =
+		base_center_y -
+		perpendicular_y * half_width;
+
+	float min_y = vertex_y[0];
+	float max_y = vertex_y[0];
+
+	for (int i = 1; i < vertex_count; i++) {
+		if (vertex_y[i] < min_y) { min_y = vertex_y[i]; }
+		if (vertex_y[i] > max_y) { max_y = vertex_y[i]; }
+	}
+
+	int scan_start_y = (int)floorf(min_y) - 1;
+	int scan_end_y = (int)ceilf(max_y) + 1;
+
+	// 오목 다각형이므로 각 수평 스캔라인의 교점을 정렬한 뒤
+	// 두 개씩 짝지어 그린다. 가장 왼쪽과 오른쪽만 연결하면
+	// 밑면 중앙의 홈이 다시 채워질 수 있다.
+	for (int draw_y = scan_start_y; draw_y <= scan_end_y; draw_y++) {
+		float scan_y = (float)draw_y + 0.5f;
+		float intersection_x[8];
+		int intersection_count = 0;
+
+		for (int edge = 0; edge < vertex_count; edge++) {
+			int next_edge = (edge + 1) % vertex_count;
+
+			float y1 = vertex_y[edge];
+			float y2 = vertex_y[next_edge];
+			float edge_min_y = (y1 < y2) ? y1 : y2;
+			float edge_max_y = (y1 > y2) ? y1 : y2;
+
+			// 꼭짓점 중복 집계를 막기 위해 아래쪽 포함, 위쪽 제외 규칙을 사용한다.
+			if ((scan_y < edge_min_y) || (scan_y >= edge_max_y)) {
+				continue;
+			}
+
+			float delta_y = y2 - y1;
+			if (fabsf(delta_y) <= 0.0001f) {
+				continue;
+			}
+
+			float ratio = (scan_y - y1) / delta_y;
+
+			if (intersection_count < 8) {
+				intersection_x[intersection_count] =
+					vertex_x[edge] +
+					(vertex_x[next_edge] - vertex_x[edge]) * ratio;
+				intersection_count++;
+			}
+		}
+
+		if (intersection_count < 2) {
+			continue;
+		}
+
+		// 교점을 왼쪽에서 오른쪽 순서로 정렬한다.
+		for (int i = 1; i < intersection_count; i++) {
+			float value = intersection_x[i];
+			int j = i - 1;
+
+			while ((j >= 0) && (intersection_x[j] > value)) {
+				intersection_x[j + 1] = intersection_x[j];
+				j--;
+			}
+
+			intersection_x[j + 1] = value;
+		}
+
+		// 교점을 두 개씩 연결하여 오목한 홈을 보존한다.
+		for (int i = 0; i + 1 < intersection_count; i += 2) {
+			int draw_start_x =
+				(int)ceilf(intersection_x[i]);
+
+			int draw_end_x =
+				(int)floorf(intersection_x[i + 1]);
+
+			if (draw_start_x > draw_end_x) {
+				continue;
+			}
+
+			d3dg->Draw2DLine(
+				draw_start_x,
+				draw_y,
+				draw_end_x,
+				draw_y,
+				color
+			);
+		}
+	}
+}
+
 bool maingame::IsRadarTargetVisibleToPlayer(human* radar_player, float target_x, float target_y, float target_z)
 {
 	if (radar_player == NULL) { return true; }
@@ -9279,6 +11310,223 @@ bool maingame::IsRadarTargetVisibleToTeam(int teamid, float target_x, float targ
 	return false;
 }
 
+// 지정한 P4의 이벤트 포인트를 찾는다.
+// 실제 EventControl과 동일하게 같은 P4에서 가장 먼저 검색되는 포인트를 사용한다.
+bool maingame::GetMissionEventPoint(signed short int p4, pointdata* out_data)
+{
+	if (out_data == NULL) { return false; }
+	if (PointData.SearchPointdata(out_data, 0x08, 0, 0, 0, p4, 0) == 0) {
+		return false;
+	}
+
+	if (((10 <= out_data->p1) && (out_data->p1 <= 19)) ||
+		(out_data->p1 == 29)) {
+		return true;
+	}
+
+	return false;
+}
+
+// 사망 이벤트 뒤의 즉시 실행 흐름이 미션 성공/실패로 끝나는지 확인한다.
+bool maingame::DoesMissionEventPathEndMission(signed short int start_p4)
+{
+	int max_steps = PointData.GetTotaldatas() + 1;
+	if (max_steps < 1) { return false; }
+
+	signed short int* visited = new signed short int[max_steps];
+	int visited_count = 0;
+	signed short int current_p4 = start_p4;
+	bool result = false;
+
+	for (int step = 0; step < max_steps; step++) {
+		pointdata data;
+		if (GetMissionEventPoint(current_p4, &data) == false) {
+			break;
+		}
+
+		bool loop = false;
+		for (int i = 0; i < visited_count; i++) {
+			if (visited[i] == current_p4) {
+				loop = true;
+				break;
+			}
+		}
+		if (loop == true) { break; }
+
+		visited[visited_count] = current_p4;
+		visited_count++;
+
+		if ((data.p1 == 10) || (data.p1 == 11)) {
+			result = true;
+			break;
+		}
+
+		// 이동 방식 변경, 시간 대기, 메시지, 팀 변경처럼
+		// 별도의 인물/물체 조건이 없는 이벤트만 통과한다.
+		if ((data.p1 == 14) ||
+			(data.p1 == 17) ||
+			(data.p1 == 18) ||
+			(data.p1 == 19) ||
+			((data.p1 == 29) && (data.p2 == 0))) {
+			current_p4 = data.p3;
+			continue;
+		}
+
+		// 다른 인물 사망, 도착, 물체 파괴 등의 새 조건을 만나면
+		// 현재 사망 대상이 직접 미션 종료를 결정하는 것은 아니다.
+		break;
+	}
+
+	delete[] visited;
+	return result;
+}
+
+// 사망 시 이벤트 진행에 영향을 주는 인물을 분류하고 체력 배율을 적용한다.
+void maingame::SetupMissionEventTargets()
+{
+	int target_type[MAX_HUMAN];
+	for (int i = 0; i < MAX_HUMAN; i++) {
+		target_type[i] = MISSION_EVENT_TARGET_NONE;
+
+		human* thuman = ObjMgr.GetHumanObject(i);
+		if (thuman != NULL) {
+			thuman->ResetMissionEventTarget();
+		}
+	}
+
+	human* player = ObjMgr.GetPlayerHumanObject();
+	if (player == NULL) { return; }
+
+	int player_team = -1;
+	player->GetParamData(NULL, NULL, NULL, &player_team);
+
+	const signed short int entry_p4[TOTAL_EVENTLINE] = {
+		TOTAL_EVENTENTRYPOINT_0,
+		TOTAL_EVENTENTRYPOINT_1,
+		TOTAL_EVENTENTRYPOINT_2
+	};
+
+	int max_steps = PointData.GetTotaldatas() + 1;
+	if (max_steps < 1) { return; }
+
+	for (int line = 0; line < TOTAL_EVENTLINE; line++) {
+		signed short int* visited = new signed short int[max_steps];
+		int visited_count = 0;
+		signed short int current_p4 = entry_p4[line];
+
+		for (int step = 0; step < max_steps; step++) {
+			pointdata data;
+			if (GetMissionEventPoint(current_p4, &data) == false) {
+				break;
+			}
+
+			bool loop = false;
+			for (int i = 0; i < visited_count; i++) {
+				if (visited[i] == current_p4) {
+					loop = true;
+					break;
+				}
+			}
+			if (loop == true) { break; }
+
+			visited[visited_count] = current_p4;
+			visited_count++;
+
+			if (data.p1 == 12) {
+				human* target = ObjMgr.SearchHuman(data.p2);
+
+				// 플레이어 자신은 어떤 경우에도 대상에서 제외한다.
+				if ((target != NULL) && (target != player)) {
+					pointdata next_data;
+
+					// 실제 다음 이벤트가 존재하는 사망 조건만 대상으로 삼는다.
+					if (GetMissionEventPoint(data.p3, &next_data) == true) {
+						int new_type = MISSION_EVENT_TARGET_NONE;
+
+						if (DoesMissionEventPathEndMission(data.p3) == true) {
+							new_type = MISSION_EVENT_TARGET_END;
+						}
+						else {
+							int target_team = -1;
+							target->GetParamData(NULL, NULL, NULL, &target_team);
+
+							// 일반 후속 이벤트는 적의 사망 조건만 강화한다.
+							if (target_team != player_team) {
+								new_type = MISSION_EVENT_TARGET_NEXT;
+							}
+						}
+
+						int target_id = ObjMgr.GetHumanObjectID(target);
+						if ((0 <= target_id) && (target_id < MAX_HUMAN) &&
+							(target_type[target_id] < new_type)) {
+							target_type[target_id] = new_type;
+						}
+					}
+				}
+			}
+
+			if ((data.p1 == 10) || (data.p1 == 11)) {
+				break;
+			}
+
+			current_p4 = data.p3;
+		}
+
+		delete[] visited;
+	}
+
+	for (int i = 0; i < MAX_HUMAN; i++) {
+		if (target_type[i] == MISSION_EVENT_TARGET_NONE) { continue; }
+
+		human* target = ObjMgr.GetHumanObject(i);
+		if (target == NULL) { continue; }
+		if (target == player) { continue; }
+		if (target->GetEnableFlag() == false) { continue; }
+
+		int base_hp = target->GetBaseMaxHP();
+		int multiplier = 1;
+
+		if (target_type[i] == MISSION_EVENT_TARGET_END) {
+			multiplier = (base_hp >= 800) ? 3 : 5;
+		}
+		else if (target_type[i] == MISSION_EVENT_TARGET_NEXT) {
+			multiplier = (base_hp >= 800) ? 2 : 3;
+		}
+
+		// 대상 분류는 설정과 무관하게 유지한다. 주황색 원은 현재 사망 이벤트가
+		// 활성화된 동안 표시하고, 체력 배율만 Gameplay Setting의 ON/OFF를 따른다.
+		target->SetMissionEventTarget(
+			target_type[i],
+			multiplier,
+			GameConfig.GetEventTargetHPBoostFlag()
+		);
+	}
+}
+
+// 현재 이벤트 라인이 해당 인물의 사망을 기다리고 있을 때만 지도 강조 표시를 활성화한다.
+bool maingame::IsMissionEventTargetActive(human* target)
+{
+	if (target == NULL) { return false; }
+	if (target->IsMissionEventTarget() == false) { return false; }
+	if (EventStop == true) { return false; }
+
+	signed short int target_p4 = 0;
+	target->GetParamData(NULL, NULL, &target_p4, NULL);
+
+	for (int line = 0; line < TOTAL_EVENTLINE; line++) {
+		pointdata data;
+		if (GetMissionEventPoint(Event[line].GetNextP4(), &data) == false) {
+			continue;
+		}
+
+		if ((data.p1 == 12) && (data.p2 == target_p4)) {
+			return true;
+		}
+	}
+
+	return false;
+}
+
 //! @brief 듗댲깒????렑
 void maingame::RenderRadar()
 {
@@ -9296,6 +11544,12 @@ void maingame::RenderRadar()
 #define SCALE(x) ((int)((x) * ui_scale))
 #define SCALE_F(x) ((x) * ui_scale)
 
+	// 다른 층 표시는 같은 층보다 약간만 흐리게 하여 식별성을 유지한다.
+	const float radar_other_floor_main_alpha = 1.00f;
+	const float radar_same_floor_item_alpha = 0.90f;
+	const float radar_other_floor_item_alpha = 0.95f;
+	const float radar_other_floor_device_alpha = 1.00f;
+
 	int sw = GameConfig.GetScreenWidth();
 	int sh = GameConfig.GetScreenHeight();
 
@@ -9304,10 +11558,35 @@ void maingame::RenderRadar()
 	int RadarPosY;
 	float RadarWorldR;
 
-	// 원래의 카메라 시야각과 위치(X, Z)를 임시로 저장해 둡니다.
+	// 레이더 좌표 계산에 사용하는 카메라 회전값과 높이를 저장한다.
 	float save_camera_rx = camera_rx;
-	float save_camera_x = camera_x;
-	float save_camera_z = camera_z;
+	float save_camera_y = camera_y;
+
+	int PlayerID = ObjMgr.GetPlayerID();
+	human* radar_player = ObjMgr.GetHumanObject(PlayerID);
+
+	if (radar_player == NULL) {
+		return;
+	}
+
+	UpdateRadarFloorReference(radar_player);
+
+	// 전체 지도를 연 채 이동하거나 실제 층이 바뀌면 수동 선택을 새 층 목록에 다시 연결한다.
+	// 선택한 절대 층이 새 구역에 없거나 플레이어가 그 층에 도착하면 AUTO로 복귀한다.
+	if ((ShowFullMap == true) &&
+		(FullMapFloorManual == true)) {
+		SyncFullMapFloorSelection(radar_player);
+	}
+
+	// 미니맵과 AUTO 전체 지도는 마지막으로 확인된 실제 바닥 높이를 사용한다.
+	// 수동 층 선택 중에는 선택된 층 높이를 사용한다.
+	if ((ShowFullMap == true) &&
+		(FullMapFloorManual == true)) {
+		camera_y = FullMapFloorReferenceY;
+	}
+	else if (RadarFloorReferenceValid == true) {
+		camera_y = RadarFloorReferenceY;
+	}
 
 	if (ShowFullMap) {
 		// 전체 지도 크기
@@ -9315,12 +11594,12 @@ void maingame::RenderRadar()
 		RadarPosX = (sw - RadarSize) / 2;
 		RadarPosY = (sh - RadarSize) / 2;
 
-		// 500.0f가 현재 기본/최대 확대 상태
+		// 500.0f는 기존 기본 확대 상태이며, 300.0f까지 추가 확대 가능
 		// 값이 커질수록 더 넓은 범위를 보여주므로 화면상으로는 축소됨
 		RadarWorldR = FullMapWorldR;
 
-		if (RadarWorldR < 500.0f) {
-			RadarWorldR = 500.0f;
+		if (RadarWorldR < 300.0f) {
+			RadarWorldR = 300.0f;
 		}
 		if (RadarWorldR > 2000.0f) {
 			RadarWorldR = 2000.0f;
@@ -9348,6 +11627,14 @@ void maingame::RenderRadar()
 
 
 	// 맵 지형 라인 그리기
+	// 캐릭터와 오브젝트의 층 판정은 기존 눈높이 기준을 유지하되,
+	// 벽과 낮은 구조물은 선택한 층의 바닥에서 조금 위쪽인 범위를 검사한다.
+	// 바닥면 자체는 제외하고 낮은 상자, 책상, 벽은 포함하며 위층 구조가
+	// 섞이지 않도록 층 간 최소 간격보다 충분히 좁은 범위를 사용한다.
+	const float radar_floor_y = camera_y - VIEW_HEIGHT;
+	const float radar_wall_min_y = radar_floor_y + 2.0f;
+	const float radar_wall_max_y = radar_floor_y + 12.0f;
+
 	int bs = BlockData.GetTotaldatas();
 	for (int i = 0; i < bs; i++) {
 		blockdata bdata;
@@ -9356,7 +11643,7 @@ void maingame::RenderRadar()
 
 		BlockData.Getdata(&bdata, i);
 
-		if (CollD.CheckBlockAABB(i, camera_x - RadarWorldR * 2, camera_y - 1.0f, camera_z - RadarWorldR * 2, camera_x + RadarWorldR * 2, camera_y + 1.0f, camera_z + RadarWorldR * 2) == true) {
+		if (CollD.CheckBlockAABB(i, camera_x - RadarWorldR * 2, radar_wall_min_y, camera_z - RadarWorldR * 2, camera_x + RadarWorldR * 2, radar_wall_max_y, camera_z + RadarWorldR * 2) == true) {
 			for (int j = 0; j < 6; j++) {
 				float angle = acosf(bdata.material[j].vy);
 				if ((HUMAN_MAPCOLLISION_SLOPEANGLE < angle) && (angle < DegreeToRadian(120))) {
@@ -9395,24 +11682,32 @@ void maingame::RenderRadar()
 				if ((data.p1 == 13) || (data.p1 == 16)) {
 					data.y += VIEW_HEIGHT;
 					if (GetRadarPos(data.x, data.y, data.z, RadarPosX, RadarPosY, RadarSize, RadarWorldR, &x_2d, &y_2d, &y, true) == true) {
-						if ((fabsf(y) < 40.0f)) { alpha = 1.0f; }
-						else { alpha = 0.5f; }
-						d3dg->Draw2DCycle(x_2d, y_2d, (int)ecr, d3dg->GetColorCode(1.0f, 0.5f, 0.0f, alpha));
+						int height_layer = GetRadarHeightLayer(y);
+
+						// 같은 층은 선명하게, 다른 층은 투명하게 표시한다.
+						alpha = (height_layer == 0) ? 1.0f : 0.50f;
+
+						int event_color = d3dg->GetColorCode(
+							1.0f,
+							0.5f,
+							0.0f,
+							alpha
+						);
+
+						// 높이와 관계없이 항상 기존 원형으로 표시한다.
+						d3dg->Draw2DCycle(
+							x_2d,
+							y_2d,
+							(int)ecr,
+							event_color
+						);
 					}
 				}
 			}
 		}
 	}
 
-	// 플레이어 정보 가져오기
-	int PlayerID = ObjMgr.GetPlayerID();
-	human* radar_player = ObjMgr.GetHumanObject(PlayerID);
-
-	if (radar_player == NULL) {
-		camera_rx = save_camera_rx;
-		return;
-	}
-
+	// 플레이어 정보는 레이더 기준 높이를 계산할 때 이미 가져왔다.
 	int myteamid = -1;
 	radar_player->GetParamData(NULL, NULL, NULL, &myteamid);
 
@@ -9425,9 +11720,18 @@ void maingame::RenderRadar()
 
 	for (int i = 0; i < MAX_HUMAN; i++) {
 		human* thuman = ObjMgr.GetHumanObject(i);
-		if (thuman == NULL) { continue; }
-		if (thuman->GetEnableFlag() == false) { continue; }
-		if (thuman->GetDeadFlag() == true) { continue; }
+		if (thuman == NULL) {
+			radar_human_height_layer[i] = 0;
+			continue;
+		}
+		if (thuman->GetEnableFlag() == false) {
+			radar_human_height_layer[i] = 0;
+			continue;
+		}
+		if (thuman->GetDeadFlag() == true) {
+			radar_human_height_layer[i] = 0;
+			continue;
+		}
 
 		int tteamid = -1;
 		thuman->GetParamData(NULL, NULL, NULL, &tteamid);
@@ -9475,8 +11779,27 @@ void maingame::RenderRadar()
 		if (radar_human_visible[i] == false) { continue; }
 
 		if (GetRadarPos(tx, ty, tz, RadarPosX, RadarPosY, RadarSize, RadarWorldR, &x_2d, &y_2d, &y, true) == true) {
-			if ((fabsf(y) < 40.0f)) alpha = 1.0f;
-			else alpha = 0.5f;
+			int height_layer;
+
+			if ((ShowFullMap == true) &&
+				(FullMapFloorManual == true)) {
+				// 수동 층 선택은 미니맵의 히스테리시스 기록을 변경하지 않는다.
+				height_layer = GetRadarHeightLayer(y);
+			}
+			else {
+				height_layer = GetRadarHeightLayerWithHysteresis(
+					y,
+					radar_human_height_layer[i]
+				);
+				radar_human_height_layer[i] = height_layer;
+			}
+
+			// 위층/아래층의 시야 부채꼴은 현재 층의 시야처럼 보일 수 있으므로 표시하지 않는다.
+			if (height_layer != 0) {
+				continue;
+			}
+
+			alpha = 1.0f;
 
 			float cone_fov = DegreeToRadian(60.0f);
 			int segments = 20;
@@ -9536,55 +11859,104 @@ void maingame::RenderRadar()
 
 		if (radar_human_visible[i] == false) { continue; }
 
-		if (GetRadarPos(tx, ty, tz, RadarPosX, RadarPosY, RadarSize, RadarWorldR, &x_2d, &y_2d, &y, true) == true) {
-			if ((fabsf(y) < 40.0f)) alpha = 1.0f;
-			else alpha = 0.5f;
+		bool radar_position_visible;
+
+		if ((PlayerID == i) &&
+			(ShowFullMap == true) &&
+			(FullMapFloorManual == true)) {
+			// 다른 층을 선택해도 지도 중심의 플레이어 방향 표식은 계속 표시한다.
+			radar_position_visible = GetRadarPos(
+				tx,
+				ty,
+				tz,
+				RadarPosX,
+				RadarPosY,
+				RadarSize,
+				RadarWorldR,
+				&x_2d,
+				&y_2d,
+				&y,
+				false
+			);
+		}
+		else {
+			radar_position_visible = GetRadarPos(
+				tx,
+				ty,
+				tz,
+				RadarPosX,
+				RadarPosY,
+				RadarSize,
+				RadarWorldR,
+				&x_2d,
+				&y_2d,
+				&y,
+				true
+			);
+		}
+
+		if (radar_position_visible == true) {
+			int height_layer;
+
+			if ((ShowFullMap == true) &&
+				(FullMapFloorManual == true)) {
+				height_layer = GetRadarHeightLayer(y);
+			}
+			else {
+				height_layer = GetRadarHeightLayerWithHysteresis(
+					y,
+					radar_human_height_layer[i]
+				);
+				radar_human_height_layer[i] = height_layer;
+			}
+
+			alpha = (height_layer == 0) ? 1.0f : radar_other_floor_main_alpha;
 
 			if (PlayerID == i) color = d3dg->GetColorCode(1.0f, 1.0f, 0.0f, alpha);
 			else if (tteamid == myteamid) color = d3dg->GetColorCode(0.0f, 0.5f, 1.0f, alpha);
 			else color = d3dg->GetColorCode(1.0f, 0.0f, 0.5f, alpha);
 
-			// [✨ 수정됨] 캐릭터를 표시하는 점의 크기 스케일링 적용 (최소 1픽셀 보장)
 			int dot_r = SCALE(3);
 			if (dot_r < 1) dot_r = 1;
 
-			d3dg->Draw2DBox(x_2d - dot_r, y_2d - dot_r, x_2d + dot_r, y_2d + dot_r, color);
+			// 체력 배율은 미션 시작 시 유지하되, 주황색 원은 해당 사망 이벤트가
+			// 현재 이벤트 라인에서 활성화된 동안에만 표시한다.
+			if ((PlayerID != i) && (IsMissionEventTargetActive(thuman) == true)) {
+				int target_ring_r = dot_r + SCALE(3);
+				if (target_ring_r < dot_r + 2) {
+					target_ring_r = dot_r + 2;
+				}
+
+				int target_ring_color = d3dg->GetColorCode(
+					1.0f,
+					0.5f,
+					0.0f,
+					alpha
+				);
+
+				d3dg->Draw2DCycle(
+					x_2d,
+					y_2d,
+					target_ring_r,
+					target_ring_color
+				);
+			}
+
+			if ((height_layer != 0) && (PlayerID != i)) {
+				DrawRadarHeightMarker(x_2d, y_2d, height_layer, color, dot_r);
+				continue;
+			}
 
 			if (PlayerID == i) {
-				// 방향은 이미 맞춘 값 유지
 				float radar_angle = trx + camera_rx + (float)M_PI;
-
 				float dir_x = cosf(radar_angle);
 				float dir_y = sinf(radar_angle);
 
-				// 플레이어 네모 점 크기
-				int player_dot_r = SCALE(3);
-				if (player_dot_r < 2) player_dot_r = 2;
-
-				// 바라보는 방향 선 길이
-				int sight_len;
-				if (ShowFullMap) {
-					sight_len = SCALE(28);   // M 키 전체 지도에서는 조금 길게
-				}
-				else {
-					sight_len = SCALE(18);   // 미니맵에서는 짧게
-				}
-				if (sight_len < 12) sight_len = 12;
-
-				int sight_x = x_2d + (int)(dir_x * sight_len);
-				int sight_y = y_2d + (int)(dir_y * sight_len);
-
-				int sight_color = d3dg->GetColorCode(1.0f, 1.0f, 0.0f, 0.45f);
-
-				// 1. 방향선 먼저 그림
-				d3dg->Draw2DLine(x_2d, y_2d, sight_x, sight_y, sight_color);
-
-				// 2. 플레이어 위치 네모 점을 그 위에 그림
-				d3dg->Draw2DBox(
-					x_2d - player_dot_r,
-					y_2d - player_dot_r,
-					x_2d + player_dot_r,
-					y_2d + player_dot_r,
+				DrawRadarPlayerDirectionMarker(
+					x_2d,
+					y_2d,
+					dir_x,
+					dir_y,
 					color
 				);
 			}
@@ -9620,16 +11992,20 @@ void maingame::RenderRadar()
 		ty += VIEW_HEIGHT;
 
 		if (GetRadarPos(tx, ty, tz, RadarPosX, RadarPosY, RadarSize, RadarWorldR, &x_2d, &y_2d, &y, true) == true) {
-			if ((fabsf(y) < 40.0f)) alpha = 0.8f;
-			else alpha = 0.4f;
+			int height_layer = GetRadarHeightLayer(y);
+			alpha = (height_layer == 0) ? radar_same_floor_item_alpha : radar_other_floor_item_alpha;
 
 			DWORD dot_color = d3dg->GetColorCode(0.0f, 1.0f, 0.0f, alpha);
 
-			// [✨ 수정됨] 아이템을 표시하는 점의 크기 스케일링 적용
 			int item_dot_r = SCALE(2);
 			if (item_dot_r < 1) item_dot_r = 1;
 
-			d3dg->Draw2DBox(x_2d - item_dot_r, y_2d - item_dot_r, x_2d + item_dot_r, y_2d + item_dot_r, dot_color);
+			if (height_layer == 0) {
+				d3dg->Draw2DBox(x_2d - item_dot_r, y_2d - item_dot_r, x_2d + item_dot_r, y_2d + item_dot_r, dot_color);
+			}
+			else {
+				DrawRadarHeightMarker(x_2d, y_2d, height_layer, dot_color, item_dot_r);
+			}
 		}
 	}
 
@@ -9657,26 +12033,34 @@ void maingame::RenderRadar()
 
 		// 레이더 반경 안에 들어오는지 계산
 		if (GetRadarPos(tx, ty, tz, RadarPosX, RadarPosY, RadarSize, RadarWorldR, &x_2d, &y_2d, &y, true) == true) {
-			if ((fabsf(y) < 40.0f)) alpha = 0.8f;
-			else alpha = 0.4f;
+			int height_layer = GetRadarHeightLayer(y);
+
+			// 다른 층의 일반 무기까지 모두 표시하면 화살표가 너무 많아지므로 Case만 표시한다.
+			if ((height_layer != 0) && (weapon_paramid != 15)) {
+				continue;
+			}
+
+			alpha = (height_layer == 0) ? radar_same_floor_item_alpha : radar_other_floor_item_alpha;
 
 			DWORD dot_color;
-			int item_dot_r; // ✨ 점의 크기(반지름)를 결정할 변수를 여기서 선언
+			int item_dot_r;
 
-			// ID가 15번(Case)이면 주황색, 크기는 기존처럼 크게 유지
 			if (weapon_paramid == 15) {
-				dot_color = d3dg->GetColorCode(1.0f, 0.5f, 0.0f, alpha); // 주황색
+				dot_color = d3dg->GetColorCode(1.0f, 0.5f, 0.0f, alpha);
 				item_dot_r = SCALE(2);
-				if (item_dot_r < 1) item_dot_r = 1; // 최소 크기 보장
+				if (item_dot_r < 1) item_dot_r = 1;
 			}
-			// 그 외 일반 무기는 보라색, 크기는 아주 작게(1픽셀) 변경
 			else {
-				dot_color = d3dg->GetColorCode(0.8f, 0.2f, 0.8f, alpha); // 보라색
-				item_dot_r = 1; // ✨ 반지름을 0으로 주어 화면에 1픽셀짜리 점으로만 찍히게 함
+				dot_color = d3dg->GetColorCode(0.8f, 0.2f, 0.8f, alpha);
+				item_dot_r = 1;
 			}
 
-			// 점 그리기
-			d3dg->Draw2DBox(x_2d - item_dot_r, y_2d - item_dot_r, x_2d + item_dot_r, y_2d + item_dot_r, dot_color);
+			if (height_layer == 0) {
+				d3dg->Draw2DBox(x_2d - item_dot_r, y_2d - item_dot_r, x_2d + item_dot_r, y_2d + item_dot_r, dot_color);
+			}
+			else {
+				DrawRadarHeightMarker(x_2d, y_2d, height_layer, dot_color, item_dot_r);
+			}
 		}
 	}
 
@@ -9686,6 +12070,11 @@ void maingame::RenderRadar()
 // =========================================================================
 	{
 		DWORD device_dot_color = d3dg->GetColorCode(0.0f, 1.0f, 0.85f, 0.95f);
+		DWORD device_other_floor_color = d3dg->GetColorCode(0.0f, 1.0f, 0.85f, radar_other_floor_device_alpha);
+		DWORD biotic_field_color = d3dg->GetColorCode(0.3f, 1.0f, 0.3f, 0.95f);
+		DWORD biotic_field_other_floor_color = d3dg->GetColorCode(0.3f, 1.0f, 0.3f, radar_other_floor_device_alpha);
+		DWORD artillery_color = d3dg->GetColorCode(1.0f, 0.35f, 0.0f, 0.95f);
+		DWORD artillery_other_floor_color = d3dg->GetColorCode(1.0f, 0.35f, 0.0f, radar_other_floor_device_alpha);
 		int device_dot_r = SCALE(2);
 		if (device_dot_r < 1) {
 			device_dot_r = 1;
@@ -9708,13 +12097,106 @@ void maingame::RenderRadar()
 				&y,
 				true
 			) == true) {
-				d3dg->Draw2DBox(
-					x_2d - device_dot_r,
-					y_2d - device_dot_r,
-					x_2d + device_dot_r,
-					y_2d + device_dot_r,
-					device_dot_color
-				);
+				int height_layer = GetRadarHeightLayer(y);
+
+				if (height_layer == 0) {
+					d3dg->Draw2DBox(
+						x_2d - device_dot_r,
+						y_2d - device_dot_r,
+						x_2d + device_dot_r,
+						y_2d + device_dot_r,
+						device_dot_color
+					);
+				}
+				else {
+					DrawRadarHeightMarker(
+						x_2d,
+						y_2d,
+						height_layer,
+						device_other_floor_color,
+						device_dot_r
+					);
+				}
+			}
+		}
+
+		// 생체장은 전투 중 위치 확인이 중요한 설치형 스킬이므로 층 구분을 표시한다.
+		if (player_skill_biotic_field_timer > 0) {
+			float y;
+			int x_2d, y_2d;
+
+			if (GetRadarPos(
+				player_skill_biotic_field_x,
+				player_skill_biotic_field_y + VIEW_HEIGHT,
+				player_skill_biotic_field_z,
+				RadarPosX,
+				RadarPosY,
+				RadarSize,
+				RadarWorldR,
+				&x_2d,
+				&y_2d,
+				&y,
+				true
+			) == true) {
+				int height_layer = GetRadarHeightLayer(y);
+
+				if (height_layer == 0) {
+					d3dg->Draw2DCycle(
+						x_2d,
+						y_2d,
+						SCALE(3),
+						biotic_field_color
+					);
+				}
+				else {
+					DrawRadarHeightMarker(
+						x_2d,
+						y_2d,
+						height_layer,
+						biotic_field_other_floor_color,
+						SCALE(3)
+					);
+				}
+			}
+		}
+
+		// 전술 폭격 지점도 위험 위치이므로 현재 층과 위아래층을 구분한다.
+		if (player_skill_artillery_strike_timer > 0) {
+			float y;
+			int x_2d, y_2d;
+
+			if (GetRadarPos(
+				player_skill_artillery_strike_x,
+				player_skill_artillery_strike_y + VIEW_HEIGHT,
+				player_skill_artillery_strike_z,
+				RadarPosX,
+				RadarPosY,
+				RadarSize,
+				RadarWorldR,
+				&x_2d,
+				&y_2d,
+				&y,
+				true
+			) == true) {
+				int height_layer = GetRadarHeightLayer(y);
+
+				if (height_layer == 0) {
+					d3dg->Draw2DCycle(
+						x_2d,
+						y_2d,
+						SCALE(4),
+						artillery_color
+					);
+				}
+				else {
+					DrawRadarHeightMarker(
+						x_2d,
+						y_2d,
+						height_layer,
+						artillery_other_floor_color,
+						SCALE(4)
+					);
+				}
 			}
 		}
 
@@ -9739,13 +12221,26 @@ void maingame::RenderRadar()
 				&y,
 				true
 			) == true) {
-				d3dg->Draw2DBox(
-					x_2d - device_dot_r,
-					y_2d - device_dot_r,
-					x_2d + device_dot_r,
-					y_2d + device_dot_r,
-					device_dot_color
-				);
+				int height_layer = GetRadarHeightLayer(y);
+
+				if (height_layer == 0) {
+					d3dg->Draw2DBox(
+						x_2d - device_dot_r,
+						y_2d - device_dot_r,
+						x_2d + device_dot_r,
+						y_2d + device_dot_r,
+						device_dot_color
+					);
+				}
+				else {
+					DrawRadarHeightMarker(
+						x_2d,
+						y_2d,
+						height_layer,
+						device_other_floor_color,
+						device_dot_r
+					);
+				}
 			}
 		}
 	}
@@ -9829,6 +12324,7 @@ void maingame::RenderRadar()
 	}
 
 	camera_rx = save_camera_rx;
+	camera_y = save_camera_y;
 }
 
 
@@ -9902,6 +12398,156 @@ void maingame::InputConsole()
 }
 
 //! @brief 긢긫긞긏뾭긓깛??깑궻긽귽깛룉뿚
+void maingame::ProcessDebugMuzzleInput()
+{
+	if (ObjMgr.GetDebugMuzzleAdjustFlag() == false) { return; }
+	if (Show_Console == true) { return; }
+
+	float step = 1.0f;
+	int key_left = 0;
+	int key_right = 0;
+
+	// SHIFT를 누른 상태에서 조작하면 0.1씩 이동
+	if (GetDoubleKeyCode(0, &key_left, &key_right) == true) {
+		if (inputCtrl->CheckKeyNow(key_left) ||
+			inputCtrl->CheckKeyNow(key_right)) {
+			step = 0.1f;
+		}
+	}
+
+	// CTRL을 누른 상태에서 조작하면 10.0씩 이동
+	if (GetDoubleKeyCode(1, &key_left, &key_right) == true) {
+		if (inputCtrl->CheckKeyNow(key_left) ||
+			inputCtrl->CheckKeyNow(key_right)) {
+			step = 10.0f;
+		}
+	}
+
+	// CheckKeyDown은 키를 처음 누른 순간에만 true가 된다.
+	// 따라서 키를 계속 누르고 있어도 한 번만 조절된다.
+
+	if (inputCtrl->CheckKeyDown(
+		OriginalkeycodeToDinputdef(0x08))) { // NUM4 : X-
+		ObjMgr.AdjustDebugMuzzle(0, -step);
+	}
+
+	if (inputCtrl->CheckKeyDown(
+		OriginalkeycodeToDinputdef(0x0A))) { // NUM6 : X+
+		ObjMgr.AdjustDebugMuzzle(0, step);
+	}
+
+	if (inputCtrl->CheckKeyDown(
+		OriginalkeycodeToDinputdef(0x06))) { // NUM2 : Y-
+		ObjMgr.AdjustDebugMuzzle(1, -step);
+	}
+
+	if (inputCtrl->CheckKeyDown(
+		OriginalkeycodeToDinputdef(0x0C))) { // NUM8 : Y+
+		ObjMgr.AdjustDebugMuzzle(1, step);
+	}
+
+	if (inputCtrl->CheckKeyDown(
+		OriginalkeycodeToDinputdef(0x0B))) { // NUM7 : Z-
+		ObjMgr.AdjustDebugMuzzle(2, -step);
+	}
+
+	if (inputCtrl->CheckKeyDown(
+		OriginalkeycodeToDinputdef(0x0D))) { // NUM9 : Z+
+		ObjMgr.AdjustDebugMuzzle(2, step);
+	}
+}
+
+void maingame::RenderDebugWeaponOverlay()
+{
+	if (ObjMgr.GetDebugMuzzleAdjustFlag() == false) { return; }
+
+	int weapon_id = ID_WEAPON_NONE;
+	float flash_x = 0.0f;
+	float flash_y = 0.0f;
+	float flash_z = 0.0f;
+	float world_x = 0.0f;
+	float world_y = 0.0f;
+	float world_z = 0.0f;
+	bool blocked = false;
+
+	if (ObjMgr.GetDebugCurrentWeaponInfo(
+		&weapon_id,
+		&flash_x,
+		&flash_y,
+		&flash_z,
+		&world_x,
+		&world_y,
+		&world_z,
+		&blocked
+	) == false) {
+		return;
+	}
+
+	WeaponParameter param;
+	if (GameParamInfo.GetWeapon(weapon_id, &param) != 0) { return; }
+
+	char line[128];
+	int x = 0;
+	int y = 28;
+	int line_h = 17;
+	const int right_margin = 18;
+	int shadow = d3dg->GetColorCode(0.0f, 0.0f, 0.0f, 1.0f);
+	int title = d3dg->GetColorCode(0.2f, 1.0f, 1.0f, 1.0f);
+	int text = d3dg->GetColorCode(1.0f, 1.0f, 1.0f, 1.0f);
+	int state = blocked ?
+		d3dg->GetColorCode(1.0f, 0.2f, 0.2f, 1.0f) :
+		d3dg->GetColorCode(0.2f, 1.0f, 0.2f, 1.0f);
+
+	sprintf(line, "MUZZLE TUNING  ID:%d  %s", weapon_id, (param.name != NULL) ? param.name : "UNKNOWN");
+	x = GameConfig.GetScreenWidth() - (int)strlen(line) * 8 - right_margin;
+	if (x < 8) { x = 8; }
+	d3dg->Draw2DTextureDebugFontText(x + 1, y + 1, line, shadow);
+	d3dg->Draw2DTextureDebugFontText(x, y, line, title);
+
+	y += line_h;
+	sprintf(line, "FLASH  X:%6.1f  Y:%6.1f  Z:%6.1f", flash_x, flash_y, flash_z);
+	x = GameConfig.GetScreenWidth() - (int)strlen(line) * 8 - right_margin;
+	if (x < 8) { x = 8; }
+	d3dg->Draw2DTextureDebugFontText(x + 1, y + 1, line, shadow);
+	d3dg->Draw2DTextureDebugFontText(x, y, line, text);
+
+	y += line_h;
+	sprintf(line, "WORLD  X:%7.2f  Y:%7.2f  Z:%7.2f", world_x, world_y, world_z);
+	x = GameConfig.GetScreenWidth() - (int)strlen(line) * 8 - right_margin;
+	if (x < 8) { x = 8; }
+	d3dg->Draw2DTextureDebugFontText(x + 1, y + 1, line, shadow);
+	d3dg->Draw2DTextureDebugFontText(x, y, line, text);
+
+	y += line_h;
+	sprintf(line, "MUZZLE: %s", blocked ? "BLOCKED" : "CLEAR");
+	x = GameConfig.GetScreenWidth() - (int)strlen(line) * 8 - right_margin;
+	if (x < 8) { x = 8; }
+	d3dg->Draw2DTextureDebugFontText(x + 1, y + 1, line, shadow);
+	d3dg->Draw2DTextureDebugFontText(x, y, line, state);
+
+	y += line_h;
+	sprintf(line, "NUM4/6:X  NUM2/8:Y  NUM7/9:Z  SHIFT:0.1  CTRL:10");
+	x = GameConfig.GetScreenWidth() - (int)strlen(line) * 8 - right_margin;
+	if (x < 8) { x = 8; }
+	d3dg->Draw2DTextureDebugFontText(x + 1, y + 1, line, shadow);
+	d3dg->Draw2DTextureDebugFontText(x, y, line, text);
+
+	y += line_h;
+	sprintf(
+		line,
+		"TRACE:%s AMMO:%s NORELOAD:%s NOSPREAD:%s NORECOIL:%s",
+		ObjMgr.GetDebugBulletTraceFlag() ? "ON" : "OFF",
+		ObjMgr.GetDebugInfiniteAmmoFlag() ? "ON" : "OFF",
+		ObjMgr.GetDebugNoReloadFlag() ? "ON" : "OFF",
+		ObjMgr.GetDebugNoSpreadFlag() ? "ON" : "OFF",
+		ObjMgr.GetDebugNoRecoilFlag() ? "ON" : "OFF"
+	);
+	x = GameConfig.GetScreenWidth() - (int)strlen(line) * 8 - right_margin;
+	if (x < 8) { x = 8; }
+	d3dg->Draw2DTextureDebugFontText(x + 1, y + 1, line, shadow);
+	d3dg->Draw2DTextureDebugFontText(x, y, line, text);
+}
+
 void maingame::ProcessConsole()
 {
 	char str[MAX_CONSOLELEN];
@@ -9917,6 +12563,134 @@ void maingame::ProcessConsole()
 		AddInfoConsole(d3dg->GetColorCode(1.0f,1.0f,1.0f,1.0f), "newobj <NUM>  break <NUM>  delhuman <NUM>  delweapon <NUM>  delobj <NUM>");
 		AddInfoConsole(d3dg->GetColorCode(1.0f,1.0f,1.0f,1.0f), "nofight       caution      ailevel <NUM>   ff       bot     stop      estop");
 		AddInfoConsole(d3dg->GetColorCode(1.0f,1.0f,1.0f,1.0f), "speed         window       ss              clear            ver       exit");
+		AddInfoConsole(d3dg->GetColorCode(0.3f,1.0f,1.0f,1.0f), "muzzle        muzzle reset/print            weaponinfo      bullettrace");
+		AddInfoConsole(d3dg->GetColorCode(0.3f,1.0f,1.0f,1.0f), "ammo          noreload     nospread         norecoil");
+	}
+
+
+	// Weapon muzzle tuning and ballistic debug commands.
+	if( strcmp(NewCommand, "muzzle") == 0 ){
+		bool flag = !ObjMgr.GetDebugMuzzleAdjustFlag();
+		ObjMgr.SetDebugMuzzleAdjustFlag(flag);
+		sprintf(str, "Muzzle tuning: %s", flag ? "ON" : "OFF");
+		AddInfoConsole(d3dg->GetColorCode(0.3f,1.0f,1.0f,1.0f), str);
+		if( flag == true ){
+			ShowFullMap = false;
+			ResetFullMapFloorSelection();
+			AddInfoConsole(
+				d3dg->GetColorCode(1.0f, 1.0f, 1.0f, 1.0f),
+				"NUM4/6:X  NUM2/8:Y  NUM7/9:Z"
+			);
+
+			AddInfoConsole(
+				d3dg->GetColorCode(1.0f, 1.0f, 1.0f, 1.0f),
+				"One step per press  SHIFT:0.1  CTRL:10.0"
+			);
+		}
+	}
+
+	if( strcmp(NewCommand, "muzzle reset") == 0 ){
+		if( ObjMgr.ResetDebugMuzzle() == true ){
+			AddInfoConsole(d3dg->GetColorCode(0.3f,1.0f,1.0f,1.0f), "Current weapon muzzle offset reset.");
+		}
+		else{
+			AddInfoConsole(d3dg->GetColorCode(1.0f,0.3f,0.3f,1.0f), "No current player weapon.");
+		}
+	}
+
+	if( strcmp(NewCommand, "muzzle print") == 0 ){
+		int weapon_id = ID_WEAPON_NONE;
+		float flash_x = 0.0f;
+		float flash_y = 0.0f;
+		float flash_z = 0.0f;
+		if( ObjMgr.GetDebugCurrentWeaponInfo(
+			&weapon_id, &flash_x, &flash_y, &flash_z,
+			NULL, NULL, NULL, NULL
+		) == true ){
+			sprintf(str, "Weapon[%d].flashx = %.1ff;", weapon_id, flash_x);
+			AddInfoConsole(d3dg->GetColorCode(1.0f,1.0f,0.3f,1.0f), str);
+			sprintf(str, "Weapon[%d].flashy = %.1ff;", weapon_id, flash_y);
+			AddInfoConsole(d3dg->GetColorCode(1.0f,1.0f,0.3f,1.0f), str);
+			sprintf(str, "Weapon[%d].flashz = %.1ff;", weapon_id, flash_z);
+			AddInfoConsole(d3dg->GetColorCode(1.0f,1.0f,0.3f,1.0f), str);
+		}
+		else{
+			AddInfoConsole(d3dg->GetColorCode(1.0f,0.3f,0.3f,1.0f), "No current player weapon.");
+		}
+	}
+
+	if( strcmp(NewCommand, "weaponinfo") == 0 ){
+		int weapon_id = ID_WEAPON_NONE;
+		float flash_x = 0.0f;
+		float flash_y = 0.0f;
+		float flash_z = 0.0f;
+		float world_x = 0.0f;
+		float world_y = 0.0f;
+		float world_z = 0.0f;
+		bool blocked = false;
+		if( ObjMgr.GetDebugCurrentWeaponInfo(
+			&weapon_id, &flash_x, &flash_y, &flash_z,
+			&world_x, &world_y, &world_z, &blocked
+		) == true ){
+			WeaponParameter weapon_param;
+			if( GameParamInfo.GetWeapon(weapon_id, &weapon_param) == 0 ){
+				sprintf(str, "Weapon ID:%d  %s", weapon_id, (weapon_param.name != NULL) ? weapon_param.name : "UNKNOWN");
+				AddInfoConsole(d3dg->GetColorCode(0.3f,1.0f,1.0f,1.0f), str);
+			}
+			sprintf(str, "FLASH X:%.1f Y:%.1f Z:%.1f", flash_x, flash_y, flash_z);
+			AddInfoConsole(d3dg->GetColorCode(1.0f,1.0f,1.0f,1.0f), str);
+			sprintf(str, "WORLD X:%.2f Y:%.2f Z:%.2f", world_x, world_y, world_z);
+			AddInfoConsole(d3dg->GetColorCode(1.0f,1.0f,1.0f,1.0f), str);
+			sprintf(str, "Muzzle: %s", blocked ? "BLOCKED" : "CLEAR");
+			AddInfoConsole(
+				d3dg->GetColorCode(blocked ? 1.0f : 0.3f, blocked ? 0.3f : 1.0f, 0.3f, 1.0f),
+				str
+			);
+		}
+		else{
+			AddInfoConsole(d3dg->GetColorCode(1.0f,0.3f,0.3f,1.0f), "No current player weapon.");
+		}
+	}
+
+	if( strcmp(NewCommand, "bullettrace") == 0 ){
+		bool flag = !ObjMgr.GetDebugBulletTraceFlag();
+		ObjMgr.SetDebugBulletTraceFlag(flag);
+		sprintf(str, "Bullet trace: %s", flag ? "ON" : "OFF");
+		AddInfoConsole(d3dg->GetColorCode(0.3f,1.0f,1.0f,1.0f), str);
+	}
+
+	if( strcmp(NewCommand, "ammo") == 0 ){
+		bool flag = !ObjMgr.GetDebugInfiniteAmmoFlag();
+		ObjMgr.SetDebugInfiniteAmmoFlag(flag);
+		if( flag == true ){
+			ObjMgr.CheatAddBullet(ObjMgr.GetPlayerID());
+		}
+		sprintf(str, "Infinite reserve ammo: %s", flag ? "ON" : "OFF");
+		AddInfoConsole(d3dg->GetColorCode(0.3f,1.0f,1.0f,1.0f), str);
+	}
+
+	if( strcmp(NewCommand, "noreload") == 0 ){
+		bool flag = !ObjMgr.GetDebugNoReloadFlag();
+		ObjMgr.SetDebugNoReloadFlag(flag);
+		if( flag == true ){
+			ObjMgr.FillDebugCurrentMagazine();
+		}
+		sprintf(str, "No reload: %s", flag ? "ON" : "OFF");
+		AddInfoConsole(d3dg->GetColorCode(0.3f,1.0f,1.0f,1.0f), str);
+	}
+
+	if( strcmp(NewCommand, "nospread") == 0 ){
+		bool flag = !ObjMgr.GetDebugNoSpreadFlag();
+		ObjMgr.SetDebugNoSpreadFlag(flag);
+		sprintf(str, "No spread: %s", flag ? "ON" : "OFF");
+		AddInfoConsole(d3dg->GetColorCode(0.3f,1.0f,1.0f,1.0f), str);
+	}
+
+	if( strcmp(NewCommand, "norecoil") == 0 ){
+		bool flag = !ObjMgr.GetDebugNoRecoilFlag();
+		ObjMgr.SetDebugNoRecoilFlag(flag);
+		sprintf(str, "No recoil: %s", flag ? "ON" : "OFF");
+		AddInfoConsole(d3dg->GetColorCode(0.3f,1.0f,1.0f,1.0f), str);
 	}
 
 	//릐궻뱷똶륃뺪
@@ -10612,6 +13386,7 @@ void maingame::ProcessConsole()
 			//긵깒귽깂?댷벍
 			ObjMgr.GetPlayerHumanObject()->GetPosData(NULL, NULL ,NULL, &rx);
 			ObjMgr.GetPlayerHumanObject()->SetPosData(x + 5.0f, y + 5.0f, z + 5.0f, rx);
+			InvalidatePlayerRenderInterpolation();
 
 			sprintf(str, "Teleported player to Human[%d].", id);
 			AddInfoConsole(d3dg->GetColorCode(1.0f,1.0f,1.0f,1.0f), str);
@@ -11073,9 +13848,16 @@ void maingame::CleanupMissionRuntime()
 		GameSound->InitWorldSound();
 	}
 
-	// AI 상태 초기화
+	// AI 상태와 레이더 층 판정 기록 초기화
+	ShowFullMap = false;
+	ResetFullMapFloorSelection();
+	RadarFloorReferenceValid = false;
+	RadarFloorReferenceY = 0.0f;
+	RadarFloorReferencePlayerID = -1;
+
 	for (int i = 0; i < MAX_HUMAN; i++) {
 		HumanAI[i].Init();
+		radar_human_height_layer[i] = 0;
 	}
 
 	// 인물, 시체, 드랍 무기, 총알, 수류탄, 피, 이펙트, 소형 오브젝트 정리
@@ -11396,6 +14178,8 @@ void ProcessScreen(
 	case STATE_NOW_MAINGAME:
 		if (do_logic == true) {
 			for (int i = 0; i < MainGame->GetGameSpeed(); i++) {
+				// 로직이 위치를 바꾸기 직전의 상태를 보관한다.
+				MainGame->CaptureRenderInterpolationState();
 				MainGame->Input();
 				MainGame->Process();
 				MainGame->Sound();
@@ -11542,9 +14326,9 @@ void maingame::RenderGrenadeTrajectoryLine(float x1, float y1, float z1, float x
 
 bool maingame::IsGrenadeTrajectoryPointVisibleFromCamera(float x, float y, float z)
 {
-	float vx = x - camera_x;
-	float vy = y - camera_y;
-	float vz = z - camera_z;
+	float vx = x - draw_camera_x;
+	float vy = y - draw_camera_y;
+	float vz = z - draw_camera_z;
 
 	float dist = sqrtf(vx * vx + vy * vy + vz * vz);
 
@@ -11569,9 +14353,9 @@ bool maingame::IsGrenadeTrajectoryPointVisibleFromCamera(float x, float y, float
 	float hit_dist = 0.0f;
 
 	bool blocked = CollD.CheckALLBlockIntersectRay(
-		camera_x,
-		camera_y,
-		camera_z,
+		draw_camera_x,
+		draw_camera_y,
+		draw_camera_z,
 		vx,
 		vy,
 		vz,
@@ -11635,6 +14419,16 @@ void maingame::RenderGrenadeTrajectory()
 
 	myHuman->GetPosData(&pos_x, &pos_y, &pos_z, NULL);
 	myHuman->GetRxRy(&rotation_x, &armrotation_y);
+
+	// 화면에 보이는 플레이어 위치/방향과 같은 기준으로 궤적을 그린다.
+	// 실제 수류탄 생성과 충돌 판정 좌표는 변경하지 않는다.
+	if (render_visual_player_valid == true) {
+		pos_x = render_visual_player_x;
+		pos_y = render_visual_player_y;
+		pos_z = render_visual_player_z;
+		rotation_x = render_visual_player_rx;
+		armrotation_y = render_visual_player_ry;
+	}
 
 	int grenade_weapon_id = GetPlayerCurrentGrenadeTrajectoryWeaponID(myHuman);
 

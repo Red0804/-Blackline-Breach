@@ -236,6 +236,8 @@ human::human(class ParameterInfo* in_Param, float x, float y, float z, float rx,
 	render_override_weapon_id = -1;
 	Invincible = false;
 	isPlayer = false; // ✨ 추가: isPlayer 플래그 초기화
+	mission_event_target_type = MISSION_EVENT_TARGET_NONE;
+	mission_event_hp_multiplier = 1;
 	crouchflag = false;
 	sitlegmodel = -1;
 	for (int i = 0; i < TOTAL_SITWALKMODE; i++) {
@@ -255,6 +257,14 @@ human::human(class ParameterInfo* in_Param, float x, float y, float z, float rx,
 	is_headshot_hit = false;
 	render_parts_mask = HUMAN_RENDER_ALL;
 	render_override_weapon_id = -1;
+	render_generation = 0;
+	render_position_override = false;
+	render_position_x = pos_x;
+	render_position_y = pos_y;
+	render_position_z = pos_z;
+	render_angle_offset_override = false;
+	render_rotation_x_offset = 0.0f;
+	render_view_y_offset = 0.0f;
 	needs_recovery_reset = false;
 	recovery_target_angle = 0.0f;
 	recoil_accumulator = 0.0f;
@@ -309,8 +319,8 @@ bool human::IsHeadshot()
 	return is_headshot_hit;
 }
 
-// 최대 체력 반환
-int human::GetMaxHP()
+// 원래 최대 체력 반환
+int human::GetBaseMaxHP()
 {
 	if (Param == NULL) { return 100; }
 
@@ -320,6 +330,50 @@ int human::GetMaxHP()
 	}
 
 	return data.hp;
+}
+
+// 이벤트 대상 배율을 반영한 최대 체력 반환
+int human::GetMaxHP()
+{
+	int base_hp = GetBaseMaxHP();
+	int multiplier = mission_event_hp_multiplier;
+
+	if (multiplier < 1) { multiplier = 1; }
+	return base_hp * multiplier;
+}
+
+void human::ResetMissionEventTarget()
+{
+	mission_event_target_type = MISSION_EVENT_TARGET_NONE;
+	mission_event_hp_multiplier = 1;
+}
+
+void human::SetMissionEventTarget(int target_type, int hp_multiplier, bool apply_hp_boost)
+{
+	mission_event_target_type = target_type;
+	mission_event_hp_multiplier = 1;
+
+	if ((apply_hp_boost == false) || (hp_multiplier <= 1) || (hp <= 0)) {
+		return;
+	}
+
+	mission_event_hp_multiplier = hp_multiplier;
+	hp *= hp_multiplier;
+
+	int max_hp = GetMaxHP();
+	if (hp > max_hp) {
+		hp = max_hp;
+	}
+}
+
+int human::GetMissionEventTargetType()
+{
+	return mission_event_target_type;
+}
+
+bool human::IsMissionEventTarget()
+{
+	return (mission_event_target_type != MISSION_EVENT_TARGET_NONE);
 }
 
 // 체력 회복. 최대 체력 초과 불가.
@@ -398,6 +452,9 @@ void human::SetParamData(int id_param, int dataid, signed short int p4, int team
 	if( init == true ){
 		HumanParameter data;
 
+		// 같은 배열 슬롯에 새 인물이 생성될 때 이전 렌더 상태와 섞이지 않게 한다.
+		render_generation += 1;
+
 		move_x = 0.0f;
 		move_y = 0.0f;
 		move_z = 0.0f;
@@ -437,6 +494,7 @@ void human::SetParamData(int id_param, int dataid, signed short int p4, int team
 		silent_hit_flag = false;
 		totalmove = 0.0f;
 		Invincible = false;
+		ResetMissionEventTarget();
 
 		skill_stealth_timer = 0;
 		skill_ammoboost_timer = 0;
@@ -467,6 +525,10 @@ void human::SetParamData(int id_param, int dataid, signed short int p4, int team
 
 		render_parts_mask = HUMAN_RENDER_ALL;
 		render_override_weapon_id = -1;
+		render_position_override = false;
+		render_angle_offset_override = false;
+		render_rotation_x_offset = 0.0f;
+		render_view_y_offset = 0.0f;
 
 		MotionCtrl->Init(rotation_x);
 	}
@@ -576,6 +638,38 @@ void human::SetRenderOverrideWeaponID(int weapon_id)
 int human::GetRenderOverrideWeaponID()
 {
 	return render_override_weapon_id;
+}
+
+int human::GetRenderGeneration()
+{
+	return render_generation;
+}
+
+void human::SetRenderPositionOverride(float x, float y, float z)
+{
+	render_position_override = true;
+	render_position_x = x;
+	render_position_y = y;
+	render_position_z = z;
+}
+
+void human::ClearRenderPositionOverride()
+{
+	render_position_override = false;
+}
+
+void human::SetRenderAngleOffset(float rotation_x_offset, float view_y_offset)
+{
+	render_angle_offset_override = true;
+	render_rotation_x_offset = rotation_x_offset;
+	render_view_y_offset = view_y_offset;
+}
+
+void human::ClearRenderAngleOffset()
+{
+	render_angle_offset_override = false;
+	render_rotation_x_offset = 0.0f;
+	render_view_y_offset = 0.0f;
 }
 
 void human::StartRenderWeaponChangeMotion(int weapon_id, int frames)
@@ -1395,14 +1489,6 @@ bool human::DumpWeapon(class Collision* CollD)
 	if (weapon[selectweapon] != NULL) {
 		//깏깓?긤뭷궶귞렪봲
 		if (weaponreloadcnt > 0) { return false; }
-
-		int weapon_id = ID_WEAPON_NONE;
-		weapon[selectweapon]->GetParamData(&weapon_id, NULL, NULL);
-
-		// 용병 E 스킬로 지급되는 DP28은 버리지 못하게 한다.
-		if (weapon_id == ID_WEAPON_DP28) {
-			return false;
-		}
 
 		//븧딇귩롆궲갂몧뷈귩됶룣
 		// 앞으로 움직이며 버릴 때 무기가 손에서 갑자기 뒤처져 보이지 않도록
@@ -2251,7 +2337,7 @@ void human::ControlProcess()
 	else {
 		// 에임을 부드럽게 원위치시킵니다.
 		if (recoil_y_offset > 0.0f) {
-			recoil_y_offset *= 0.85f; // 1.0에 가까울수록 천천히 내려오고, 낮을수록 팍 내려옵니다.
+			recoil_y_offset *= HUMAN_RECOIL_RECOVERY_RATE; // 1.0에 가까울수록 천천히 내려오고, 낮을수록 팍 내려옵니다.
 
 			if (recoil_y_offset < 0.001f) {
 				recoil_y_offset = 0.0f;
@@ -2269,7 +2355,7 @@ void human::ControlProcess()
 		}
 
 		if (recoil_x_offset > 0.0f || recoil_x_offset < 0.0f) {
-			recoil_x_offset *= 0.85f;
+			recoil_x_offset *= HUMAN_RECOIL_RECOVERY_RATE;
 
 			if (recoil_x_offset < 0.001f && recoil_x_offset > -0.001f) {
 				recoil_x_offset = 0.0f;
@@ -2589,6 +2675,10 @@ void human::CollisionMap(class Collision *CollD, class BlockDataInterface *inblo
 		}
 
 		//뫉뙰궻긳깓긞긏궴뽋붥뜂귩롦벦
+		// 경사면을 특정 각도로 빠르게 달릴 때 중심 바로 아래의 단일 레이가
+		// 삼각면 경계나 블록 모서리를 지나가면, 실제로는 지면에 닿아 있어도
+		// underblock_id가 -1로 남아 발소리 재질 판정이 끊길 수 있다.
+		// 먼저 기존 중심 레이를 유지하고, 실패했을 때만 발 주변을 추가 탐색한다.
 		id = -1;
 		for(int i=0; i<bs; i++){
 			if( CheckBlockID[i] == true ){
@@ -2596,6 +2686,71 @@ void human::CollisionMap(class Collision *CollD, class BlockDataInterface *inblo
 					id = i;
 					break;
 				}
+			}
+		}
+
+		if( id == -1 ){
+			float ground_probe_angle = atan2f(pos_z - pos_z2, pos_x - pos_x2);
+			float ground_probe_x[8];
+			float ground_probe_z[8];
+			float ground_probe_radius[2] = {
+				HUMAN_MAPCOLLISION_GROUND_R1,
+				HUMAN_MAPCOLLISION_GROUND_R2
+			};
+
+			int probe_index = 0;
+			for(int radius_index=0; radius_index<2; radius_index++){
+				float radius = ground_probe_radius[radius_index];
+				ground_probe_x[probe_index] = pos_x + cosf(ground_probe_angle) * radius;
+				ground_probe_z[probe_index] = pos_z + sinf(ground_probe_angle) * radius;
+				probe_index++;
+
+				ground_probe_x[probe_index] = pos_x - cosf(ground_probe_angle) * radius;
+				ground_probe_z[probe_index] = pos_z - sinf(ground_probe_angle) * radius;
+				probe_index++;
+
+				ground_probe_x[probe_index] = pos_x + cosf(ground_probe_angle + (float)M_PI/2) * radius;
+				ground_probe_z[probe_index] = pos_z + sinf(ground_probe_angle + (float)M_PI/2) * radius;
+				probe_index++;
+
+				ground_probe_x[probe_index] = pos_x + cosf(ground_probe_angle - (float)M_PI/2) * radius;
+				ground_probe_z[probe_index] = pos_z + sinf(ground_probe_angle - (float)M_PI/2) * radius;
+				probe_index++;
+			}
+
+			float nearest_ground_dist = 999999.0f;
+			int nearest_ground_id = -1;
+			int nearest_ground_face = -1;
+
+			for(int probe=0; probe<8; probe++){
+				for(int i=0; i<bs; i++){
+					if( CheckBlockID[i] == true ){
+						int probe_face = -1;
+						float probe_dist = 0.0f;
+
+						if( CollD->CheckBlockIntersectRay(
+							i,
+							ground_probe_x[probe],
+							pos_y + 2.5f,
+							ground_probe_z[probe],
+							0.0f, -1.0f, 0.0f,
+							&probe_face,
+							&probe_dist,
+							(2.5f + 1.0f)) == true ){
+							if( probe_dist < nearest_ground_dist ){
+								nearest_ground_dist = probe_dist;
+								nearest_ground_id = i;
+								nearest_ground_face = probe_face;
+							}
+						}
+					}
+				}
+			}
+
+			if( nearest_ground_id != -1 ){
+				id = nearest_ground_id;
+				face = nearest_ground_face;
+				Dist = nearest_ground_dist;
 			}
 		}
 
@@ -3040,12 +3195,18 @@ void human::Render(class D3DGraphics* d3dg, class ResourceManager* Resource, boo
 
 	bool shadow_decoy_render = GetSkillShadowDecoyFlag();
 
-	// 렌더 보간 전체 비활성화.
-// 사람 모델은 NPC/플레이어/1인칭 팔 모두 현재 위치와 현재 모션만 사용한다.
-	float render_pos_x = pos_x;
-	float render_pos_y = pos_y;
-	float render_pos_z = pos_z;
-	float render_rotation_x = rotation_x;
+	// 위치 보간은 외부에서 계산한 하나의 기준 위치만 사용한다.
+	// 몸통/다리/팔/무기가 모두 같은 좌표를 사용하므로 신체가 따로 흔들리지 않는다.
+	float render_pos_x = render_position_override ? render_position_x : pos_x;
+	float render_pos_y = render_position_override ? render_position_y : pos_y;
+	float render_pos_z = render_position_override ? render_position_z : pos_z;
+
+	float render_yaw_offset =
+		render_angle_offset_override ? render_rotation_x_offset : 0.0f;
+	float render_pitch_offset =
+		render_angle_offset_override ? render_view_y_offset : 0.0f;
+
+	float render_rotation_x = rotation_x + render_yaw_offset;
 	float render_rotation_y = rotation_y;
 	float render_armrotation_y = armrotation_y;
 
@@ -3082,7 +3243,8 @@ void human::Render(class D3DGraphics* d3dg, class ResourceManager* Resource, boo
 	MotionCtrl->GetRenderMotion(&armry, &legrx, &upmodel, &armmodel, &legmodel);
 
 	float render_armry = armry;
-	float render_legrx = legrx;
+	// 다리의 이동 방향은 유지하면서 플레이어 전체의 렌더 yaw 보정만 함께 적용한다.
+	float render_legrx = legrx + render_yaw_offset;
 
 	bool draw_upper = ((render_parts_mask & HUMAN_RENDER_UPPER) != 0);
 	bool draw_leg = ((render_parts_mask & HUMAN_RENDER_LEG) != 0);
@@ -3123,6 +3285,12 @@ void human::Render(class D3DGraphics* d3dg, class ResourceManager* Resource, boo
 
 	// [최종] MotionCtrl에서 계산된 팔 각도(armry)에 반동 오프셋(recoil_y_offset)을 더해 최종 렌더링 각도를 계산
 	float final_arm_ry = render_armry + recoil_y_offset;
+
+	// 카메라 상하 회전과 팔/무기가 같은 보간 비율을 사용하도록
+	// 현재 최종 팔 각도에 렌더링 전용 pitch 보정만 더한다.
+	if (render_angle_offset_override == true) {
+		final_arm_ry += render_pitch_offset;
+	}
 
 	class weapon* nowweapon;
 	nowweapon = weapon[selectweapon];
@@ -3266,6 +3434,56 @@ float human::GetRecoilXOffset()
 	return recoil_x_offset;
 }
 
+void human::GetRenderRecoilOffset(
+	float alpha,
+	float* offset_x,
+	float* offset_y
+)
+{
+	if (alpha < 0.0f) {
+		alpha = 0.0f;
+	}
+	if (alpha > 1.0f) {
+		alpha = 1.0f;
+	}
+
+	float render_x = recoil_x_offset;
+	float render_y = recoil_y_offset;
+
+	// 실제 반동값은 건드리지 않고,
+	// 다음 로직 틱에서 적용될 회복량만 렌더링에 미리 반영한다.
+	//
+	// 사격 직후에는 recoil_accum_timer가 남아 있으므로
+	// 새로 발생한 반동은 보간하지 않고 즉시 화면에 표시된다.
+	if (recoil_accum_timer <= 0) {
+		float decay = powf(
+			HUMAN_RECOIL_RECOVERY_RATE,
+			alpha
+		);
+
+		render_x *= decay;
+		render_y *= decay;
+
+		if ((render_x < 0.001f) &&
+			(render_x > -0.001f)) {
+			render_x = 0.0f;
+		}
+
+		if ((render_y < 0.001f) &&
+			(render_y > -0.001f)) {
+			render_y = 0.0f;
+		}
+	}
+
+	if (offset_x != NULL) {
+		*offset_x = render_x;
+	}
+
+	if (offset_y != NULL) {
+		*offset_y = render_y;
+	}
+}
+
 bool human::IsShellReloading()
 {
 	// 상태가 NONE이 아니면 무조건 장전 중인 것으로 게임 엔진에 보고하여 모션과 사운드가 씹히는 것을 방지합니다.[cite: 1]
@@ -3359,6 +3577,12 @@ weapon::weapon(class ParameterInfo *in_Param, float x, float y, float z, float r
 	Loadbullets = 0;
 	motionflag = true;
 
+	render_transform_override = false;
+	render_pos_x = x;
+	render_pos_y = y;
+	render_pos_z = z;
+	render_rotation_x = rx;
+	render_generation = 0;
 
 	if( Param != NULL ){
 		WeaponParameter ParamData;
@@ -3407,6 +3631,8 @@ void weapon::SetParamData(int id_param, int lnbs, int nbs, bool init)
 	if( init == true ){
 		usingflag = false;
 		motionflag = true;
+		render_transform_override = false;
+		render_generation += 1;
 	}
 }
 
@@ -3733,6 +3959,25 @@ bool weapon::ResetWeaponParam(class ResourceManager *Resource, int id_param, int
 	return true;
 }
 
+void weapon::SetRenderTransformOverride(float x, float y, float z, float rx)
+{
+	render_transform_override = true;
+	render_pos_x = x;
+	render_pos_y = y;
+	render_pos_z = z;
+	render_rotation_x = rx;
+}
+
+void weapon::ClearRenderTransformOverride()
+{
+	render_transform_override = false;
+}
+
+int weapon::GetRenderGeneration()
+{
+	return render_generation;
+}
+
 //! @brief 똶럁귩렳뛱걁렔뾕뿇돷걂
 //! @param CollD Collision궻?귽깛?
 int weapon::ProcessObject(class Collision* CollD)
@@ -3815,13 +4060,12 @@ void weapon::Render(class D3DGraphics* d3dg, bool NoModel)
 	if (EnableFlag == false) { return; }
 	if (usingflag == true) { return; }
 
-	// 렌더 보간 전체 비활성화.
-	float render_pos_x = pos_x;
-	float render_pos_y = pos_y;
-	float render_pos_z = pos_z;
-	float render_rotation_x = rotation_x;
+	float draw_pos_x = render_transform_override ? render_pos_x : pos_x;
+	float draw_pos_y = render_transform_override ? render_pos_y : pos_y;
+	float draw_pos_z = render_transform_override ? render_pos_z : pos_z;
+	float draw_rotation_x = render_transform_override ? render_rotation_x : rotation_x;
 
-	d3dg->SetWorldTransform(render_pos_x, render_pos_y, render_pos_z, render_rotation_x, 0.0f, (float)M_PI / 2, model_size);
+	d3dg->SetWorldTransform(draw_pos_x, draw_pos_y, draw_pos_z, draw_rotation_x, 0.0f, (float)M_PI / 2, model_size);
 	d3dg->RenderModel(id_model, id_texture, DarkModelFlag, false, NoModel);
 }
 
@@ -3847,6 +4091,14 @@ smallobject::smallobject(class ParameterInfo *in_Param, class MIFInterface *in_M
 	add_rx = 0.0f;
 	add_ry = 0.0f;
 	jump_cnt = 0;
+
+	render_transform_override = false;
+	render_pos_x = x;
+	render_pos_y = y;
+	render_pos_z = z;
+	render_rotation_x = rx;
+	render_rotation_y = 0.0f;
+	render_generation = 0;
 
 	if( Param != NULL ){
 		SmallObjectParameter ParamData;
@@ -3881,6 +4133,8 @@ void smallobject::SetParamData(int id_param, signed short int p4, bool init)
 
 	if( init == true ){
 		hp = 0;		//럃믦
+		render_transform_override = false;
+		render_generation += 1;
 		jump_rx = 0.0f;
 		move_rx = 0.0f;
 		add_rx = 0.0f;
@@ -3917,6 +4171,11 @@ void smallobject::GetParamData(int *id_param, signed short int *p4)
 int smallobject::GetHP()
 {
 	return hp;
+}
+
+float smallobject::GetRotationY()
+{
+	return rotation_y;
 }
 
 //! @brief 긳깓긞긏궻뤵궸댷벍
@@ -4002,6 +4261,26 @@ void smallobject::Destruction()
 	add_ry = DegreeToRadian(1) * GetRand(20);
 }
 
+void smallobject::SetRenderTransformOverride(float x, float y, float z, float rx, float ry)
+{
+	render_transform_override = true;
+	render_pos_x = x;
+	render_pos_y = y;
+	render_pos_z = z;
+	render_rotation_x = rx;
+	render_rotation_y = ry;
+}
+
+void smallobject::ClearRenderTransformOverride()
+{
+	render_transform_override = false;
+}
+
+int smallobject::GetRenderGeneration()
+{
+	return render_generation;
+}
+
 //! @brief 똶럁귩렳뛱걁봨됹렄궻댷벍궶궵걂
 int smallobject::ProcessObject()
 {
@@ -4053,15 +4332,13 @@ void smallobject::Render(D3DGraphics* d3dg, bool NoModel)
 
 	if (EnableFlag == false) { return; }
 
-	// 렌더 보간 전체 비활성화.
-	float render_pos_x = pos_x;
-	float render_pos_y = pos_y;
-	float render_pos_z = pos_z;
-	float render_rotation_x = rotation_x;
+	float draw_pos_x = render_transform_override ? render_pos_x : pos_x;
+	float draw_pos_y = render_transform_override ? render_pos_y : pos_y;
+	float draw_pos_z = render_transform_override ? render_pos_z : pos_z;
+	float draw_rotation_x = render_transform_override ? render_rotation_x : rotation_x;
+	float draw_rotation_y = render_transform_override ? render_rotation_y : rotation_y;
 
-	float render_rotation_y = rotation_y;
-
-	d3dg->SetWorldTransform(render_pos_x, render_pos_y, render_pos_z, render_rotation_x, render_rotation_y, model_size);
+	d3dg->SetWorldTransform(draw_pos_x, draw_pos_y, draw_pos_z, draw_rotation_x, draw_rotation_y, model_size);
 	d3dg->RenderModel(id_model, id_texture, DarkModelFlag, false, NoModel);
 }
 
@@ -4160,6 +4437,11 @@ void bullet::GetParamData(int* _attacks, int* _penetration, float* _speed, int* 
 	if (_ontargetcnt != NULL) { *_ontargetcnt = ontargetcnt; }
 }
 
+int bullet::GetLifeCount()
+{
+	return cnt;
+}
+
 void bullet::SetSilencerFlag(bool flag)
 {
 	silencer = flag;
@@ -4237,6 +4519,13 @@ grenade::grenade(int modelid, int textureid) : bullet(modelid, textureid)
 	move_y = 0.0f;
 	move_z = 0.0f;
 	weapon_paramid = ID_WEAPON_GRENADE;
+
+	render_transform_override = false;
+	render_pos_x = 0.0f;
+	render_pos_y = 0.0f;
+	render_pos_z = 0.0f;
+	render_rotation_x = 0.0f;
+	render_rotation_y = 0.0f;
 }
 
 //! @brief 긢귻긚긣깋긏?
@@ -4288,6 +4577,22 @@ int grenade::GetWeaponParamID()
 float grenade::GetSpeed()
 {
 	return sqrtf(move_x*move_x + move_y*move_y + move_z*move_z);
+}
+
+// 렌더링 전용 변환 설정. 실제 수류탄 좌표와 충돌 판정에는 영향을 주지 않는다.
+void grenade::SetRenderTransformOverride(float x, float y, float z, float rx, float ry)
+{
+	render_transform_override = true;
+	render_pos_x = x;
+	render_pos_y = y;
+	render_pos_z = z;
+	render_rotation_x = rx;
+	render_rotation_y = ry;
+}
+
+void grenade::ClearRenderTransformOverride()
+{
+	render_transform_override = false;
 }
 
 //! @brief 똶럁귩렳뛱걁롨왮뭙궻릋뛱갋뵚뵯걂
@@ -4354,20 +4659,19 @@ void grenade::Render(class D3DGraphics* d3dg, bool NoModel)
 	if (d3dg == NULL) { return; }
 	if (EnableFlag == false) { return; }
 
-	// 렌더 보간 전체 비활성화.
-	float render_pos_x = pos_x;
-	float render_pos_y = pos_y;
-	float render_pos_z = pos_z;
-	float render_rotation_x = rotation_x;
-
-	float render_rotation_y = rotation_y;
+	// 실제 충돌 좌표는 그대로 두고 렌더링에서만 보간된 변환을 사용한다.
+	float draw_pos_x = render_transform_override ? render_pos_x : pos_x;
+	float draw_pos_y = render_transform_override ? render_pos_y : pos_y;
+	float draw_pos_z = render_transform_override ? render_pos_z : pos_z;
+	float draw_rotation_x = render_transform_override ? render_rotation_x : rotation_x;
+	float draw_rotation_y = render_transform_override ? render_rotation_y : rotation_y;
 
 	d3dg->SetWorldTransform(
-		render_pos_x,
-		render_pos_y,
-		render_pos_z,
-		(render_rotation_x * -1 - (float)M_PI / 2),
-		render_rotation_y,
+		draw_pos_x,
+		draw_pos_y,
+		draw_pos_z,
+		(draw_rotation_x * -1 - (float)M_PI / 2),
+		draw_rotation_y,
 		model_size
 	);
 
@@ -4397,6 +4701,16 @@ effect::effect(float x, float y, float z, float size, float rotation, int textur
 	add_alpha = 0.0f;
 	cnt = count;
 	type = EFFECT_NORMAL;
+
+	render_state_override = false;
+	render_pos_x = pos_x;
+	render_pos_y = pos_y;
+	render_pos_z = pos_z;
+	render_rotation_texture = rotation_texture;
+	render_model_size = model_size;
+	render_alpha = alpha;
+	render_generation = 0;
+
 	if( cnt > 0 ){
 		EnableFlag = true;
 	}
@@ -4434,6 +4748,11 @@ void effect::SetParamData(float in_move_x, float in_move_y, float in_move_z, flo
 	addmodel_size = addsize;
 	cnt = count;
 	type = settype;
+
+	// Every SetParamData call starts a new visual effect in this pool slot.
+	// The generation value prevents interpolation from an older effect.
+	render_generation += 1;
+	render_state_override = false;
 }
 
 //! @brief 긡긏긚?긿귩먠믦
@@ -4490,6 +4809,30 @@ bool effect::GetCollideMapFlag()
 	//else{
 		return false;
 	//}
+}
+
+void effect::GetRenderState(float* rotation, float* size, float* out_alpha, int* generation)
+{
+	if (rotation != NULL) { *rotation = rotation_texture; }
+	if (size != NULL) { *size = model_size; }
+	if (out_alpha != NULL) { *out_alpha = alpha; }
+	if (generation != NULL) { *generation = render_generation; }
+}
+
+void effect::SetRenderStateOverride(float x, float y, float z, float rotation, float size, float in_alpha)
+{
+	render_state_override = true;
+	render_pos_x = x;
+	render_pos_y = y;
+	render_pos_z = z;
+	render_rotation_texture = rotation;
+	render_model_size = size;
+	render_alpha = in_alpha;
+}
+
+void effect::ClearRenderStateOverride()
+{
+	render_state_override = false;
 }
 
 //! @brief 똶럁귩렳뛱걁긄긲긃긏긣댷벍갋렄듩뤑뽅걂
@@ -4554,9 +4897,24 @@ void effect::Render(class D3DGraphics *d3dg, float camera_rx, float camera_ry, b
 		rotation_y = camera_ry;
 	}
 
+	float draw_pos_x = render_state_override ? render_pos_x : pos_x;
+	float draw_pos_y = render_state_override ? render_pos_y : pos_y;
+	float draw_pos_z = render_state_override ? render_pos_z : pos_z;
+	float draw_rotation_texture = render_state_override ? render_rotation_texture : rotation_texture;
+	float draw_model_size = render_state_override ? render_model_size : model_size;
+	float draw_alpha = render_state_override ? render_alpha : alpha;
+
 	//?됪
-	d3dg->SetWorldTransformEffect(pos_x, pos_y, pos_z, rotation_x, rotation_y, rotation_texture, model_size);
-	d3dg->RenderBoard(id_texture, alpha, NoModel);
+	d3dg->SetWorldTransformEffect(
+		draw_pos_x,
+		draw_pos_y,
+		draw_pos_z,
+		rotation_x,
+		rotation_y,
+		draw_rotation_texture,
+		draw_model_size
+	);
+	d3dg->RenderBoard(id_texture, draw_alpha, NoModel);
 }
 
 //! @brief 긓깛긚긣깋긏?
@@ -4938,6 +5296,16 @@ void human::SetRecoilYOffset(float offset)
 void human::SetRecoilXOffset(float offset)
 {
 	recoil_x_offset = offset;
+}
+
+void human::ClearDebugRecoil()
+{
+	recoil_y_offset = 0.0f;
+	recoil_x_offset = 0.0f;
+	recoil_accumulator = 0.0f;
+	recoil_accum_timer = 0;
+	recoil_side_shot_count = 0;
+	recoil_side_timer = 0;
 }
 
 int human::GetBoltActionTimer()

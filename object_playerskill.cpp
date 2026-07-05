@@ -416,15 +416,10 @@ void human::ForceSelectWeaponSlotForSkillReturn(int id, int frames)
 	NightVision = false;
 }
 
-// 경찰 제압 명령: 현재 제압으로 떨어뜨릴 무기를 가지고 있는지 확인한다.
-// HUD 판정용이며, 실제 무기 상태를 바꾸지 않는다.
+// 경찰 제압 명령: 실제 무기 슬롯에 버릴 수 있는 무기가 있는지 확인한다.
+// 스킬 임시 무기는 실제 슬롯과 분리된 render override이므로 제압 대상에서 제외한다.
 bool human::HasAnyWeaponForSuppress()
 {
-	// 경찰 E 방패 스킬처럼 렌더링 override로 표시되는 방패도 제압 대상으로 본다.
-	if (GetRenderOverrideWeaponID() == ID_WEAPON_SHIELD) {
-		return true;
-	}
-
 	for (int i = 0; i < TOTAL_HAVEWEAPON; i++) {
 		if (weapon[i] != NULL) {
 			return true;
@@ -434,29 +429,22 @@ bool human::HasAnyWeaponForSuppress()
 	return false;
 }
 
-// 경찰 제압 명령: 현재 가진 모든 무기를 강제로 버린다.
+// 경찰 제압 명령: 실제 무기 슬롯에 있는 모든 일반 무기를 강제로 버린다.
+// render override로 표시되는 방패·충격 수류탄 등의 스킬 임시 무기는 건드리지 않는다.
 bool human::ForceDropAllWeapons()
 {
 	bool dropped = false;
 
-	// 경찰 E 방패 스킬처럼 실제 슬롯 무기가 아니라 렌더링 override로 표시되는 방패도 제압한다.
-	if (GetRenderOverrideWeaponID() == ID_WEAPON_SHIELD) {
-		SetRenderOverrideWeaponID(-1);
-		dropped = true;
-	}
-
 	for (int i = 0; i < TOTAL_HAVEWEAPON; i++) {
 		if (weapon[i] == NULL) { continue; }
 
-		int weapon_id = ID_WEAPON_NONE;
-		weapon[i]->GetParamData(&weapon_id, NULL, NULL);
-
-		// 용병 고유 무기 DP28은 강제 무기 버리기에서도 제외한다.
-		if (weapon_id == ID_WEAPON_DP28) {
-			continue;
-		}
-
-		weapon[i]->Dropoff(pos_x, pos_y, pos_z, DegreeToRadian(10) * GetRand(36), 1.5f);
+		weapon[i]->Dropoff(
+			pos_x,
+			pos_y,
+			pos_z,
+			DegreeToRadian(10) * GetRand(36),
+			1.5f
+		);
 		weapon[i] = NULL;
 
 		noweapon_bullets[i] = 0;

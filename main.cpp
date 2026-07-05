@@ -34,6 +34,7 @@
 
 #include "main.h"
 
+#include <direct.h>
 #include <mmsystem.h>
 #pragma comment(lib, "winmm.lib")
 
@@ -76,8 +77,77 @@ static double GetHighResolutionTimeMS()
 	return ((double)counter.QuadPart * 1000.0) / (double)frequency.QuadPart;
 }
 
+// 실제 렌더가 시작되는 시각을 기준으로 보간 비율을 계산한다.
+// Sleep()이나 렌더 준비 시간 때문에 오래된 alpha가 사용되는 것을 막는다.
+static void UpdateRenderInterpolationAlpha(
+	maingame* MainGame,
+	double logic_accum,
+	double last_time
+)
+{
+	if (MainGame == NULL) {
+		return;
+	}
+
+	double sample_time = GetHighResolutionTimeMS();
+
+	double render_accum =
+		logic_accum + (sample_time - last_time);
+
+	if (render_accum < 0.0) {
+		render_accum = 0.0;
+	}
+
+	float alpha =
+		(float)(render_accum / LOGICFRAMEMS_D);
+
+	if (alpha < 0.0f) {
+		alpha = 0.0f;
+	}
+
+	if (alpha > 1.0f) {
+		alpha = 1.0f;
+	}
+
+	MainGame->SetRenderInterpolationAlpha(alpha);
+}
+
+// 긴 대기 중에는 메인 루프로 돌아가 로직 처리를 계속한다.
+// 렌더 마감 직전의 짧은 구간만 정밀하게 기다린다.
+static bool WaitUntilRenderDeadline(double target_time)
+{
+	double now = GetHighResolutionTimeMS();
+	double remain = target_time - now;
+
+	if (remain <= 0.0) {
+		return true;
+	}
+
+	if (remain > 2.0) {
+		Sleep(1);
+		return false;
+	}
+
+	if (remain > 0.30) {
+		Sleep(0);
+		return false;
+	}
+
+	// 최대 약 0.3ms만 바쁜 대기를 사용한다.
+	// 전체 프레임 동안 바쁜 대기를 하지 않으므로 CPU 증가를 제한한다.
+	while (GetHighResolutionTimeMS() < target_time) {
+	}
+
+	return true;
+}
+
 //! @brief WinMain()듫릶
-int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine, int nCmdShow)
+int WINAPI WinMain(
+	_In_ HINSTANCE hInstance,
+	_In_opt_ HINSTANCE hPrevInstance,
+	_In_ LPSTR lpCmdLine,
+	_In_ int nCmdShow
+)
 {
 	//뼟럊뾭덙릶뫮랉
 	UNREFERENCED_PARAMETER(hInstance);
@@ -95,7 +165,16 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 
 	//렳뛱긲?귽깑궻궇귡뤾룋귩갂긇깒깛긣긢귻깒긏긣깏궸궥귡갃
 	GetFileDirectory(__argv[0], path);
-	chdir(path);
+
+	if (_chdir(path) != 0) {
+		MessageBoxA(
+			NULL,
+			"Failed to change the current directory to the executable folder.",
+			GAMENAME,
+			MB_OK | MB_ICONERROR
+		);
+		return 1;
+	}
 
 #ifdef _DEBUG
 	//긽긾깏깏?긏궻뙚뢯
@@ -124,11 +203,32 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 
 #ifdef ENABLE_AUTOLOADMIF
 			//"Dir"궕?궑귞귢궲궋궫귞갂긇깒깛긣긢귻깒긏긣깏댷벍
-			if( CheckCommandParameter(__argv[param], "-Dir") == true ){
-				if( (param+1) < __argc ){
-					chdir(__argv[param+1]);
+			if (CheckCommandParameter(__argv[param], "-Dir") == true) {
+				if ((param + 1) < __argc) {
+					const char* requested_directory = __argv[param + 1];
+
+					if (_chdir(requested_directory) != 0) {
+						MessageBoxA(
+							NULL,
+							"Failed to change to the directory specified by -Dir.",
+							GAMENAME,
+							MB_OK | MB_ICONERROR
+						);
+						return 1;
+					}
+
 					param += 1;
 				}
+				else {
+					MessageBoxA(
+						NULL,
+						"The -Dir option requires a directory path.",
+						GAMENAME,
+						MB_OK | MB_ICONERROR
+					);
+					return 1;
+				}
+
 				continue;
 			}
 
@@ -185,11 +285,28 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 
 #ifdef _DEBUG
 	char path2[MAX_PATH];
-	getcwd(path2, MAX_PATH);
-	sprintf(infostr, "EXE directory path length : %d", strlen(path2));
 
-	//깓긐궸뢯쀍
-	OutputLog.WriteLog(LOG_CHECK, "Environment", infostr);
+	if (_getcwd(path2, MAX_PATH) != NULL) {
+		sprintf_s(
+			infostr,
+			sizeof(infostr),
+			"EXE directory path length : %u",
+			static_cast<unsigned int>(strlen(path2))
+		);
+
+		OutputLog.WriteLog(
+			LOG_CHECK,
+			"Environment",
+			infostr
+		);
+	}
+	else {
+		OutputLog.WriteLog(
+			LOG_CHECK,
+			"Environment",
+			"Failed to get the current directory"
+		);
+	}
 #endif
 
 	//긢??긲긅깑??긃긞긏
@@ -286,29 +403,51 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 	unsigned int framecnt = 0;
 
 	// 고정 로직 업데이트용 누적 시간
-	unsigned int last_time = GetTimeMS();
+	// 렌더와 로직 보간이 같은 고해상도 시간축을 사용하게 한다.
+// GetTimeMS()의 1ms 단위 흔들림이 120FPS 이동 보간에 섞이는 것을 막는다.
+	double last_time = GetHighResolutionTimeMS();
 	double logic_accum = 0.0;
 
 	// 렌더 제한용 다음 예정 시간
 	// 120FPS는 8.333ms이므로 unsigned int ms로는 정확히 제한할 수 없다.
 	double next_render_time = 0.0;
 	int last_render_fps = -1;
+	bool last_app_active =
+		(GetForegroundWindow() == MainWindow.GethWnd());
 
 	// Sleep(1)의 정밀도를 올림
 	timeBeginPeriod(1);
 
 	for (int flag = 0; flag != -1; flag = MainWindow.CheckMainLoop()) {
 		if (flag == 1) {
-			unsigned int nowtime = GetTimeMS();
-			unsigned int elapsed = nowtime - last_time;
-			last_time = nowtime;
+			double nowtime = GetHighResolutionTimeMS();
+			bool app_active =
+				(GetForegroundWindow() == MainWindow.GethWnd());
 
-			// Alt+Tab, 멈춤, 디버그 중단 뒤 한 번에 너무 많이 따라잡는 것 방지
-			if (elapsed > 250) {
-				elapsed = 250;
+			// Alt+Tab 전환 직후에는 이전 보간/마우스/렌더 마감 시간을 이어 쓰지 않는다.
+			// 특히 복귀 첫 Render3D()가 커서를 중앙에 놓기 전에 실행되면
+			// 창을 다시 선택한 위치가 큰 시야 회전으로 해석될 수 있다.
+			if (app_active != last_app_active) {
+				last_app_active = app_active;
+				last_time = nowtime;
+				logic_accum = 0.0;
+				next_render_time = nowtime;
+				MainGame.HandleApplicationFocusChange(app_active);
 			}
 
-			logic_accum += (double)elapsed;
+			double elapsed = nowtime - last_time;
+			last_time = nowtime;
+
+			// 타이머 역행이나 Alt+Tab 뒤 큰 누적 시간을 방지한다.
+			if (elapsed < 0.0) {
+				elapsed = 0.0;
+			}
+
+			if (elapsed > 250.0) {
+				elapsed = 250.0;
+			}
+
+			logic_accum += elapsed;
 
 			int logic_steps = 0;
 
@@ -336,6 +475,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 				logic_accum = 0.0;
 			}
 
+			
 			int render_fps = GameConfig.GetRenderFpsLimit();
 			double render_interval_ms = 0.0;
 
@@ -354,6 +494,13 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 			}
 
 			if (render_interval_ms <= 0.0) {
+				// 무제한 FPS에서도 실제 렌더 직전 시각으로 보간값을 맞춘다.
+				UpdateRenderInterpolationAlpha(
+					&MainGame,
+					logic_accum,
+					last_time
+				);
+
 				ProcessScreen(
 					&MainWindow,
 					&Opening,
@@ -362,8 +509,8 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 					&MainGame,
 					&Result,
 					framecnt,
-					false,          // do_logic
-					true            // do_render
+					false,		// do_logic
+					true		// do_render
 				);
 			}
 			else {
@@ -371,8 +518,22 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 					next_render_time = render_nowtime;
 				}
 
-				if (render_nowtime >= next_render_time) {
-					double render_begin_time = render_nowtime;
+				bool render_due =
+					(render_nowtime >= next_render_time);
+
+				if (render_due == false) {
+					render_due =
+						WaitUntilRenderDeadline(next_render_time);
+				}
+
+				if (render_due == true) {
+					// 정밀 대기가 끝난 실제 렌더 시각을 기준으로
+					// 플레이어·카메라·상대 인물 보간값을 갱신한다.
+					UpdateRenderInterpolationAlpha(
+						&MainGame,
+						logic_accum,
+						last_time
+					);
 
 					ProcessScreen(
 						&MainWindow,
@@ -382,29 +543,24 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 						&MainGame,
 						&Result,
 						framecnt,
-						false,          // do_logic
-						true            // do_render
+						false,		// do_logic
+						true		// do_render
 					);
 
-					// 렌더 종료 시간이 아니라 예정 시각 기준으로 다음 렌더를 잡는다.
-					// 120FPS의 8.333ms 같은 소수 ms 간격을 유지하기 위해 double 누적을 사용한다.
+					double render_end_time =
+						GetHighResolutionTimeMS();
+
+					// 현재 시간에 다시 맞추는 것이 아니라,
+					// 누적된 목표 시각을 기준으로 다음 프레임을 잡는다.
 					next_render_time += render_interval_ms;
 
-					// Alt+Tab, 디버그 중단, 큰 렉 등으로 너무 뒤처진 경우 현재 시각 기준으로 재동기화한다.
-					if ((render_begin_time - next_render_time) > (render_interval_ms * 4.0)) {
-						next_render_time = render_begin_time + render_interval_ms;
-					}
-				}
-				else {
-					double wait_ms = next_render_time - render_nowtime;
+					// Alt+Tab, 디버그 중단, 긴 렌더링 이후에는
+					// 밀린 프레임을 연속으로 출력하지 않는다.
+					if ((render_end_time - next_render_time) >
+						(render_interval_ms * 4.0)) {
 
-					// 너무 일찍 깨어나면 CPU를 많이 쓰고, 너무 늦게 깨어나면 120FPS 타이밍을 놓친다.
-					// 2ms 이상 남았을 때만 Sleep(1), 마감 직전에는 Sleep(0)으로 양보만 한다.
-					if (wait_ms > 2.0) {
-						Sleep(1);
-					}
-					else {
-						Sleep(0);
+						next_render_time =
+							render_end_time + render_interval_ms;
 					}
 				}
 			}

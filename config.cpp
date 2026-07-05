@@ -72,8 +72,14 @@ Config::Config()
 	CrosshairColor = 0;        // 0: 기본 초록색(GREEN)
 	CrosshairOutline = false;   // true: 테두리 켬 (끄고 싶다면 false)
 
-	// 기본값: 스킬 모드 비활성화
-	SkillModeFlag = false;
+	// 기본값: 스킬 모드 활성화
+	SkillModeFlag = true;
+
+	// 기본값: 이벤트 대상 체력 증가 활성화
+	EventTargetHPBoostFlag = true;
+
+	// 기본값: 플레이어/전체 지도 조작 안내 활성화
+	ControlGuideFlag = true;
 
 	// 기본값: 레이더와 레이더 정보 UI는 활성화
 	RadarEnabledFlag = true;
@@ -216,7 +222,7 @@ int Config::LoadFile(const char *fname)
 
 	// 추가: 구버전 config.dat 대응
 	if (fread(&SkillModeFlag, sizeof(bool), 1, fp) != 1) {
-		SkillModeFlag = false;
+		SkillModeFlag = true;
 	}
 
 	// 레이더 사용 여부
@@ -267,6 +273,18 @@ int Config::LoadFile(const char *fname)
 		RenderFpsLimit = RENDERFPS_DEFAULT;
 	}
 	SetRenderFpsLimit(RenderFpsLimit);
+
+	// 이벤트 대상 체력 증가 여부
+	// 구버전 config.dat에는 값이 없으므로 ON
+	if (fread(&EventTargetHPBoostFlag, sizeof(bool), 1, fp) != 1) {
+		EventTargetHPBoostFlag = true;
+	}
+
+	// 플레이어/전체 지도 조작 안내 표시 여부
+	// 구버전 config.dat에는 값이 없으므로 ON
+	if (fread(&ControlGuideFlag, sizeof(bool), 1, fp) != 1) {
+		ControlGuideFlag = true;
+	}
 
 	//긲?귽깑긪깛긤깑귩빧궣귡
 	fclose(fp);
@@ -394,6 +412,12 @@ int Config::SaveFile(const char *fname)
 	// 화면 렌더링 FPS 제한
 	fwrite(&RenderFpsLimit, sizeof(int), 1, fp);
 
+	// 이벤트 대상 체력 증가 여부
+	fwrite(&EventTargetHPBoostFlag, sizeof(bool), 1, fp);
+
+	// 플레이어/전체 지도 조작 안내 표시 여부
+	fwrite(&ControlGuideFlag, sizeof(bool), 1, fp);
+
 
 	//긲?귽깑긪깛긤깑귩빧궣귡
 	fclose(fp);
@@ -445,8 +469,14 @@ void Config::SetDefaultConfig()
 	CrosshairColor = 0; // 기본 색상 (연두색)
 	CrosshairOutline = false;   // true: 테두리 켬 (끄고 싶다면 false)
 
-	// 기본값: 스킬 모드 비활성화
-	SkillModeFlag = false;
+	// 기본값: 스킬 모드 활성화
+	SkillModeFlag = true;
+
+	// 기본값: 이벤트 대상 체력 증가 활성화
+	EventTargetHPBoostFlag = true;
+
+	// 기본값: 플레이어/전체 지도 조작 안내 활성화
+	ControlGuideFlag = true;
 
 	// 기본값: 레이더와 레이더 정보 UI는 활성화
 	RadarEnabledFlag = true;

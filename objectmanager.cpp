@@ -327,16 +327,6 @@ static void GetShieldBlockSurfacePoint(human* hitHuman, float hit_x, float hit_y
 	*out_z = hz + shield_forward_z * effect_front + shield_right_z * side;
 }
 
-static bool CheckShieldBulletBoxHit(human* hitHuman, human* shotHuman, float bullet_x, float bullet_y, float bullet_z, float bullet_vx, float bullet_vz, float* out_x, float* out_y, float* out_z)
-{
-	if (IsBulletBlockedByShieldFront(hitHuman, shotHuman, bullet_vx, bullet_vz, bullet_x, bullet_y, bullet_z) == false) {
-		return false;
-	}
-
-	GetShieldBlockSurfacePoint(hitHuman, bullet_x, bullet_y, bullet_z, out_x, out_y, out_z);
-	return true;
-}
-
 static bool ClipShieldSegmentSlab(float start, float end, float min_value, float max_value, float* tmin, float* tmax)
 {
 	if ((tmin == NULL) || (tmax == NULL)) { return false; }
@@ -1333,11 +1323,6 @@ static int GetBugHumanRenderMask(int original_id)
 	return HUMAN_RENDER_ALL;
 }
 
-static int ResolveHumanIDForPoint(int id)
-{
-	return MakeBugHumanProfile(id).humanID;
-}
-
 void ObjectManager::ResetRuntimeState()
 {
 	for (int i = 0; i < MAX_HUMAN; i++) {
@@ -1346,6 +1331,7 @@ void ObjectManager::ResetRuntimeState()
 		RuntimeLastTexture[i] = -1;
 		RuntimeLastY[i] = 0.0f;
 		RuntimeGroundGrace[i] = 0;
+		RuntimeFootstepTimer[i] = 0;
 	}
 
 	RuntimeEffectLastIndex = 0;
@@ -1363,6 +1349,634 @@ void ObjectManager::ResetRuntimeState()
 
 	// 추가 권장
 	framecnt = 0;
+	DebugLastTraceValid = false;
+	DebugLastMuzzleBlocked = false;
+
+	ResetHumanRenderInterpolation();
+	ResetGrenadeRenderInterpolation();
+	ResetEffectRenderInterpolation();
+	ResetWeaponRenderInterpolation();
+	ResetSmallObjectRenderInterpolation();
+}
+
+void ObjectManager::SetHumanRenderInterpolationAlpha(float alpha)
+{
+	if (alpha < 0.0f) { alpha = 0.0f; }
+	if (alpha > 1.0f) { alpha = 1.0f; }
+	Human_RenderInterpolationAlpha = alpha;
+}
+
+void ObjectManager::SetWeaponRenderInterpolationAlpha(float alpha)
+{
+	if (alpha < 0.0f) { alpha = 0.0f; }
+	if (alpha > 1.0f) { alpha = 1.0f; }
+	Weapon_RenderInterpolationAlpha = alpha;
+}
+
+void ObjectManager::ResetWeaponRenderInterpolation()
+{
+	Weapon_RenderInterpolationAlpha = 1.0f;
+
+	for (int i = 0; i < MAX_WEAPON; i++) {
+		Weapon_RenderPreviousValid[i] = false;
+		Weapon_RenderPreviousX[i] = 0.0f;
+		Weapon_RenderPreviousY[i] = 0.0f;
+		Weapon_RenderPreviousZ[i] = 0.0f;
+		Weapon_RenderPreviousRX[i] = 0.0f;
+		Weapon_RenderPreviousParamID[i] = ID_WEAPON_NONE;
+		Weapon_RenderPreviousGeneration[i] = -1;
+	}
+}
+
+void ObjectManager::CaptureWeaponRenderInterpolationState()
+{
+	for (int i = 0; i < MAX_WEAPON; i++) {
+		// Carried weapons are rendered as part of the human model, not as world objects.
+		if (WeaponIndex[i].GetEnableFlag() == false ||
+			WeaponIndex[i].GetUsingFlag() == true) {
+			Weapon_RenderPreviousValid[i] = false;
+			continue;
+		}
+
+		WeaponIndex[i].GetPosData(
+			&Weapon_RenderPreviousX[i],
+			&Weapon_RenderPreviousY[i],
+			&Weapon_RenderPreviousZ[i],
+			&Weapon_RenderPreviousRX[i]
+		);
+
+		WeaponIndex[i].GetParamData(
+			&Weapon_RenderPreviousParamID[i],
+			NULL,
+			NULL
+		);
+
+		Weapon_RenderPreviousGeneration[i] =
+			WeaponIndex[i].GetRenderGeneration();
+		Weapon_RenderPreviousValid[i] = true;
+	}
+}
+
+void ObjectManager::SetSmallObjectRenderInterpolationAlpha(float alpha)
+{
+	if (alpha < 0.0f) { alpha = 0.0f; }
+	if (alpha > 1.0f) { alpha = 1.0f; }
+	SmallObject_RenderInterpolationAlpha = alpha;
+}
+
+void ObjectManager::ResetSmallObjectRenderInterpolation()
+{
+	SmallObject_RenderInterpolationAlpha = 1.0f;
+
+	for (int i = 0; i < MAX_SMALLOBJECT; i++) {
+		SmallObject_RenderPreviousValid[i] = false;
+		SmallObject_RenderPreviousX[i] = 0.0f;
+		SmallObject_RenderPreviousY[i] = 0.0f;
+		SmallObject_RenderPreviousZ[i] = 0.0f;
+		SmallObject_RenderPreviousRX[i] = 0.0f;
+		SmallObject_RenderPreviousRY[i] = 0.0f;
+		SmallObject_RenderPreviousParamID[i] = -1;
+		SmallObject_RenderPreviousP4[i] = 0;
+		SmallObject_RenderPreviousGeneration[i] = -1;
+	}
+}
+
+void ObjectManager::CaptureSmallObjectRenderInterpolationState()
+{
+	for (int i = 0; i < MAX_SMALLOBJECT; i++) {
+		if (SmallObjectIndex[i].GetEnableFlag() == false) {
+			SmallObject_RenderPreviousValid[i] = false;
+			continue;
+		}
+
+		SmallObjectIndex[i].GetPosData(
+			&SmallObject_RenderPreviousX[i],
+			&SmallObject_RenderPreviousY[i],
+			&SmallObject_RenderPreviousZ[i],
+			&SmallObject_RenderPreviousRX[i]
+		);
+
+		SmallObject_RenderPreviousRY[i] =
+			SmallObjectIndex[i].GetRotationY();
+
+		SmallObjectIndex[i].GetParamData(
+			&SmallObject_RenderPreviousParamID[i],
+			&SmallObject_RenderPreviousP4[i]
+		);
+
+		SmallObject_RenderPreviousGeneration[i] =
+			SmallObjectIndex[i].GetRenderGeneration();
+		SmallObject_RenderPreviousValid[i] = true;
+	}
+}
+
+void ObjectManager::SetGrenadeRenderInterpolationAlpha(float alpha)
+{
+	if (alpha < 0.0f) { alpha = 0.0f; }
+	if (alpha > 1.0f) { alpha = 1.0f; }
+	Grenade_RenderInterpolationAlpha = alpha;
+}
+
+void ObjectManager::ResetGrenadeRenderInterpolation()
+{
+	Grenade_RenderInterpolationAlpha = 1.0f;
+
+	for (int i = 0; i < MAX_GRENADE; i++) {
+		Grenade_RenderPreviousValid[i] = false;
+		Grenade_RenderPreviousX[i] = 0.0f;
+		Grenade_RenderPreviousY[i] = 0.0f;
+		Grenade_RenderPreviousZ[i] = 0.0f;
+		Grenade_RenderPreviousRX[i] = 0.0f;
+		Grenade_RenderPreviousRY[i] = 0.0f;
+		Grenade_RenderPreviousWeaponID[i] = ID_WEAPON_NONE;
+		Grenade_RenderPreviousTeam[i] = -1;
+		Grenade_RenderPreviousHuman[i] = -1;
+		Grenade_RenderPreviousLifeCount[i] = -1;
+	}
+}
+
+void ObjectManager::CaptureGrenadeRenderInterpolationState()
+{
+	for (int i = 0; i < MAX_GRENADE; i++) {
+		if (GrenadeIndex[i].GetEnableFlag() == false) {
+			Grenade_RenderPreviousValid[i] = false;
+			continue;
+		}
+
+		GrenadeIndex[i].GetPosData(
+			&Grenade_RenderPreviousX[i],
+			&Grenade_RenderPreviousY[i],
+			&Grenade_RenderPreviousZ[i],
+			&Grenade_RenderPreviousRX[i],
+			&Grenade_RenderPreviousRY[i]
+		);
+
+		Grenade_RenderPreviousWeaponID[i] = GrenadeIndex[i].GetWeaponParamID();
+		GrenadeIndex[i].GetParamData(
+			NULL,
+			&Grenade_RenderPreviousTeam[i],
+			&Grenade_RenderPreviousHuman[i],
+			NULL
+		);
+		Grenade_RenderPreviousLifeCount[i] = GrenadeIndex[i].GetLifeCount();
+		Grenade_RenderPreviousValid[i] = true;
+	}
+}
+
+void ObjectManager::SetEffectRenderInterpolationAlpha(float alpha)
+{
+	if (alpha < 0.0f) { alpha = 0.0f; }
+	if (alpha > 1.0f) { alpha = 1.0f; }
+	Effect_RenderInterpolationAlpha = alpha;
+}
+
+void ObjectManager::ResetEffectRenderInterpolation()
+{
+	Effect_RenderInterpolationAlpha = 1.0f;
+
+	for (int i = 0; i < MAX_EFFECT; i++) {
+		Effect_RenderPreviousValid[i] = false;
+		Effect_RenderPreviousX[i] = 0.0f;
+		Effect_RenderPreviousY[i] = 0.0f;
+		Effect_RenderPreviousZ[i] = 0.0f;
+		Effect_RenderPreviousRotation[i] = 0.0f;
+		Effect_RenderPreviousSize[i] = 0.0f;
+		Effect_RenderPreviousAlpha[i] = 0.0f;
+		Effect_RenderPreviousGeneration[i] = -1;
+	}
+}
+
+void ObjectManager::CaptureEffectRenderInterpolationState()
+{
+	for (int i = 0; i < MAX_EFFECT; i++) {
+		if (EffectIndex[i].GetEnableFlag() == false) {
+			Effect_RenderPreviousValid[i] = false;
+			continue;
+		}
+
+		EffectIndex[i].GetPosData(
+			&Effect_RenderPreviousX[i],
+			&Effect_RenderPreviousY[i],
+			&Effect_RenderPreviousZ[i],
+			NULL
+		);
+
+		EffectIndex[i].GetRenderState(
+			&Effect_RenderPreviousRotation[i],
+			&Effect_RenderPreviousSize[i],
+			&Effect_RenderPreviousAlpha[i],
+			&Effect_RenderPreviousGeneration[i]
+		);
+
+		Effect_RenderPreviousValid[i] = true;
+	}
+}
+
+bool ObjectManager::GetEffectRenderState(
+	int id,
+	float* x,
+	float* y,
+	float* z,
+	float* rotation,
+	float* size,
+	float* alpha
+)
+{
+	if ((id < 0) || (id >= MAX_EFFECT)) { return false; }
+	if ((x == NULL) || (y == NULL) || (z == NULL) ||
+		(rotation == NULL) || (size == NULL) || (alpha == NULL)) {
+		return false;
+	}
+
+	int generation = -1;
+
+	EffectIndex[id].GetPosData(x, y, z, NULL);
+	EffectIndex[id].GetRenderState(rotation, size, alpha, &generation);
+
+	if (EffectIndex[id].GetEnableFlag() == false) { return false; }
+	if (Effect_RenderPreviousValid[id] == false) { return false; }
+
+	// A reused pool slot must never blend with the effect that previously occupied it.
+	if (generation != Effect_RenderPreviousGeneration[id]) {
+		return false;
+	}
+
+	float dx = *x - Effect_RenderPreviousX[id];
+	float dy = *y - Effect_RenderPreviousY[id];
+	float dz = *z - Effect_RenderPreviousZ[id];
+
+	// Teleports and large corrections are shown immediately.
+	if ((dx * dx + dy * dy + dz * dz) > (32.0f * 32.0f)) {
+		return false;
+	}
+
+	*x = Effect_RenderPreviousX[id] + dx * Effect_RenderInterpolationAlpha;
+	*y = Effect_RenderPreviousY[id] + dy * Effect_RenderInterpolationAlpha;
+	*z = Effect_RenderPreviousZ[id] + dz * Effect_RenderInterpolationAlpha;
+
+	float rotation_diff = *rotation - Effect_RenderPreviousRotation[id];
+	while (rotation_diff > (float)M_PI) {
+		rotation_diff -= (float)M_PI * 2.0f;
+	}
+	while (rotation_diff < (float)-M_PI) {
+		rotation_diff += (float)M_PI * 2.0f;
+	}
+
+	*rotation = Effect_RenderPreviousRotation[id] +
+		rotation_diff * Effect_RenderInterpolationAlpha;
+
+	*size = Effect_RenderPreviousSize[id] +
+		(*size - Effect_RenderPreviousSize[id]) * Effect_RenderInterpolationAlpha;
+
+	*alpha = Effect_RenderPreviousAlpha[id] +
+		(*alpha - Effect_RenderPreviousAlpha[id]) * Effect_RenderInterpolationAlpha;
+
+	return true;
+}
+
+void ObjectManager::ResetHumanRenderInterpolation()
+{
+	Human_RenderInterpolationAlpha = 1.0f;
+
+	for (int i = 0; i < MAX_HUMAN; i++) {
+		Human_RenderPreviousValid[i] = false;
+		Human_RenderPreviousX[i] = 0.0f;
+		Human_RenderPreviousY[i] = 0.0f;
+		Human_RenderPreviousZ[i] = 0.0f;
+		Human_RenderPreviousRX[i] = 0.0f;
+		Human_RenderPreviousCrouch[i] = false;
+		Human_RenderPreviousDead[i] = false;
+		Human_RenderPreviousDeadMotion[i] = false;
+		Human_RenderPreviousParamID[i] = -1;
+		Human_RenderPreviousDataID[i] = -1;
+		Human_RenderPreviousP4[i] = 0;
+		Human_RenderPreviousTeam[i] = -1;
+		Human_RenderPreviousGeneration[i] = -1;
+	}
+}
+
+void ObjectManager::CaptureHumanRenderInterpolationState()
+{
+	for (int i = 0; i < MAX_HUMAN; i++) {
+		if (HumanIndex[i].GetEnableFlag() == false) {
+			Human_RenderPreviousValid[i] = false;
+			continue;
+		}
+
+		HumanIndex[i].GetPosData(
+			&Human_RenderPreviousX[i],
+			&Human_RenderPreviousY[i],
+			&Human_RenderPreviousZ[i],
+			&Human_RenderPreviousRX[i]
+		);
+
+		HumanIndex[i].GetParamData(
+			&Human_RenderPreviousParamID[i],
+			&Human_RenderPreviousDataID[i],
+			&Human_RenderPreviousP4[i],
+			&Human_RenderPreviousTeam[i]
+		);
+
+		Human_RenderPreviousCrouch[i] = HumanIndex[i].GetCrouchFlag();
+		Human_RenderPreviousDead[i] = HumanIndex[i].GetDeadFlag();
+		Human_RenderPreviousDeadMotion[i] = HumanIndex[i].GetDeadMotionFlag();
+		Human_RenderPreviousGeneration[i] = HumanIndex[i].GetRenderGeneration();
+		Human_RenderPreviousValid[i] = true;
+	}
+}
+
+bool ObjectManager::GetHumanRenderPosition(int id, float* x, float* y, float* z)
+{
+	if ((id < 0) || (id >= MAX_HUMAN)) { return false; }
+	if ((x == NULL) || (y == NULL) || (z == NULL)) { return false; }
+
+	HumanIndex[id].GetPosData(x, y, z, NULL);
+
+	// 플레이어는 maingame::Render3D()에서 카메라와 같은 기준으로 별도 보간한다.
+	if (id == Player_HumanID) { return false; }
+	if (HumanIndex[id].GetEnableFlag() == false) { return false; }
+	if (Human_RenderPreviousValid[id] == false) { return false; }
+
+	int param_id = -1;
+	int data_id = -1;
+	signed short int p4 = 0;
+	int team = -1;
+	HumanIndex[id].GetParamData(&param_id, &data_id, &p4, &team);
+
+	// 같은 배열 슬롯이 다른 인물로 교체된 경우 이전 위치를 사용하지 않는다.
+	if (param_id != Human_RenderPreviousParamID[id] ||
+		data_id != Human_RenderPreviousDataID[id] ||
+		p4 != Human_RenderPreviousP4[id] ||
+		team != Human_RenderPreviousTeam[id] ||
+		HumanIndex[id].GetRenderGeneration() !=
+		Human_RenderPreviousGeneration[id]) {
+		return false;
+	}
+
+	// 자세 또는 생사 상태가 바뀌는 순간에는 중간 상태를 만들지 않는다.
+	if (HumanIndex[id].GetCrouchFlag() != Human_RenderPreviousCrouch[id] ||
+		HumanIndex[id].GetDeadFlag() != Human_RenderPreviousDead[id] ||
+		HumanIndex[id].GetDeadMotionFlag() != Human_RenderPreviousDeadMotion[id]) {
+		return false;
+	}
+
+	if (HumanIndex[id].GetDeadFlag() == true ||
+		HumanIndex[id].GetDeadMotionFlag() == true) {
+		return false;
+	}
+
+	float dx = *x - Human_RenderPreviousX[id];
+	float dy = *y - Human_RenderPreviousY[id];
+	float dz = *z - Human_RenderPreviousZ[id];
+
+	// 순간이동, 생성 위치 보정, 큰 낙하 보정은 즉시 현재 위치로 표시한다.
+	if ((dx * dx + dy * dy + dz * dz) > (16.0f * 16.0f)) {
+		return false;
+	}
+
+	*x = Human_RenderPreviousX[id] + dx * Human_RenderInterpolationAlpha;
+	*y = Human_RenderPreviousY[id] + dy * Human_RenderInterpolationAlpha;
+	*z = Human_RenderPreviousZ[id] + dz * Human_RenderInterpolationAlpha;
+	return true;
+}
+
+bool ObjectManager::GetHumanRenderYawOffset(int id, float* yaw_offset)
+{
+	if ((id < 0) || (id >= MAX_HUMAN)) { return false; }
+	if (yaw_offset == NULL) { return false; }
+	*yaw_offset = 0.0f;
+
+	// 플레이어는 maingame::Render3D()에서 최신 마우스 입력과 함께 별도로 처리한다.
+	if (id == Player_HumanID) { return false; }
+	if (Human_RenderPreviousValid[id] == false) { return false; }
+	if (HumanIndex[id].GetEnableFlag() == false) { return false; }
+
+	int param_id = -1;
+	int data_id = -1;
+	signed short int p4 = 0;
+	int team = -1;
+	HumanIndex[id].GetParamData(&param_id, &data_id, &p4, &team);
+
+	if (param_id != Human_RenderPreviousParamID[id] ||
+		data_id != Human_RenderPreviousDataID[id] ||
+		p4 != Human_RenderPreviousP4[id] ||
+		team != Human_RenderPreviousTeam[id] ||
+		HumanIndex[id].GetRenderGeneration() !=
+		Human_RenderPreviousGeneration[id]) {
+		return false;
+	}
+
+	if (HumanIndex[id].GetCrouchFlag() != Human_RenderPreviousCrouch[id] ||
+		HumanIndex[id].GetDeadFlag() != Human_RenderPreviousDead[id] ||
+		HumanIndex[id].GetDeadMotionFlag() != Human_RenderPreviousDeadMotion[id]) {
+		return false;
+	}
+
+	if (HumanIndex[id].GetDeadFlag() == true ||
+		HumanIndex[id].GetDeadMotionFlag() == true) {
+		return false;
+	}
+
+	float current_rx = 0.0f;
+	HumanIndex[id].GetPosData(NULL, NULL, NULL, &current_rx);
+
+	float diff = current_rx - Human_RenderPreviousRX[id];
+	while (diff > (float)M_PI) { diff -= (float)M_PI * 2.0f; }
+	while (diff < (float)-M_PI) { diff += (float)M_PI * 2.0f; }
+
+	// 비정상적인 즉시 방향 전환은 중간 회전을 만들지 않는다.
+	if (fabsf(diff) > DegreeToRadian(120.0f)) { return false; }
+
+	float render_rx = Human_RenderPreviousRX[id] + diff * Human_RenderInterpolationAlpha;
+	float offset = render_rx - current_rx;
+	while (offset > (float)M_PI) { offset -= (float)M_PI * 2.0f; }
+	while (offset < (float)-M_PI) { offset += (float)M_PI * 2.0f; }
+
+	*yaw_offset = offset;
+	return true;
+}
+
+bool ObjectManager::GetWeaponRenderTransform(
+	int id,
+	float* x,
+	float* y,
+	float* z,
+	float* rx
+)
+{
+	if ((id < 0) || (id >= MAX_WEAPON)) { return false; }
+	if ((x == NULL) || (y == NULL) || (z == NULL) || (rx == NULL)) {
+		return false;
+	}
+
+	WeaponIndex[id].GetPosData(x, y, z, rx);
+
+	if (WeaponIndex[id].GetEnableFlag() == false ||
+		WeaponIndex[id].GetUsingFlag() == true) {
+		return false;
+	}
+	if (Weapon_RenderPreviousValid[id] == false) { return false; }
+
+	int param_id = ID_WEAPON_NONE;
+	WeaponIndex[id].GetParamData(&param_id, NULL, NULL);
+
+	if (param_id != Weapon_RenderPreviousParamID[id] ||
+		WeaponIndex[id].GetRenderGeneration() !=
+		Weapon_RenderPreviousGeneration[id]) {
+		return false;
+	}
+
+	float dx = *x - Weapon_RenderPreviousX[id];
+	float dy = *y - Weapon_RenderPreviousY[id];
+	float dz = *z - Weapon_RenderPreviousZ[id];
+
+	if ((dx * dx + dy * dy + dz * dz) > (32.0f * 32.0f)) {
+		return false;
+	}
+
+	*x = Weapon_RenderPreviousX[id] + dx * Weapon_RenderInterpolationAlpha;
+	*y = Weapon_RenderPreviousY[id] + dy * Weapon_RenderInterpolationAlpha;
+	*z = Weapon_RenderPreviousZ[id] + dz * Weapon_RenderInterpolationAlpha;
+
+	float diff_rx = *rx - Weapon_RenderPreviousRX[id];
+	while (diff_rx > (float)M_PI) { diff_rx -= (float)M_PI * 2.0f; }
+	while (diff_rx < (float)-M_PI) { diff_rx += (float)M_PI * 2.0f; }
+
+	*rx = Weapon_RenderPreviousRX[id] +
+		diff_rx * Weapon_RenderInterpolationAlpha;
+
+	return true;
+}
+
+bool ObjectManager::GetSmallObjectRenderTransform(
+	int id,
+	float* x,
+	float* y,
+	float* z,
+	float* rx,
+	float* ry
+)
+{
+	if ((id < 0) || (id >= MAX_SMALLOBJECT)) { return false; }
+	if ((x == NULL) || (y == NULL) || (z == NULL) ||
+		(rx == NULL) || (ry == NULL)) {
+		return false;
+	}
+
+	SmallObjectIndex[id].GetPosData(x, y, z, rx);
+	*ry = SmallObjectIndex[id].GetRotationY();
+
+	if (SmallObjectIndex[id].GetEnableFlag() == false) { return false; }
+	if (SmallObject_RenderPreviousValid[id] == false) { return false; }
+
+	int param_id = -1;
+	signed short int p4 = 0;
+	SmallObjectIndex[id].GetParamData(&param_id, &p4);
+
+	if (param_id != SmallObject_RenderPreviousParamID[id] ||
+		p4 != SmallObject_RenderPreviousP4[id] ||
+		SmallObjectIndex[id].GetRenderGeneration() !=
+		SmallObject_RenderPreviousGeneration[id]) {
+		return false;
+	}
+
+	float dx = *x - SmallObject_RenderPreviousX[id];
+	float dy = *y - SmallObject_RenderPreviousY[id];
+	float dz = *z - SmallObject_RenderPreviousZ[id];
+
+	if ((dx * dx + dy * dy + dz * dz) > (32.0f * 32.0f)) {
+		return false;
+	}
+
+	*x = SmallObject_RenderPreviousX[id] +
+		dx * SmallObject_RenderInterpolationAlpha;
+	*y = SmallObject_RenderPreviousY[id] +
+		dy * SmallObject_RenderInterpolationAlpha;
+	*z = SmallObject_RenderPreviousZ[id] +
+		dz * SmallObject_RenderInterpolationAlpha;
+
+	float diff_rx = *rx - SmallObject_RenderPreviousRX[id];
+	while (diff_rx > (float)M_PI) { diff_rx -= (float)M_PI * 2.0f; }
+	while (diff_rx < (float)-M_PI) { diff_rx += (float)M_PI * 2.0f; }
+
+	float diff_ry = *ry - SmallObject_RenderPreviousRY[id];
+	while (diff_ry > (float)M_PI) { diff_ry -= (float)M_PI * 2.0f; }
+	while (diff_ry < (float)-M_PI) { diff_ry += (float)M_PI * 2.0f; }
+
+	*rx = SmallObject_RenderPreviousRX[id] +
+		diff_rx * SmallObject_RenderInterpolationAlpha;
+	*ry = SmallObject_RenderPreviousRY[id] +
+		diff_ry * SmallObject_RenderInterpolationAlpha;
+
+	return true;
+}
+
+bool ObjectManager::GetGrenadeRenderTransform(
+	int id,
+	float* x,
+	float* y,
+	float* z,
+	float* rx,
+	float* ry
+)
+{
+	if ((id < 0) || (id >= MAX_GRENADE)) { return false; }
+	if ((x == NULL) || (y == NULL) || (z == NULL) ||
+		(rx == NULL) || (ry == NULL)) {
+		return false;
+	}
+
+	GrenadeIndex[id].GetPosData(x, y, z, rx, ry);
+
+	if (GrenadeIndex[id].GetEnableFlag() == false) { return false; }
+	if (Grenade_RenderPreviousValid[id] == false) { return false; }
+
+	int team = -1;
+	int human_id = -1;
+	GrenadeIndex[id].GetParamData(NULL, &team, &human_id, NULL);
+
+	if (GrenadeIndex[id].GetWeaponParamID() != Grenade_RenderPreviousWeaponID[id] ||
+		team != Grenade_RenderPreviousTeam[id] ||
+		human_id != Grenade_RenderPreviousHuman[id]) {
+		return false;
+	}
+
+	// Do not blend transforms when the array slot was reused by another grenade.
+	if (GrenadeIndex[id].GetLifeCount() !=
+		(Grenade_RenderPreviousLifeCount[id] + 1)) {
+		return false;
+	}
+
+	float dx = *x - Grenade_RenderPreviousX[id];
+	float dy = *y - Grenade_RenderPreviousY[id];
+	float dz = *z - Grenade_RenderPreviousZ[id];
+
+	// Large corrections are shown immediately instead of creating a false path.
+	if ((dx * dx + dy * dy + dz * dz) > (24.0f * 24.0f)) {
+		return false;
+	}
+
+	*x = Grenade_RenderPreviousX[id] +
+		dx * Grenade_RenderInterpolationAlpha;
+	*y = Grenade_RenderPreviousY[id] +
+		dy * Grenade_RenderInterpolationAlpha;
+	*z = Grenade_RenderPreviousZ[id] +
+		dz * Grenade_RenderInterpolationAlpha;
+
+	float diff_rx = *rx - Grenade_RenderPreviousRX[id];
+	while (diff_rx > (float)M_PI) { diff_rx -= (float)M_PI * 2.0f; }
+	while (diff_rx < (float)-M_PI) { diff_rx += (float)M_PI * 2.0f; }
+
+	float diff_ry = *ry - Grenade_RenderPreviousRY[id];
+	while (diff_ry > (float)M_PI) { diff_ry -= (float)M_PI * 2.0f; }
+	while (diff_ry < (float)-M_PI) { diff_ry += (float)M_PI * 2.0f; }
+
+	*rx = Grenade_RenderPreviousRX[id] +
+		diff_rx * Grenade_RenderInterpolationAlpha;
+	*ry = Grenade_RenderPreviousRY[id] +
+		diff_ry * Grenade_RenderInterpolationAlpha;
+
+	return true;
 }
 
 //! @brief 긓깛긚긣깋긏?
@@ -1416,6 +2030,42 @@ ObjectManager::ObjectManager()
 	ObjectLog = new ObjectManagerLog;
 
 	ShowHitboxFlag = false;
+
+	DebugMuzzleAdjustFlag = false;
+	DebugBulletTraceFlag = false;
+	DebugInfiniteAmmoFlag = false;
+	DebugNoReloadFlag = false;
+	DebugNoSpreadFlag = false;
+	DebugNoRecoilFlag = false;
+	for (int i = 0; i < TOTAL_PARAMETERINFO_WEAPON; i++) {
+		DebugMuzzleOffsetX[i] = 0.0f;
+		DebugMuzzleOffsetY[i] = 0.0f;
+		DebugMuzzleOffsetZ[i] = 0.0f;
+	}
+
+	DebugLastTraceValid = false;
+	DebugLastMuzzleBlocked = false;
+	DebugLastSafeX = 0.0f;
+	DebugLastSafeY = 0.0f;
+	DebugLastSafeZ = 0.0f;
+	DebugLastMuzzleX = 0.0f;
+	DebugLastMuzzleY = 0.0f;
+	DebugLastMuzzleZ = 0.0f;
+	DebugLastAimOriginX = 0.0f;
+	DebugLastAimOriginY = 0.0f;
+	DebugLastAimOriginZ = 0.0f;
+	DebugLastAimTargetX = 0.0f;
+	DebugLastAimTargetY = 0.0f;
+	DebugLastAimTargetZ = 0.0f;
+	DebugLastActualStartX = 0.0f;
+	DebugLastActualStartY = 0.0f;
+	DebugLastActualStartZ = 0.0f;
+	DebugLastActualTargetX = 0.0f;
+	DebugLastActualTargetY = 0.0f;
+	DebugLastActualTargetZ = 0.0f;
+	DebugLastBlockHitX = 0.0f;
+	DebugLastBlockHitY = 0.0f;
+	DebugLastBlockHitZ = 0.0f;
 
 	ResetRuntimeState();
 
@@ -4219,6 +4869,16 @@ int ObjectManager::GetHumanObjectID(human* object)
 	return -1;
 }
 
+bool ObjectManager::GetHumanVisualRenderPosition(int id, float* x, float* y, float* z)
+{
+	if ((id < 0) || (id >= MAX_HUMAN)) { return false; }
+	if ((x == NULL) || (y == NULL) || (z == NULL)) { return false; }
+
+	// GetHumanRenderPosition() always writes the current logic position first,
+	// then replaces it with the interpolated render position when valid.
+	return GetHumanRenderPosition(id, x, y, z);
+}
+
 bool ObjectManager::GetHumanForceNoAI(int id)
 {
 	if (id < 0) { return false; }
@@ -4508,8 +5168,48 @@ int ObjectManager::ShotWeapon(int human_id)
 
 	float shot_y = GetHumanShotY(pos_y, MyHuman->GetCrouchFlag());
 
-	// 뭙궻뵯롅귩뾴땫
+	if ((playerflag == true) &&
+		((DebugInfiniteAmmoFlag == true) || (DebugNoReloadFlag == true))) {
+		MaintainDebugAmmoState();
+	}
+
+	// Debug ammo modes are player-only. Snapshot the selected weapon before
+	// human::ShotWeapon() consumes ammunition.
+	weapon* debug_ammo_weapon = NULL;
+	int debug_ammo_weapon_id = ID_WEAPON_NONE;
+	int debug_old_load = 0;
+	int debug_old_total = 0;
+	bool debug_restore_ammo = false;
+
+	if ((playerflag == true) &&
+		((DebugInfiniteAmmoFlag == true) || (DebugNoReloadFlag == true))) {
+		if (GetCurrentPlayerWeaponObject(&debug_ammo_weapon, &debug_ammo_weapon_id) == true) {
+			if ((debug_ammo_weapon_id != ID_WEAPON_GRENADE) &&
+				(debug_ammo_weapon_id != ID_WEAPON_IMPACT_GRENADE)) {
+				debug_ammo_weapon->GetParamData(NULL, &debug_old_load, &debug_old_total);
+				debug_restore_ammo = true;
+
+				// Keep one extra temporary round so last-round bolt/action logic
+				// behaves as a non-empty magazine while NORELOAD is active.
+				if ((DebugNoReloadFlag == true) && (debug_old_load == 1)) {
+					int temp_total = debug_old_total;
+					if (temp_total < 2) { temp_total = 2; }
+					debug_ammo_weapon->SetParamData(debug_ammo_weapon_id, 2, temp_total, false);
+				}
+			}
+		}
+	}
+
 	if (MyHuman->ShotWeapon(&weapon_paramid, &GunsightErrorRange) == false) {
+		if ((debug_restore_ammo == true) && (debug_ammo_weapon != NULL)) {
+			debug_ammo_weapon->SetParamData(
+				debug_ammo_weapon_id,
+				debug_old_load,
+				debug_old_total,
+				false
+			);
+		}
+
 		if (MyHuman->GetLastShotFailReason() == human::SHOT_FAIL_EMPTY) {
 
 			if (IsNoDryFireWeapon(weapon_paramid)) {
@@ -4531,25 +5231,41 @@ int ObjectManager::ShotWeapon(int human_id)
 	}
 
 	//븧딇궻륃뺪귩롦벦
+	if ((debug_restore_ammo == true) && (debug_ammo_weapon != NULL)) {
+		int current_load = 0;
+		int current_total = 0;
+		debug_ammo_weapon->GetParamData(NULL, &current_load, &current_total);
+
+		if (DebugNoReloadFlag == true) {
+			current_load = debug_old_load;
+			current_total = debug_old_total;
+		}
+		else if (DebugInfiniteAmmoFlag == true) {
+			current_total = debug_old_total;
+		}
+
+		debug_ammo_weapon->SetParamData(
+			debug_ammo_weapon_id,
+			current_load,
+			current_total,
+			false
+		);
+	}
+
+	if ((playerflag == true) && (DebugNoRecoilFlag == true)) {
+		MyHuman->ClearDebugRecoil();
+	}
+
+	if ((playerflag == true) && (DebugBulletTraceFlag == true)) {
+		DebugLastTraceValid = false;
+	}
+
 	if (GameParamInfo->GetWeapon(weapon_paramid, &ParamData) != 0) { return 0; }
 
 	float muzzle_x = pos_x;
-	float muzzle_y = shot_y;
+	float muzzle_y = GetHumanWeaponBaseY(pos_y, MyHuman->GetCrouchFlag());
 	float muzzle_z = pos_z;
-
-	d3dg->SetWorldTransformHumanWeapon(
-		pos_x,
-		shot_y,
-		pos_z,
-		ParamData.flashx / 10,
-		ParamData.flashy / 10,
-		ParamData.flashz / 10,
-		rotation_x,
-		armrotation_y * -1,
-		1.0f
-	);
-	d3dg->GetWorldTransformPos(&muzzle_x, &muzzle_y, &muzzle_z);
-	d3dg->ResetWorldTransform();
+	GetWeaponMuzzleWorldPos(human_id, weapon_paramid, &muzzle_x, &muzzle_y, &muzzle_z);
 
 	// 수류탄 계열 판정
 	if ((weapon_paramid == ID_WEAPON_GRENADE) ||
@@ -4567,7 +5283,8 @@ int ObjectManager::ShotWeapon(int human_id)
 	// 로봇 F: 에임핵 중에는 이동 탄퍼짐뿐 아니라 무기 기본 최소 탄퍼짐도 제거한다.
 	// human::ShotWeapon()에서 GunsightErrorRange를 0으로 넘겨도,
 	// 여기서 ParamData.ErrorRangeMIN이 다시 적용되면 실제 탄은 여전히 퍼질 수 있다.
-	if (MyHuman->GetSkillAimHackAccuracyFlag() == true) {
+	if ((MyHuman->GetSkillAimHackAccuracyFlag() == true) ||
+		((playerflag == true) && (DebugNoSpreadFlag == true))) {
 		ErrorRange = 0;
 	}
 	else {
@@ -4609,8 +5326,9 @@ int ObjectManager::ShotWeapon(int human_id)
 				ontargetcnt = 1.0f / ((float)ParamData.pellet / 2);
 
 				// 무기 이름이 "Calico M950"인지 확인합니다.
-				if (ParamData.nbsmax >= 25) {
-					// nbsmax가 25 이상이면 탄 퍼짐 없이 발사 각도를 그대로 사용합니다.
+				if ((ParamData.nbsmax >= 25) ||
+					((playerflag == true) && (DebugNoSpreadFlag == true))) {
+					// Keep the existing special case; NOSPREAD also aligns every pellet.
 					rx2 = rx;
 					ry2 = ry;
 				}
@@ -4638,16 +5356,307 @@ int ObjectManager::ShotWeapon(int human_id)
 			if (newbullet == NULL) { return 0; }
 
 
-			//뢤뭙귩뵯롅
-			// 판정용 총알은 카메라/팔 보간과 분리한다.
-			// 몸 중심(pos_x/pos_z)에서 바로 시작하면 3인칭에서 캐릭터 뒤에서 발사되어
-			// 몸을 통과하는 것처럼 보이므로, 사격 방향으로 상체 충돌 반지름만큼 앞에서 시작시킨다.
+			// 총알 생성 위치와 방향을 결정한다.
+			// 기본값은 기존과 동일하게 인물 중심의 사격선에서 상체 반지름만큼 앞쪽이다.
+			// 플레이어가 지향사격 중일 때만 실제 총구에서 탄을 생성하고,
+			// 기존 조준선이 맞는 지점으로 방향을 다시 계산한다.
 			const float bullet_forward_offset = HUMAN_BULLETCOLLISION_UP_R + 0.8f;
-			float bullet_start_x = pos_x + cosf(rx2) * cosf(ry2) * bullet_forward_offset;
-			float bullet_start_y = shot_y + sinf(ry2) * bullet_forward_offset;
-			float bullet_start_z = pos_z + sinf(rx2) * cosf(ry2) * bullet_forward_offset;
+			float aim_dir_x = cosf(rx2) * cosf(ry2);
+			float aim_dir_y = sinf(ry2);
+			float aim_dir_z = sinf(rx2) * cosf(ry2);
 
-			newbullet->SetPosData(bullet_start_x, bullet_start_y, bullet_start_z, rx2, ry2);
+			float bullet_start_x = pos_x + aim_dir_x * bullet_forward_offset;
+			float bullet_start_y = shot_y + aim_dir_y * bullet_forward_offset;
+			float bullet_start_z = pos_z + aim_dir_z * bullet_forward_offset;
+			float bullet_rx = rx2;
+			float bullet_ry = ry2;
+
+			if ((playerflag == true) && (MyHuman->GetScopeMode() == 0)) {
+				// 기존 총알 시작점에서 뻗는 선이 조준점 중앙의 실제 판정선이다.
+				// 맵/인물/소형 오브젝트 중 가장 가까운 지점을 찾아 총구에서 그 지점으로 수렴시킨다.
+				float aim_origin_x = bullet_start_x;
+				float aim_origin_y = bullet_start_y;
+				float aim_origin_z = bullet_start_z;
+				float aim_max_dist = (float)ParamData.speed * BULLET_SPEEDSCALE * (BULLET_DESTROYFRAME + 1);
+
+				if (aim_max_dist < 1.0f) {
+					aim_max_dist = 1.0f;
+				}
+
+				float aim_target_dist = aim_max_dist;
+				float hit_dist;
+
+				// 맵 충돌 지점
+				if ((CollD != NULL) &&
+					(CollD->CheckALLBlockIntersectRay(
+						aim_origin_x,
+						aim_origin_y,
+						aim_origin_z,
+						aim_dir_x,
+						aim_dir_y,
+						aim_dir_z,
+						NULL,
+						NULL,
+						&hit_dist,
+						aim_target_dist
+					) == true)) {
+					aim_target_dist = hit_dist;
+				}
+
+				// 실제 총알 판정과 같은 팀/생존 조건으로 인물 충돌 지점을 찾는다.
+				for (int target_human_id = 0; target_human_id < MAX_HUMAN; target_human_id++) {
+					if (target_human_id == human_id) { continue; }
+					if (HumanIndex[target_human_id].GetEnableFlag() == false) { continue; }
+					if (HumanIndex[target_human_id].GetHP() <= 0) { continue; }
+					if (HumanIndex[target_human_id].GetDeadFlag() == true) { continue; }
+
+					float target_x, target_y, target_z;
+					int target_teamid;
+					HumanIndex[target_human_id].GetPosData(&target_x, &target_y, &target_z, NULL);
+					HumanIndex[target_human_id].GetParamData(NULL, NULL, NULL, &target_teamid);
+
+					if ((FriendlyFire[target_human_id] == false) && (target_teamid == teamid)) {
+						continue;
+					}
+
+					float hit_leg_y, hit_leg_h;
+					float hit_up_y, hit_up_h;
+					float hit_head_y, hit_head_h;
+
+					GetHumanBulletHitboxParts(
+						&HumanIndex[target_human_id],
+						target_y,
+						&hit_leg_y,
+						&hit_leg_h,
+						&hit_up_y,
+						&hit_up_h,
+						&hit_head_y,
+						&hit_head_h
+					);
+
+					if (CollideCylinderRay(
+						target_x, hit_head_y, target_z,
+						HUMAN_BULLETCOLLISION_HEAD_R, hit_head_h,
+						aim_origin_x, aim_origin_y, aim_origin_z,
+						aim_dir_x, aim_dir_y, aim_dir_z,
+						&hit_dist, aim_target_dist
+					) == true) {
+						aim_target_dist = hit_dist;
+					}
+
+					if (CollideCylinderRay(
+						target_x, hit_up_y, target_z,
+						HUMAN_BULLETCOLLISION_UP_R, hit_up_h,
+						aim_origin_x, aim_origin_y, aim_origin_z,
+						aim_dir_x, aim_dir_y, aim_dir_z,
+						&hit_dist, aim_target_dist
+					) == true) {
+						aim_target_dist = hit_dist;
+					}
+
+					if (CollideCylinderRay(
+						target_x, hit_leg_y, target_z,
+						HUMAN_BULLETCOLLISION_LEG_R, hit_leg_h,
+						aim_origin_x, aim_origin_y, aim_origin_z,
+						aim_dir_x, aim_dir_y, aim_dir_z,
+						&hit_dist, aim_target_dist
+					) == true) {
+						aim_target_dist = hit_dist;
+					}
+				}
+
+				// 소형 오브젝트도 기존 총알 판정과 동일한 크기로 조준선 충돌을 검사한다.
+				for (int target_object_id = 0; target_object_id < MAX_SMALLOBJECT; target_object_id++) {
+					if (SmallObjectIndex[target_object_id].GetEnableFlag() == false) { continue; }
+					if (SmallObjectIndex[target_object_id].GetHP() <= 0) { continue; }
+
+					float target_x, target_y, target_z;
+					int target_paramid;
+					float target_radius;
+
+					SmallObjectIndex[target_object_id].GetPosData(&target_x, &target_y, &target_z, NULL);
+					SmallObjectIndex[target_object_id].GetParamData(&target_paramid, NULL);
+
+					if ((TOTAL_PARAMETERINFO_SMALLOBJECT <= target_paramid) &&
+						(target_paramid <= (TOTAL_PARAMETERINFO_SMALLOBJECT + MAX_ADDSMALLOBJECT - 1))) {
+						target_radius = (float)MIFdata->GetAddSmallobjectDecide(
+							target_paramid - TOTAL_PARAMETERINFO_SMALLOBJECT
+						) * SMALLOBJECT_COLLISIONSCALE;
+					}
+					else {
+						SmallObjectParameter target_param;
+						GameParamInfo->GetSmallObject(target_paramid, &target_param);
+						target_radius = (float)target_param.decide * SMALLOBJECT_COLLISIONSCALE;
+					}
+
+					if (CollideSphereRay(
+						target_x, target_y, target_z, target_radius,
+						aim_origin_x, aim_origin_y, aim_origin_z,
+						aim_dir_x, aim_dir_y, aim_dir_z,
+						&hit_dist, aim_target_dist
+					) == true) {
+						aim_target_dist = hit_dist;
+					}
+				}
+
+				float aim_target_x = aim_origin_x + aim_dir_x * aim_target_dist;
+				float aim_target_y = aim_origin_y + aim_dir_y * aim_target_dist;
+				float aim_target_z = aim_origin_z + aim_dir_z * aim_target_dist;
+
+				// Find an origin outside map geometry. Normally the body-center shot
+				// origin is already safe; the search handles rare clipping/spawn cases.
+				float muzzle_safe_x = pos_x;
+				float muzzle_safe_y = shot_y;
+				float muzzle_safe_z = pos_z;
+				bool muzzle_safe_valid = ResolveMuzzleSafeOrigin(
+					pos_x, shot_y, pos_z,
+					aim_dir_x, aim_dir_y, aim_dir_z,
+					&muzzle_safe_x, &muzzle_safe_y, &muzzle_safe_z
+				);
+
+				float block_hit_x = muzzle_x;
+				float block_hit_y = muzzle_y;
+				float block_hit_z = muzzle_z;
+				bool muzzle_blocked = true;
+				if (muzzle_safe_valid == true) {
+					muzzle_blocked = CheckMuzzleObstruction(
+						muzzle_safe_x,
+						muzzle_safe_y,
+						muzzle_safe_z,
+						muzzle_x,
+						muzzle_y,
+						muzzle_z,
+						&block_hit_x,
+						&block_hit_y,
+						&block_hit_z
+					);
+				}
+
+				if (muzzle_safe_valid == false) {
+					// Never spawn a projectile inside a wall. The weapon still fires and
+					// consumes its normal shot, but no unstable bullet object is created.
+					if ((i == 0) && (DebugBulletTraceFlag == true)) {
+						DebugLastTraceValid = true;
+						DebugLastMuzzleBlocked = true;
+						DebugLastSafeX = pos_x;
+						DebugLastSafeY = shot_y;
+						DebugLastSafeZ = pos_z;
+						DebugLastMuzzleX = muzzle_x;
+						DebugLastMuzzleY = muzzle_y;
+						DebugLastMuzzleZ = muzzle_z;
+						DebugLastAimOriginX = aim_origin_x;
+						DebugLastAimOriginY = aim_origin_y;
+						DebugLastAimOriginZ = aim_origin_z;
+						DebugLastAimTargetX = aim_target_x;
+						DebugLastAimTargetY = aim_target_y;
+						DebugLastAimTargetZ = aim_target_z;
+						DebugLastActualStartX = pos_x;
+						DebugLastActualStartY = shot_y;
+						DebugLastActualStartZ = pos_z;
+						DebugLastActualTargetX = pos_x;
+						DebugLastActualTargetY = shot_y;
+						DebugLastActualTargetZ = pos_z;
+						DebugLastBlockHitX = pos_x;
+						DebugLastBlockHitY = shot_y;
+						DebugLastBlockHitZ = pos_z;
+					}
+					continue;
+				}
+
+				float actual_target_x = aim_target_x;
+				float actual_target_y = aim_target_y;
+				float actual_target_z = aim_target_z;
+
+				if (muzzle_blocked == true) {
+					// The visible muzzle is behind/inside a wall. Use the body-safe
+					// origin and aim at the first wall point instead of spawning inside.
+					float safe_to_wall_x = block_hit_x - muzzle_safe_x;
+					float safe_to_wall_y = block_hit_y - muzzle_safe_y;
+					float safe_to_wall_z = block_hit_z - muzzle_safe_z;
+					float safe_to_wall_xz = sqrtf(
+						safe_to_wall_x * safe_to_wall_x +
+						safe_to_wall_z * safe_to_wall_z
+					);
+					float safe_to_wall_length = sqrtf(
+						safe_to_wall_xz * safe_to_wall_xz +
+						safe_to_wall_y * safe_to_wall_y
+					);
+
+					bullet_start_x = muzzle_safe_x;
+					bullet_start_y = muzzle_safe_y;
+					bullet_start_z = muzzle_safe_z;
+					actual_target_x = block_hit_x;
+					actual_target_y = block_hit_y;
+					actual_target_z = block_hit_z;
+
+					if (safe_to_wall_length > 0.001f) {
+						bullet_rx = atan2f(safe_to_wall_z, safe_to_wall_x);
+						bullet_ry = atan2f(safe_to_wall_y, safe_to_wall_xz);
+					}
+					else {
+						// Extremely close boundary: preserve the aim direction, but never
+						// place the bullet at the obstructed muzzle position.
+						bullet_rx = rx2;
+						bullet_ry = ry2;
+					}
+				}
+				else {
+					float muzzle_to_target_x = aim_target_x - muzzle_x;
+					float muzzle_to_target_y = aim_target_y - muzzle_y;
+					float muzzle_to_target_z = aim_target_z - muzzle_z;
+					float muzzle_to_target_xz = sqrtf(
+						muzzle_to_target_x * muzzle_to_target_x +
+						muzzle_to_target_z * muzzle_to_target_z
+					);
+					float muzzle_to_target_length = sqrtf(
+						muzzle_to_target_xz * muzzle_to_target_xz +
+						muzzle_to_target_y * muzzle_to_target_y
+					);
+
+					if (muzzle_to_target_length > 0.001f) {
+						bullet_start_x = muzzle_x;
+						bullet_start_y = muzzle_y;
+						bullet_start_z = muzzle_z;
+						bullet_rx = atan2f(muzzle_to_target_z, muzzle_to_target_x);
+						bullet_ry = atan2f(muzzle_to_target_y, muzzle_to_target_xz);
+					}
+				}
+
+				if ((i == 0) && (DebugBulletTraceFlag == true)) {
+					DebugLastTraceValid = true;
+					DebugLastMuzzleBlocked = muzzle_blocked;
+					DebugLastSafeX = muzzle_safe_x;
+					DebugLastSafeY = muzzle_safe_y;
+					DebugLastSafeZ = muzzle_safe_z;
+					DebugLastMuzzleX = muzzle_x;
+					DebugLastMuzzleY = muzzle_y;
+					DebugLastMuzzleZ = muzzle_z;
+					DebugLastAimOriginX = aim_origin_x;
+					DebugLastAimOriginY = aim_origin_y;
+					DebugLastAimOriginZ = aim_origin_z;
+					DebugLastAimTargetX = aim_target_x;
+					DebugLastAimTargetY = aim_target_y;
+					DebugLastAimTargetZ = aim_target_z;
+					DebugLastActualStartX = bullet_start_x;
+					DebugLastActualStartY = bullet_start_y;
+					DebugLastActualStartZ = bullet_start_z;
+					DebugLastActualTargetX = actual_target_x;
+					DebugLastActualTargetY = actual_target_y;
+					DebugLastActualTargetZ = actual_target_z;
+					DebugLastBlockHitX = block_hit_x;
+					DebugLastBlockHitY = block_hit_y;
+					DebugLastBlockHitZ = block_hit_z;
+				}
+
+			}
+
+			newbullet->SetPosData(
+				bullet_start_x,
+				bullet_start_y,
+				bullet_start_z,
+				bullet_rx,
+				bullet_ry
+			);
 
 			newbullet->SetParamData(
 				attacks,
@@ -4798,7 +5807,6 @@ void ObjectManager::ShotWeaponEffect(int humanid)
 	//뭠궻붝댪귩?긃긞긏
 	if( (humanid < 0)||(MAX_HUMAN <= humanid) ){ return; }
 
-	float pos_x, pos_y, pos_z;
 	float rotation_x, armrotation_y;
 	int weapon_paramid;
 	WeaponParameter ParamData;
@@ -4807,10 +5815,7 @@ void ObjectManager::ShotWeaponEffect(int humanid)
 	float rx, emx, emy, emz;
 
 	//릐궻띆뷭궴둷뱗귩롦벦
-	HumanIndex[humanid].GetPosData(&pos_x, &pos_y, &pos_z, NULL);
 	HumanIndex[humanid].GetRxRy(&rotation_x, &armrotation_y);
-
-	float weapon_y = GetHumanWeaponBaseY(pos_y, HumanIndex[humanid].GetCrouchFlag());
 
 	// 무기 정보를 얻는다.
 // 렌더링 override 무기가 있으면 총구화염/탄피 위치도 그 무기 기준으로 사용한다.
@@ -4835,18 +5840,16 @@ void ObjectManager::ShotWeaponEffect(int humanid)
 	emy = sinf(armrotation_y);
 	emz = sinf(rx)*cosf(armrotation_y);
 
-	//뛱쀱궳긄긲긃긏긣띆뷭귩똶럁
-	d3dg->SetWorldTransformHumanWeapon(pos_x, weapon_y, pos_z, ParamData.flashx / 10, ParamData.flashy / 10, ParamData.flashz / 10, rotation_x, armrotation_y * -1, 1.0f);
-	d3dg->GetWorldTransformPos(&x, &y, &z);
-	d3dg->ResetWorldTransform();
+	// Use the same muzzle calculation as bullets and the tuning marker.
+	if (GetWeaponMuzzleWorldPos(humanid, weapon_paramid, &x, &y, &z) == false) { return; }
 
 	//?긛깑긲깋긞긘깄?됪
 	AddEffect(x, y, z, 0.0f, 0.0f, 0.0f, 0.0f, DegreeToRadian(10)*GetRand(36), 0.0f, flashsize, 0.0f, Resource->GetEffectMflashTexture(), 0, 0, 0.63f, 0.0f, EFFECT_NORMAL, 1);
 
-	//뛱쀱궳긄긲긃긏긣띆뷭귩똶럁
-	d3dg->SetWorldTransformHumanWeapon(pos_x, weapon_y, pos_z, ParamData.flashx / 10, ParamData.flashy / 10, ParamData.flashz / 10 - 0.1f, rotation_x, armrotation_y * -1, 1.0f);
-	d3dg->GetWorldTransformPos(&x, &y, &z);
-	d3dg->ResetWorldTransform();
+	// Smoke starts slightly behind the muzzle along the firing direction.
+	x -= emx * 0.1f;
+	y -= emy * 0.1f;
+	z -= emz * 0.1f;
 
 	//긄긲긃긏긣걁뎹걂궻?됪
 	AddEffect(x, y, z, emx*0.15f, emy*0.15f + 0.02f, emz*0.15f, 0.0f, DegreeToRadian(10)*GetRand(36), 0.0f, smokesize1, 0.3f, Resource->GetEffectSmokeTexture(), 0, 0, 0.47f, -0.047f, EFFECT_NORMAL, 12);
@@ -5781,6 +6784,9 @@ bool ObjectManager::GetObjectInfoTag(float camera_x, float camera_y, float camer
 int ObjectManager::Process(int cmdF5id, bool demomode, bool screen)
 {
 
+	// Keep the selected player weapon ready after a slot/mode change.
+	MaintainDebugAmmoState();
+
 	//궞궻긲깒??궻먰쀰귩룊딖돸
 	for(int i=0; i<MAX_HUMAN; i++){
 		Human_ontarget[i] = 0.0f;
@@ -5913,9 +6919,74 @@ int ObjectManager::Process(int cmdF5id, bool demomode, bool screen)
 		// 바닥 판정 때문에 0으로 초기화되기 전에, 공중에 얼마나 떠있었는지 기억합니다.
 		int current_falling = RuntimeFallingFrames[i];
 
+		MoveMode = HumanIndex[i].GetMovemode(false);
+		JumpLandingMode = HumanIndex[i].GetJumpLanding(false);
+
 		//뫉뙰궸궇귡긳깓긞긏궻긡긏긚?긿?붥뜂귩롦벦궥귡
 		HumanIndex[i].GetUnderBlock(&block_id, &block_face);
-		if (block_id != -1) {
+
+		// 경사면에서는 human의 지면 판정이 네 방향 모두를 만족해야 하므로,
+		// 진행 각도에 따라 실제로 발이 닿아 있어도 underblock_id가 -1이 될 수 있다.
+		// 일반 물리 판정은 건드리지 않고 발소리용으로만 중앙과 발 주변을 짧게 탐색한다.
+		// 짧은 하향 레이이므로 정상 점프 높이에서는 바닥을 지면으로 오인하지 않는다.
+		if ((block_id == -1) &&
+			(1 <= MoveMode) && (MoveMode <= 4) &&
+			(RuntimeGroundGrace[i] <= 2) &&
+			(JumpLandingMode != 1) &&
+			(delta_y >= -0.5f)) {
+			const float probe_radius = HUMAN_MAPCOLLISION_GROUND_R2;
+			const float probe_offset_x[9] = {
+				0.0f,
+				probe_radius, -probe_radius, 0.0f, 0.0f,
+				probe_radius, probe_radius, -probe_radius, -probe_radius
+			};
+			const float probe_offset_z[9] = {
+				0.0f,
+				0.0f, 0.0f, probe_radius, -probe_radius,
+				probe_radius, -probe_radius, probe_radius, -probe_radius
+			};
+
+			int nearest_block_id = -1;
+			int nearest_block_face = -1;
+			float nearest_ground_dist = 999999.0f;
+
+			for (int probe = 0; probe < 9; probe++) {
+				int probe_block_id = -1;
+				int probe_block_face = -1;
+				float probe_dist = 0.0f;
+
+				if (CollD->CheckALLBlockIntersectRay(
+					current_x + probe_offset_x[probe],
+					current_y + 2.5f,
+					current_z + probe_offset_z[probe],
+					0.0f, -1.0f, 0.0f,
+					&probe_block_id,
+					&probe_block_face,
+					&probe_dist,
+					3.75f) == true) {
+					if ((probe_block_id >= 0) &&
+						(probe_block_face >= 0) &&
+						(probe_dist < nearest_ground_dist)) {
+						blockdata probe_bdata;
+						BlockData->Getdata(&probe_bdata, probe_block_id);
+
+						// 아래를 향한 레이가 벽의 옆면이나 천장 뒷면을 지면으로 채택하지 않게 한다.
+						if (probe_bdata.material[probe_block_face].vy > 0.05f) {
+							nearest_block_id = probe_block_id;
+							nearest_block_face = probe_block_face;
+							nearest_ground_dist = probe_dist;
+						}
+					}
+				}
+			}
+
+			if (nearest_block_id != -1) {
+				block_id = nearest_block_id;
+				block_face = nearest_block_face;
+			}
+		}
+
+		if ((block_id != -1) && (block_face != -1)) {
 			blockdata bdata;
 			BlockData->Getdata(&bdata, block_id);
 			block_textureid = bdata.material[block_face].textureID;
@@ -5930,14 +7001,13 @@ int ObjectManager::Process(int cmdF5id, bool demomode, bool screen)
 				RuntimeGroundGrace[i]--;
 			}
 		}
-		MoveMode = HumanIndex[i].GetMovemode(false);
-		JumpLandingMode = HumanIndex[i].GetJumpLanding(false);
 
 		// 진짜 착지/계단 내려가기일 때만 일반 발소리를 막는다.
 		// 오르막/경사면에서 발생하는 작은 높이 보정은 JumpLandingMode == 2가 되어도 일반 발소리를 허용한다.
 		bool heavy_landing_now =
 			(JumpLandingMode == 2) &&
-			(current_falling > 8);
+			(current_falling > 8) &&
+			(delta_y < -0.5f);
 
 		bool small_down_landing_now =
 			(JumpLandingMode == 2) &&
@@ -5951,17 +7021,12 @@ int ObjectManager::Process(int cmdF5id, bool demomode, bool screen)
 
 
 		// 일반 발소리
+		// 기존에는 이동 모션 카운터가 정확히 interval의 배수인 한 프레임에서만
+		// 발소리를 요청했다. 경사나 계단을 비스듬히 오를 때 그 프레임에만
+		// 바닥 판정이 잠시 끊기면 해당 발소리가 통째로 누락될 수 있었다.
+		// 인물별 타이머를 따로 누적하고, 짧은 바닥 판정 공백에서는 값을 보존한다.
 		if ((1 <= MoveMode) && (MoveMode <= 4) &&
-			(RuntimeGroundGrace[i] > 0) &&
-			(RuntimeLastTexture[i] != -1) &&
 			(suppress_regular_footstep == false)) {
-			float posx, posy, posz;
-			int teamid;
-			int cnt;
-			HumanIndex[i].GetPosData(&posx, &posy, &posz, NULL);
-			HumanIndex[i].GetParamData(NULL, NULL, NULL, &teamid);
-			cnt = HumanIndex[i].GetMoveMotionCount();
-
 			int sound_mode = MoveMode - 1;
 			bool is_crouching = HumanIndex[i].GetCrouchFlag();
 
@@ -5972,7 +7037,56 @@ int ObjectManager::Process(int cmdF5id, bool demomode, bool screen)
 				sound_mode = 6;
 			}
 
-			GameSound->SetFootsteps(posx, posy, posz, RuntimeLastTexture[i], sound_mode, teamid, cnt);
+			int footstep_interval;
+			if (sound_mode == 0) {
+				footstep_interval = 22;
+			}
+			else if (sound_mode == 7) {
+				footstep_interval = 24;
+			}
+			else if (sound_mode == 6) {
+				footstep_interval = 9;
+			}
+			else {
+				footstep_interval = 14;
+			}
+
+			// 이동 중에는 바닥 레이가 잠시 끊겨도 걸음 주기 자체는 계속 진행한다.
+			// 특히 달리면서 경사를 비스듬히 오르면 underblock 판정이 여러 프레임
+			// 비는 경우가 있으므로, 타이머까지 멈추면 발걸음 하나가 누락된다.
+			RuntimeFootstepTimer[i]++;
+
+			if (RuntimeFootstepTimer[i] >= footstep_interval) {
+				if ((RuntimeGroundGrace[i] > 0) && (RuntimeLastTexture[i] != -1)) {
+					float posx, posy, posz;
+					int teamid;
+					HumanIndex[i].GetPosData(&posx, &posy, &posz, NULL);
+					HumanIndex[i].GetParamData(NULL, NULL, NULL, &teamid);
+
+					// 발소리 간격은 여기에서 이미 처리했으므로 cnt=0으로 한 번만 재생한다.
+					GameSound->SetFootsteps(
+						posx,
+						posy,
+						posz,
+						RuntimeLastTexture[i],
+						sound_mode,
+						teamid,
+						0
+					);
+
+					RuntimeFootstepTimer[i] -= footstep_interval;
+				}
+				else {
+					// 바닥 재질이 다시 확인될 때 발소리 한 번만 즉시 처리할 수 있도록
+					// 누적값을 한 주기에서 고정한다. 장시간 공백 뒤 여러 소리가
+					// 한꺼번에 재생되는 것도 방지한다.
+					RuntimeFootstepTimer[i] = footstep_interval;
+				}
+			}
+		}
+		else if ((MoveMode == 0) || (suppress_regular_footstep == true)) {
+			// 정지, 점프, 실제 착지에서는 새 걸음 주기로 시작한다.
+			RuntimeFootstepTimer[i] = 0;
 		}
 
 		// [✨ 4. 점프 소리 ✨]
@@ -6278,34 +7392,52 @@ int ObjectManager::SortEffect(float camera_x, float camera_y, float camera_z, ef
 	int cnt = 0;
 
 	for (int i = 0; i < MAX_EFFECT; i++) {
-		// [핵심] 활성화된 이펙트만 담아야 유령 이펙트를 정렬하지 않습니다.
 		if (EffectIndex[i].GetEnableFlag() == false) { continue; }
 
-		float ex, ey, ez;
-		EffectIndex[i].GetPosData(&ex, &ey, &ez, NULL);
+		float ex = 0.0f;
+		float ey = 0.0f;
+		float ez = 0.0f;
+		float effect_rotation = 0.0f;
+		float effect_size = 0.0f;
+		float effect_alpha = 0.0f;
+
+		// 정렬과 실제 렌더에서 같은 보간 상태를 사용한다.
+		// 이전에는 렌더 단계에서 이 계산을 다시 수행했다.
+		bool state_override = GetEffectRenderState(
+			i,
+			&ex,
+			&ey,
+			&ez,
+			&effect_rotation,
+			&effect_size,
+			&effect_alpha
+		);
+
 		float dx = ex - camera_x;
 		float dy = ey - camera_y;
 		float dz = ez - camera_z;
 
-		// [최적화] 거리 컬링: 너무 멀리 있는 이펙트는 연산에서 아예 제외
 		float distSq = dx * dx + dy * dy + dz * dz;
-		if (distSq > 40000.0f) continue;
+		if (distSq > 40000.0f) { continue; }
 
 		data[cnt].id = i;
 		data[cnt].dist = distSq;
+		data[cnt].state_override = state_override;
+		data[cnt].x = ex;
+		data[cnt].y = ey;
+		data[cnt].z = ez;
+		data[cnt].rotation = effect_rotation;
+		data[cnt].size = effect_size;
+		data[cnt].alpha = effect_alpha;
 		cnt += 1;
 	}
 
-	// [최적화] C++ 표준 정렬 알고리즘 (삽입/버블 정렬보다 압도적으로 빠름)
 	std::sort(data, data + cnt, [](const effectdata& a, const effectdata& b) {
-		return a.dist > b.dist; // 먼 것부터 렌더링 (내림차순)
-		});
+		return a.dist > b.dist;
+	});
 
 	return cnt;
 }
-
-
-
 
 //! @brief 긆긳긙긃긏긣궻?됪룉뿚
 //! @param camera_x 긇긽깋궻X띆뷭
@@ -6321,6 +7453,11 @@ void ObjectManager::Render(float camera_x, float camera_y, float camera_z, float
 	d3dg->ResetWorldTransform();
 
 	//릐?됪
+	bool isScoped = false;
+	if ((Player_HumanID >= 0) && (Player_HumanID < MAX_HUMAN)) {
+		isScoped = (HumanIndex[Player_HumanID].GetScopeMode() > 0);
+	}
+
 	for (int i = 0; i < MAX_HUMAN; i++) {
 		// 활성화 되지 않은 인물은 skip 하는 코드 추가
 		if (HumanIndex[i].GetEnableFlag() == false) { continue; };
@@ -6354,12 +7491,28 @@ void ObjectManager::Render(float camera_x, float camera_y, float camera_z, float
 			}
 		}
 
+		// 모든 상대 인물을 카메라와 같은 렌더 시간점에 표시한다.
+		float human_render_x = 0.0f;
+		float human_render_y = 0.0f;
+		float human_render_z = 0.0f;
+		bool human_position_override = GetHumanRenderPosition(
+			i,
+			&human_render_x,
+			&human_render_y,
+			&human_render_z
+		);
+
+		float human_render_yaw_offset = 0.0f;
+		bool human_angle_override = GetHumanRenderYawOffset(
+			i,
+			&human_render_yaw_offset
+		);
+
 		// 2. 거리 컬링 (스코프 모드 예외 처리 포함 - 이것 하나만 남깁니다)
-		bool isScoped = (HumanIndex[Player_HumanID].GetScopeMode() > 0);
 		if (i != Player_HumanID && !isScoped) {
-			float px, py, pz;
-			HumanIndex[i].GetPosData(&px, &py, &pz, NULL);
-			if ((px - camera_x) * (px - camera_x) + (py - camera_y) * (py - camera_y) + (pz - camera_z) * (pz - camera_z) > 4000000.0f) {
+			if ((human_render_x - camera_x) * (human_render_x - camera_x) +
+				(human_render_y - camera_y) * (human_render_y - camera_y) +
+				(human_render_z - camera_z) * (human_render_z - camera_z) > 4000000.0f) {
 				continue;
 			}
 		}
@@ -6394,7 +7547,30 @@ void ObjectManager::Render(float camera_x, float camera_y, float camera_z, float
 			continue;
 		}
 
+		if (human_position_override == true) {
+			HumanIndex[i].SetRenderPositionOverride(
+				human_render_x,
+				human_render_y,
+				human_render_z
+			);
+		}
+
+		if (human_angle_override == true) {
+			HumanIndex[i].SetRenderAngleOffset(
+				human_render_yaw_offset,
+				0.0f
+			);
+		}
+
 		HumanIndex[i].Render(d3dg, Resource, DrawArm, player, NoModel);
+
+		if (human_angle_override == true) {
+			HumanIndex[i].ClearRenderAngleOffset();
+		}
+
+		if (human_position_override == true) {
+			HumanIndex[i].ClearRenderPositionOverride();
+		}
 
 		/*
 		//뱰궫귟뵽믦궻듗댲?렑
@@ -6420,14 +7596,26 @@ void ObjectManager::Render(float camera_x, float camera_y, float camera_z, float
 		if (HumanIndex[i].GetEnableFlag() == false) { continue; }
 		if (HumanIndex[i].GetSkillStealthFlag() == false) { continue; }
 
-		bool isScoped = (HumanIndex[Player_HumanID].GetScopeMode() > 0);
-		if (i != Player_HumanID && !isScoped) {
-			float px, py, pz;
-			HumanIndex[i].GetPosData(&px, &py, &pz, NULL);
+		float human_render_x = 0.0f;
+		float human_render_y = 0.0f;
+		float human_render_z = 0.0f;
+		bool human_position_override = GetHumanRenderPosition(
+			i,
+			&human_render_x,
+			&human_render_y,
+			&human_render_z
+		);
 
-			if ((px - camera_x) * (px - camera_x) +
-				(py - camera_y) * (py - camera_y) +
-				(pz - camera_z) * (pz - camera_z) > 4000000.0f) {
+		float human_render_yaw_offset = 0.0f;
+		bool human_angle_override = GetHumanRenderYawOffset(
+			i,
+			&human_render_yaw_offset
+		);
+
+		if (i != Player_HumanID && !isScoped) {
+			if ((human_render_x - camera_x) * (human_render_x - camera_x) +
+				(human_render_y - camera_y) * (human_render_y - camera_y) +
+				(human_render_z - camera_z) * (human_render_z - camera_z) > 4000000.0f) {
 				continue;
 			}
 		}
@@ -6455,23 +7643,141 @@ void ObjectManager::Render(float camera_x, float camera_y, float camera_z, float
 			player = false;
 		}
 
+		if (human_position_override == true) {
+			HumanIndex[i].SetRenderPositionOverride(
+				human_render_x,
+				human_render_y,
+				human_render_z
+			);
+		}
+
+		if (human_angle_override == true) {
+			HumanIndex[i].SetRenderAngleOffset(
+				human_render_yaw_offset,
+				0.0f
+			);
+		}
+
 		HumanIndex[i].Render(d3dg, Resource, DrawArm, player, NoModel);
+
+		if (human_angle_override == true) {
+			HumanIndex[i].ClearRenderAngleOffset();
+		}
+
+		if (human_position_override == true) {
+			HumanIndex[i].ClearRenderPositionOverride();
+		}
 	}
 
 	// 디버그 히트박스 표시
 	RenderDebugHumanHitbox();
+	RenderDebugWeaponData();
 
 	for (int i = 0; i < MAX_WEAPON; i++) {
+		if (WeaponIndex[i].GetEnableFlag() == false ||
+			WeaponIndex[i].GetUsingFlag() == true) {
+			continue;
+		}
+
+		float weapon_render_x = 0.0f;
+		float weapon_render_y = 0.0f;
+		float weapon_render_z = 0.0f;
+		float weapon_render_rx = 0.0f;
+
+		bool weapon_transform_override = GetWeaponRenderTransform(
+			i,
+			&weapon_render_x,
+			&weapon_render_y,
+			&weapon_render_z,
+			&weapon_render_rx
+		);
+
+		if (weapon_transform_override == true) {
+			WeaponIndex[i].SetRenderTransformOverride(
+				weapon_render_x,
+				weapon_render_y,
+				weapon_render_z,
+				weapon_render_rx
+			);
+		}
+
 		WeaponIndex[i].Render(d3dg, NoModel);
+
+		if (weapon_transform_override == true) {
+			WeaponIndex[i].ClearRenderTransformOverride();
+		}
 	}
 	for (int i = 0; i < MAX_SMALLOBJECT; i++) {
+		if (SmallObjectIndex[i].GetEnableFlag() == false) { continue; }
+
+		float small_render_x = 0.0f;
+		float small_render_y = 0.0f;
+		float small_render_z = 0.0f;
+		float small_render_rx = 0.0f;
+		float small_render_ry = 0.0f;
+
+		bool small_transform_override = GetSmallObjectRenderTransform(
+			i,
+			&small_render_x,
+			&small_render_y,
+			&small_render_z,
+			&small_render_rx,
+			&small_render_ry
+		);
+
+		if (small_transform_override == true) {
+			SmallObjectIndex[i].SetRenderTransformOverride(
+				small_render_x,
+				small_render_y,
+				small_render_z,
+				small_render_rx,
+				small_render_ry
+			);
+		}
+
 		SmallObjectIndex[i].Render(d3dg, NoModel);
+
+		if (small_transform_override == true) {
+			SmallObjectIndex[i].ClearRenderTransformOverride();
+		}
 	}
 	for (int i = 0; i < MAX_BULLET; i++) {
+		if (BulletIndex[i].GetEnableFlag() == false) { continue; }
 		BulletIndex[i].Render(d3dg, NoModel);
 	}
 	for (int i = 0; i < MAX_GRENADE; i++) {
+		if (GrenadeIndex[i].GetEnableFlag() == false) { continue; }
+
+		float grenade_render_x = 0.0f;
+		float grenade_render_y = 0.0f;
+		float grenade_render_z = 0.0f;
+		float grenade_render_rx = 0.0f;
+		float grenade_render_ry = 0.0f;
+
+		bool grenade_transform_override = GetGrenadeRenderTransform(
+			i,
+			&grenade_render_x,
+			&grenade_render_y,
+			&grenade_render_z,
+			&grenade_render_rx,
+			&grenade_render_ry
+		);
+
+		if (grenade_transform_override == true) {
+			GrenadeIndex[i].SetRenderTransformOverride(
+				grenade_render_x,
+				grenade_render_y,
+				grenade_render_z,
+				grenade_render_rx,
+				grenade_render_ry
+			);
+		}
+
 		GrenadeIndex[i].Render(d3dg, NoModel);
+
+		if (grenade_transform_override == true) {
+			GrenadeIndex[i].ClearRenderTransformOverride();
+		}
 	}
 
 	//긄긲긃긏긣?됪
@@ -6483,8 +7789,25 @@ void ObjectManager::Render(float camera_x, float camera_y, float camera_z, float
 	*/
 	effectdata data[MAX_EFFECT];
 	int cnt = SortEffect(camera_x, camera_y, camera_z, data);
-	for(int i=0; i<cnt; i++) {
-		EffectIndex[ data[i].id ].Render(d3dg, camera_rx, camera_ry, NoModel);
+	for (int i = 0; i < cnt; i++) {
+		int effect_id = data[i].id;
+
+		if (data[i].state_override == true) {
+			EffectIndex[effect_id].SetRenderStateOverride(
+				data[i].x,
+				data[i].y,
+				data[i].z,
+				data[i].rotation,
+				data[i].size,
+				data[i].alpha
+			);
+		}
+
+		EffectIndex[effect_id].Render(d3dg, camera_rx, camera_ry, NoModel);
+
+		if (data[i].state_override == true) {
+			EffectIndex[effect_id].ClearRenderStateOverride();
+		}
 	}
 	d3dg->EndEffectRender();
 }
@@ -6505,6 +7828,567 @@ void ObjectManager::SetShowHitboxFlag(bool flag)
 bool ObjectManager::GetShowHitboxFlag()
 {
 	return ShowHitboxFlag;
+}
+
+bool ObjectManager::GetCurrentPlayerWeaponObject(weapon** out_weapon, int* out_weapon_id)
+{
+	if (out_weapon != NULL) { *out_weapon = NULL; }
+	if (out_weapon_id != NULL) { *out_weapon_id = ID_WEAPON_NONE; }
+
+	if ((Player_HumanID < 0) || (Player_HumanID >= MAX_HUMAN)) { return false; }
+	if (HumanIndex[Player_HumanID].GetEnableFlag() == false) { return false; }
+
+	int selectweapon = -1;
+	weapon* haveweapon[TOTAL_HAVEWEAPON];
+	HumanIndex[Player_HumanID].GetWeapon(&selectweapon, haveweapon, NULL, NULL);
+
+	if ((selectweapon < 0) || (selectweapon >= TOTAL_HAVEWEAPON)) { return false; }
+	if (haveweapon[selectweapon] == NULL) { return false; }
+
+	int weapon_id = ID_WEAPON_NONE;
+	haveweapon[selectweapon]->GetParamData(&weapon_id, NULL, NULL);
+	if ((weapon_id < 0) || (weapon_id >= TOTAL_PARAMETERINFO_WEAPON)) { return false; }
+
+	if (out_weapon != NULL) { *out_weapon = haveweapon[selectweapon]; }
+	if (out_weapon_id != NULL) { *out_weapon_id = weapon_id; }
+	return true;
+}
+
+bool ObjectManager::GetWeaponMuzzleWorldPos(int humanid, int weapon_paramid, float* x, float* y, float* z)
+{
+	if ((x == NULL) || (y == NULL) || (z == NULL)) { return false; }
+	if ((humanid < 0) || (humanid >= MAX_HUMAN)) { return false; }
+	if ((weapon_paramid < 0) || (weapon_paramid >= TOTAL_PARAMETERINFO_WEAPON)) { return false; }
+	if (HumanIndex[humanid].GetEnableFlag() == false) { return false; }
+
+	WeaponParameter param;
+	if (GameParamInfo->GetWeapon(weapon_paramid, &param) != 0) { return false; }
+
+	float pos_x, pos_y, pos_z;
+	float rotation_x, armrotation_y;
+	HumanIndex[humanid].GetPosData(&pos_x, &pos_y, &pos_z, NULL);
+	HumanIndex[humanid].GetRxRy(&rotation_x, &armrotation_y);
+
+	float flash_x = param.flashx;
+	float flash_y = param.flashy;
+	float flash_z = param.flashz;
+
+	if (humanid == Player_HumanID) {
+		flash_x += DebugMuzzleOffsetX[weapon_paramid];
+		flash_y += DebugMuzzleOffsetY[weapon_paramid];
+		flash_z += DebugMuzzleOffsetZ[weapon_paramid];
+	}
+
+	float weapon_y = GetHumanWeaponBaseY(pos_y, HumanIndex[humanid].GetCrouchFlag());
+	*x = pos_x;
+	*y = weapon_y;
+	*z = pos_z;
+
+	d3dg->SetWorldTransformHumanWeapon(
+		pos_x,
+		weapon_y,
+		pos_z,
+		flash_x / 10.0f,
+		flash_y / 10.0f,
+		flash_z / 10.0f,
+		rotation_x,
+		armrotation_y * -1.0f,
+		1.0f
+	);
+	d3dg->GetWorldTransformPos(x, y, z);
+	d3dg->ResetWorldTransform();
+	return true;
+}
+
+bool ObjectManager::CheckMuzzleObstruction(
+	float safe_x,
+	float safe_y,
+	float safe_z,
+	float muzzle_x,
+	float muzzle_y,
+	float muzzle_z,
+	float* hit_x,
+	float* hit_y,
+	float* hit_z
+)
+{
+	if ((hit_x == NULL) || (hit_y == NULL) || (hit_z == NULL)) { return false; }
+
+	*hit_x = muzzle_x;
+	*hit_y = muzzle_y;
+	*hit_z = muzzle_z;
+
+	if (CollD == NULL) { return false; }
+
+	float dx = muzzle_x - safe_x;
+	float dy = muzzle_y - safe_y;
+	float dz = muzzle_z - safe_z;
+	float length = sqrtf(dx * dx + dy * dy + dz * dz);
+
+	if (length <= 0.001f) {
+		return CollD->CheckALLBlockInside(muzzle_x, muzzle_y, muzzle_z);
+	}
+
+	float dir_x = dx / length;
+	float dir_y = dy / length;
+	float dir_z = dz / length;
+	float hit_dist = 0.0f;
+
+	if (CollD->CheckALLBlockIntersectRay(
+		safe_x,
+		safe_y,
+		safe_z,
+		dir_x,
+		dir_y,
+		dir_z,
+		NULL,
+		NULL,
+		&hit_dist,
+		length
+	) == true) {
+		if (hit_dist < 0.0f) { hit_dist = 0.0f; }
+		if (hit_dist > length) { hit_dist = length; }
+		*hit_x = safe_x + dir_x * hit_dist;
+		*hit_y = safe_y + dir_y * hit_dist;
+		*hit_z = safe_z + dir_z * hit_dist;
+		return true;
+	}
+
+	if (CollD->CheckALLBlockInside(muzzle_x, muzzle_y, muzzle_z) == false) {
+		return false;
+	}
+
+	// Some map faces do not report a clean ray intersection when the end point is
+	// already inside. Find the first inside point on the safe-to-muzzle segment.
+	if (CollD->CheckALLBlockInside(safe_x, safe_y, safe_z) == true) {
+		*hit_x = safe_x;
+		*hit_y = safe_y;
+		*hit_z = safe_z;
+		return true;
+	}
+
+	float low = 0.0f;
+	float high = 1.0f;
+	for (int i = 0; i < 12; i++) {
+		float mid = (low + high) * 0.5f;
+		float test_x = safe_x + dx * mid;
+		float test_y = safe_y + dy * mid;
+		float test_z = safe_z + dz * mid;
+
+		if (CollD->CheckALLBlockInside(test_x, test_y, test_z) == true) {
+			high = mid;
+		}
+		else {
+			low = mid;
+		}
+	}
+
+	*hit_x = safe_x + dx * high;
+	*hit_y = safe_y + dy * high;
+	*hit_z = safe_z + dz * high;
+	return true;
+}
+
+bool ObjectManager::ResolveMuzzleSafeOrigin(
+	float preferred_x,
+	float preferred_y,
+	float preferred_z,
+	float aim_dir_x,
+	float aim_dir_y,
+	float aim_dir_z,
+	float* safe_x,
+	float* safe_y,
+	float* safe_z
+)
+{
+	if ((safe_x == NULL) || (safe_y == NULL) || (safe_z == NULL)) { return false; }
+
+	*safe_x = preferred_x;
+	*safe_y = preferred_y;
+	*safe_z = preferred_z;
+
+	if (CollD == NULL) { return true; }
+	if (CollD->CheckALLBlockInside(preferred_x, preferred_y, preferred_z) == false) {
+		return true;
+	}
+
+	float forward_x = aim_dir_x;
+	float forward_z = aim_dir_z;
+	float forward_len = sqrtf(forward_x * forward_x + forward_z * forward_z);
+	if (forward_len <= 0.001f) {
+		forward_x = 1.0f;
+		forward_z = 0.0f;
+	}
+	else {
+		forward_x /= forward_len;
+		forward_z /= forward_len;
+	}
+
+	float right_x = forward_z;
+	float right_z = -forward_x;
+	const float distance[8] = { 0.25f, 0.5f, 0.75f, 1.0f, 1.5f, 2.0f, 3.0f, 4.0f };
+
+	for (int i = 0; i < 8; i++) {
+		float d = distance[i];
+		float candidate[10][3] = {
+			{ preferred_x - forward_x * d, preferred_y, preferred_z - forward_z * d },
+			{ preferred_x + forward_x * d, preferred_y, preferred_z + forward_z * d },
+			{ preferred_x + right_x * d, preferred_y, preferred_z + right_z * d },
+			{ preferred_x - right_x * d, preferred_y, preferred_z - right_z * d },
+			{ preferred_x - forward_x * d + right_x * d, preferred_y, preferred_z - forward_z * d + right_z * d },
+			{ preferred_x - forward_x * d - right_x * d, preferred_y, preferred_z - forward_z * d - right_z * d },
+			{ preferred_x, preferred_y + d, preferred_z },
+			{ preferred_x, preferred_y - d, preferred_z },
+			{ preferred_x - aim_dir_x * d, preferred_y - aim_dir_y * d, preferred_z - aim_dir_z * d },
+			{ preferred_x + aim_dir_x * d, preferred_y + aim_dir_y * d, preferred_z + aim_dir_z * d }
+		};
+
+		for (int j = 0; j < 10; j++) {
+			if (CollD->CheckALLBlockInside(
+				candidate[j][0], candidate[j][1], candidate[j][2]) == false) {
+				*safe_x = candidate[j][0];
+				*safe_y = candidate[j][1];
+				*safe_z = candidate[j][2];
+				return true;
+			}
+		}
+	}
+
+	return false;
+}
+
+void ObjectManager::RenderDebugPointCross(float x, float y, float z, float size, int color)
+{
+	d3dg->Renderline(x - size, y, z, x + size, y, z, color);
+	d3dg->Renderline(x, y - size, z, x, y + size, z, color);
+	d3dg->Renderline(x, y, z - size, x, y, z + size, color);
+}
+
+void ObjectManager::RenderDebugWeaponData()
+{
+	if ((DebugMuzzleAdjustFlag == false) && (DebugBulletTraceFlag == false)) { return; }
+	if ((Player_HumanID < 0) || (Player_HumanID >= MAX_HUMAN)) { return; }
+	if (HumanIndex[Player_HumanID].GetEnableFlag() == false) { return; }
+
+	d3dg->ResetWorldTransform();
+
+	int color_safe = d3dg->GetColorCode(1.0f, 0.85f, 0.1f, 1.0f);
+	int color_muzzle = d3dg->GetColorCode(0.1f, 1.0f, 1.0f, 1.0f);
+	int color_blocked = d3dg->GetColorCode(1.0f, 0.1f, 0.1f, 1.0f);
+	int color_aim = d3dg->GetColorCode(0.2f, 0.5f, 1.0f, 1.0f);
+	int color_actual = d3dg->GetColorCode(0.2f, 1.0f, 0.2f, 1.0f);
+
+	if (DebugMuzzleAdjustFlag == true) {
+		int weapon_id = ID_WEAPON_NONE;
+		if (GetCurrentPlayerWeaponObject(NULL, &weapon_id) == true) {
+			float muzzle_x, muzzle_y, muzzle_z;
+			if (GetWeaponMuzzleWorldPos(Player_HumanID, weapon_id, &muzzle_x, &muzzle_y, &muzzle_z) == true) {
+				float pos_x, pos_y, pos_z;
+				HumanIndex[Player_HumanID].GetPosData(&pos_x, &pos_y, &pos_z, NULL);
+
+				float rotation_x, armrotation_y;
+				HumanIndex[Player_HumanID].GetRxRy(&rotation_x, &armrotation_y);
+				float aim_rx = rotation_x * -1.0f + (float)M_PI / 2.0f;
+				float aim_dir_x = cosf(aim_rx) * cosf(armrotation_y);
+				float aim_dir_y = sinf(armrotation_y);
+				float aim_dir_z = sinf(aim_rx) * cosf(armrotation_y);
+
+				float safe_x = pos_x;
+				float safe_y = GetHumanShotY(pos_y, HumanIndex[Player_HumanID].GetCrouchFlag());
+				float safe_z = pos_z;
+				bool safe_valid = ResolveMuzzleSafeOrigin(
+					pos_x, safe_y, pos_z,
+					aim_dir_x, aim_dir_y, aim_dir_z,
+					&safe_x, &safe_y, &safe_z
+				);
+				float block_x = safe_x;
+				float block_y = safe_y;
+				float block_z = safe_z;
+				bool blocked = true;
+				if (safe_valid == true) {
+					blocked = CheckMuzzleObstruction(
+						safe_x, safe_y, safe_z,
+						muzzle_x, muzzle_y, muzzle_z,
+						&block_x, &block_y, &block_z
+					);
+				}
+
+				RenderDebugPointCross(safe_x, safe_y, safe_z, 0.35f, color_safe);
+				RenderDebugPointCross(muzzle_x, muzzle_y, muzzle_z, 0.55f, blocked ? color_blocked : color_muzzle);
+				d3dg->Renderline(
+					safe_x, safe_y, safe_z,
+					muzzle_x, muzzle_y, muzzle_z,
+					blocked ? color_blocked : color_safe
+				);
+
+				if (blocked == true) {
+					RenderDebugPointCross(block_x, block_y, block_z, 0.45f, color_blocked);
+				}
+			}
+		}
+	}
+
+	if ((DebugBulletTraceFlag == true) && (DebugLastTraceValid == true)) {
+		d3dg->Renderline(
+			DebugLastSafeX, DebugLastSafeY, DebugLastSafeZ,
+			DebugLastMuzzleX, DebugLastMuzzleY, DebugLastMuzzleZ,
+			DebugLastMuzzleBlocked ? color_blocked : color_safe
+		);
+		RenderDebugPointCross(
+			DebugLastSafeX,
+			DebugLastSafeY,
+			DebugLastSafeZ,
+			0.35f,
+			color_safe
+		);
+		d3dg->Renderline(
+			DebugLastAimOriginX, DebugLastAimOriginY, DebugLastAimOriginZ,
+			DebugLastAimTargetX, DebugLastAimTargetY, DebugLastAimTargetZ,
+			color_aim
+		);
+		d3dg->Renderline(
+			DebugLastActualStartX, DebugLastActualStartY, DebugLastActualStartZ,
+			DebugLastActualTargetX, DebugLastActualTargetY, DebugLastActualTargetZ,
+			DebugLastMuzzleBlocked ? color_blocked : color_actual
+		);
+		RenderDebugPointCross(
+			DebugLastMuzzleX,
+			DebugLastMuzzleY,
+			DebugLastMuzzleZ,
+			0.5f,
+			DebugLastMuzzleBlocked ? color_blocked : color_muzzle
+		);
+		RenderDebugPointCross(
+			DebugLastAimTargetX,
+			DebugLastAimTargetY,
+			DebugLastAimTargetZ,
+			0.4f,
+			color_aim
+		);
+
+		if (DebugLastMuzzleBlocked == true) {
+			RenderDebugPointCross(
+				DebugLastBlockHitX,
+				DebugLastBlockHitY,
+				DebugLastBlockHitZ,
+				0.55f,
+				color_blocked
+			);
+		}
+	}
+
+	d3dg->ResetWorldTransform();
+}
+
+void ObjectManager::SetDebugMuzzleAdjustFlag(bool flag)
+{
+	DebugMuzzleAdjustFlag = flag;
+}
+
+bool ObjectManager::GetDebugMuzzleAdjustFlag()
+{
+	return DebugMuzzleAdjustFlag;
+}
+
+bool ObjectManager::AdjustDebugMuzzle(int axis, float amount)
+{
+	int weapon_id = ID_WEAPON_NONE;
+	if (GetCurrentPlayerWeaponObject(NULL, &weapon_id) == false) { return false; }
+
+	if (axis == 0) { DebugMuzzleOffsetX[weapon_id] += amount; }
+	else if (axis == 1) { DebugMuzzleOffsetY[weapon_id] += amount; }
+	else if (axis == 2) { DebugMuzzleOffsetZ[weapon_id] += amount; }
+	else { return false; }
+
+	return true;
+}
+
+bool ObjectManager::ResetDebugMuzzle()
+{
+	int weapon_id = ID_WEAPON_NONE;
+	if (GetCurrentPlayerWeaponObject(NULL, &weapon_id) == false) { return false; }
+
+	DebugMuzzleOffsetX[weapon_id] = 0.0f;
+	DebugMuzzleOffsetY[weapon_id] = 0.0f;
+	DebugMuzzleOffsetZ[weapon_id] = 0.0f;
+	return true;
+}
+
+bool ObjectManager::GetDebugCurrentWeaponInfo(
+	int* weapon_id,
+	float* flash_x,
+	float* flash_y,
+	float* flash_z,
+	float* world_x,
+	float* world_y,
+	float* world_z,
+	bool* blocked
+)
+{
+	int current_weapon_id = ID_WEAPON_NONE;
+	if (GetCurrentPlayerWeaponObject(NULL, &current_weapon_id) == false) { return false; }
+
+	WeaponParameter param;
+	if (GameParamInfo->GetWeapon(current_weapon_id, &param) != 0) { return false; }
+
+	float muzzle_x, muzzle_y, muzzle_z;
+	if (GetWeaponMuzzleWorldPos(Player_HumanID, current_weapon_id, &muzzle_x, &muzzle_y, &muzzle_z) == false) {
+		return false;
+	}
+
+	float pos_x, pos_y, pos_z;
+	HumanIndex[Player_HumanID].GetPosData(&pos_x, &pos_y, &pos_z, NULL);
+
+	float rotation_x, armrotation_y;
+	HumanIndex[Player_HumanID].GetRxRy(&rotation_x, &armrotation_y);
+	float aim_rx = rotation_x * -1.0f + (float)M_PI / 2.0f;
+	float aim_dir_x = cosf(aim_rx) * cosf(armrotation_y);
+	float aim_dir_y = sinf(armrotation_y);
+	float aim_dir_z = sinf(aim_rx) * cosf(armrotation_y);
+
+	float safe_x = pos_x;
+	float safe_y = GetHumanShotY(pos_y, HumanIndex[Player_HumanID].GetCrouchFlag());
+	float safe_z = pos_z;
+	bool safe_valid = ResolveMuzzleSafeOrigin(
+		pos_x, safe_y, pos_z,
+		aim_dir_x, aim_dir_y, aim_dir_z,
+		&safe_x, &safe_y, &safe_z
+	);
+	float block_x = safe_x;
+	float block_y = safe_y;
+	float block_z = safe_z;
+	bool is_blocked = true;
+	if (safe_valid == true) {
+		is_blocked = CheckMuzzleObstruction(
+			safe_x, safe_y, safe_z,
+			muzzle_x, muzzle_y, muzzle_z,
+			&block_x, &block_y, &block_z
+		);
+	}
+
+	if (weapon_id != NULL) { *weapon_id = current_weapon_id; }
+	if (flash_x != NULL) { *flash_x = param.flashx + DebugMuzzleOffsetX[current_weapon_id]; }
+	if (flash_y != NULL) { *flash_y = param.flashy + DebugMuzzleOffsetY[current_weapon_id]; }
+	if (flash_z != NULL) { *flash_z = param.flashz + DebugMuzzleOffsetZ[current_weapon_id]; }
+	if (world_x != NULL) { *world_x = muzzle_x; }
+	if (world_y != NULL) { *world_y = muzzle_y; }
+	if (world_z != NULL) { *world_z = muzzle_z; }
+	if (blocked != NULL) { *blocked = is_blocked; }
+	return true;
+}
+
+void ObjectManager::SetDebugBulletTraceFlag(bool flag)
+{
+	DebugBulletTraceFlag = flag;
+	if (flag == false) { DebugLastTraceValid = false; }
+}
+
+bool ObjectManager::GetDebugBulletTraceFlag()
+{
+	return DebugBulletTraceFlag;
+}
+
+void ObjectManager::SetDebugInfiniteAmmoFlag(bool flag)
+{
+	DebugInfiniteAmmoFlag = flag;
+}
+
+bool ObjectManager::GetDebugInfiniteAmmoFlag()
+{
+	return DebugInfiniteAmmoFlag;
+}
+
+void ObjectManager::SetDebugNoReloadFlag(bool flag)
+{
+	DebugNoReloadFlag = flag;
+}
+
+bool ObjectManager::GetDebugNoReloadFlag()
+{
+	return DebugNoReloadFlag;
+}
+
+void ObjectManager::SetDebugNoSpreadFlag(bool flag)
+{
+	DebugNoSpreadFlag = flag;
+}
+
+bool ObjectManager::GetDebugNoSpreadFlag()
+{
+	return DebugNoSpreadFlag;
+}
+
+void ObjectManager::SetDebugNoRecoilFlag(bool flag)
+{
+	DebugNoRecoilFlag = flag;
+	if ((flag == true) && (Player_HumanID >= 0) && (Player_HumanID < MAX_HUMAN)) {
+		HumanIndex[Player_HumanID].ClearDebugRecoil();
+	}
+}
+
+bool ObjectManager::GetDebugNoRecoilFlag()
+{
+	return DebugNoRecoilFlag;
+}
+
+void ObjectManager::MaintainDebugAmmoState()
+{
+	if ((DebugInfiniteAmmoFlag == false) && (DebugNoReloadFlag == false)) { return; }
+
+	weapon* current_weapon = NULL;
+	int weapon_id = ID_WEAPON_NONE;
+	if (GetCurrentPlayerWeaponObject(&current_weapon, &weapon_id) == false) { return; }
+	if ((weapon_id == ID_WEAPON_GRENADE) ||
+		(weapon_id == ID_WEAPON_IMPACT_GRENADE)) {
+		return;
+	}
+
+	WeaponParameter param;
+	if (GameParamInfo->GetWeapon(weapon_id, &param) != 0) { return; }
+
+	int load = 0;
+	int total = 0;
+	current_weapon->GetParamData(NULL, &load, &total);
+
+	int minimum_ammo = param.nbsmax;
+	if (minimum_ammo < 1) { minimum_ammo = 1; }
+	bool changed = false;
+
+	if ((DebugNoReloadFlag == true) && (load != minimum_ammo)) {
+		load = minimum_ammo;
+		changed = true;
+	}
+
+	if (((DebugInfiniteAmmoFlag == true) || (DebugNoReloadFlag == true)) &&
+		(total < minimum_ammo)) {
+		total = minimum_ammo;
+		changed = true;
+	}
+
+	if (changed == true) {
+		current_weapon->SetParamData(weapon_id, load, total, false);
+	}
+}
+
+bool ObjectManager::FillDebugCurrentMagazine()
+{
+	weapon* current_weapon = NULL;
+	int weapon_id = ID_WEAPON_NONE;
+	if (GetCurrentPlayerWeaponObject(&current_weapon, &weapon_id) == false) { return false; }
+	if ((weapon_id == ID_WEAPON_GRENADE) || (weapon_id == ID_WEAPON_IMPACT_GRENADE)) { return false; }
+
+	WeaponParameter param;
+	if (GameParamInfo->GetWeapon(weapon_id, &param) != 0) { return false; }
+
+	int load = 0;
+	int total = 0;
+	current_weapon->GetParamData(NULL, &load, &total);
+
+	int target_load = param.nbsmax;
+	if (target_load < 1) { target_load = 1; }
+	if (total < target_load) { total = target_load; }
+	current_weapon->SetParamData(weapon_id, target_load, total, false);
+	return true;
 }
 
 void ObjectManager::RenderDebugShieldBox(float x, float y, float z, float rx, int color, int front_color)

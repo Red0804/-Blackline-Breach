@@ -60,6 +60,33 @@ static bool IsLowPriorityWorldSound(int paramid)
 	return (paramid == HIT_SHIELD_BLOCK);
 }
 
+// 재장전음은 용도에 따라 기준 음량을 다르게 사용한다.
+// 일반 재장전 > 반복되는 기계 동작 > 미니건 회전음 순으로 낮춘다.
+static int GetReloadPlaybackVolume(int reloadSoundID, bool player)
+{
+	switch (reloadSoundID) {
+	case RELOAD_MINIGUN_SPIN_START:
+	case RELOAD_MINIGUN_SPIN:
+	case RELOAD_MINIGUN_SPIN_END:
+		return player ? 72 : 78;
+
+	case RELOAD_RELOAD_START:
+	case RELOAD_SHOTGUN_SHELL_INSERT:
+	case RELOAD_LEVER_SHELL_INSERT:
+	case RELOAD_BOLT_RELOAD_START:
+	case RELOAD_SNIPER_SHELL_INSERT:
+	case RELOAD_BOLT_RELOAD_END:
+	case RELOAD_AWP_BOLT:
+	case RELOAD_KAR98_SNIPER_BOLT:
+	case RELOAD_SHOTGUN_ACTION:
+	case RELOAD_WINCHESTER_LEVER:
+		return player ? 76 : 82;
+
+	default:
+		return player ? 80 : 88;
+	}
+}
+
 //! @brief 긓깛긚긣깋긏?
 SoundManager::SoundManager(SoundControl* in_SoundCtrl, ResourceManager* in_Resource, ParameterInfo* in_Param)
 {
@@ -1020,7 +1047,7 @@ void SoundManager::PlaySound(soundlist* plist, float camera_x, float camera_y, f
 	case WEAPON_RELOAD:
 		id = Resource->GetReloadSound(plist->dataid);
 		if (id == -1) { return; }
-		volume = 100;
+		volume = GetReloadPlaybackVolume(plist->dataid, false);
 		break;
 
 	case WEAPON_RELOAD_PLAYER:
@@ -1028,8 +1055,13 @@ void SoundManager::PlaySound(soundlist* plist, float camera_x, float camera_y, f
 		if (id == -1) { return; }
 
 		// 플레이어 자신의 재장전 소리는 2D로 재생한다.
-		// 1인칭/3인칭/이동 중에도 거리 감쇠를 받지 않는다.
-		SoundCtrl->PlaySound(id, (int)(70 * GameConfig.GetVolume()), 0);
+		// 반복 기계음과 미니건 회전음은 일반 재장전보다 더 작게 재생한다.
+		volume = GetReloadPlaybackVolume(plist->dataid, true);
+		SoundCtrl->PlaySound(
+			id,
+			(int)(volume * GameConfig.GetVolume()),
+			0
+		);
 		return;
 
 	case DRY_FIRE:
@@ -1086,8 +1118,13 @@ void SoundManager::PlaySound(soundlist* plist, float camera_x, float camera_y, f
 		float dz = plist->z - camera_z;
 		float dist = sqrtf(dx * dx + dy * dy + dz * dz);
 
-		// 재장전음이 들리는 최대 거리
-		const float reloadMaxDist = 90.0f;
+		// 재장전음이 들리는 최대 거리.
+		// DirectSound의 maxDist는 완전한 재생 차단 거리가 아니므로 여기서 직접 제거한다.
+		const float reloadMaxDist = 120.0f;
+
+		if (dist >= reloadMaxDist) {
+			return;
+		}
 
 		float t = dist / reloadMaxDist;
 		if (t < 0.0f) t = 0.0f;
@@ -1103,7 +1140,7 @@ void SoundManager::PlaySound(soundlist* plist, float camera_x, float camera_y, f
 
 		// 예전처럼 50%까지 보장하면 너무 멀리서도 크게 들릴 수 있으므로
 		// 최소 보정은 20% 정도만 둔다.
-		const float minRate = 0.20f;
+		const float minRate = 0.25f;
 		rate = minRate + (1.0f - minRate) * rate;
 
 		volume = (int)(volume * rate);

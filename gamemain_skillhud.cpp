@@ -143,11 +143,7 @@ void maingame::RenderTacticalScanPings(human* myHuman)
 	int myteam = -1;
 	myHuman->GetParamData(NULL, NULL, NULL, &myteam);
 
-	d3dg->ResetWorldTransform();
-
-	// 벽 너머에서도 보이게 하기 위해, 오브젝트 렌더 후 깊이 버퍼를 비운다.
-	// 이 함수는 ObjMgr.Render() 이후에 호출되어야 한다.
-	d3dg->ResetZbuffer();
+	bool render_started = false;
 
 	for (int i = 0; i < MAX_HUMAN; i++) {
 		human* target = ObjMgr.GetHumanObject(i);
@@ -163,8 +159,14 @@ void maingame::RenderTacticalScanPings(human* myHuman)
 
 		if (target_team == myteam) { continue; }
 
-		float x, y, z, rx;
-		target->GetPosData(&x, &y, &z, &rx);
+		if (render_started == false) {
+			d3dg->ResetWorldTransform();
+			d3dg->ResetZbuffer();
+			render_started = true;
+		}
+
+		float x, y, z;
+		GetSkillVisualHumanPosition(target, &x, &y, &z);
 
 		// 몸통 아래쪽에 짧은 원기둥 핑 표시
 		RenderPlayerSkillEnemyPing(
@@ -197,8 +199,8 @@ void maingame::RenderMarkedShotPing(human* myHuman)
 	// 벽 뒤에서도 보이게 한다.
 	d3dg->ResetZbuffer();
 
-	float x, y, z, rx;
-	target->GetPosData(&x, &y, &z, &rx);
+	float x, y, z;
+	GetSkillVisualHumanPosition(target, &x, &y, &z);
 
 	RenderPlayerSkillEnemyPing(
 		x,
@@ -214,8 +216,7 @@ void maingame::RenderShadowDecoyPings(human* myHuman)
 	if (myHuman == NULL) { return; }
 	if (Camera_Debugmode == true) { return; }
 
-	d3dg->ResetWorldTransform();
-	d3dg->ResetZbuffer();
+	bool render_started = false;
 
 	for (int i = 0; i < MAX_HUMAN; i++) {
 		if (player_skill_shadow_decoy_ping_timer[i] <= 0) { continue; }
@@ -226,8 +227,14 @@ void maingame::RenderShadowDecoyPings(human* myHuman)
 		if (target->GetDeadFlag() == true) { continue; }
 		if (target->GetHP() <= 0) { continue; }
 
-		float x, y, z, rx;
-		target->GetPosData(&x, &y, &z, &rx);
+		if (render_started == false) {
+			d3dg->ResetWorldTransform();
+			d3dg->ResetZbuffer();
+			render_started = true;
+		}
+
+		float x, y, z;
+		GetSkillVisualHumanPosition(target, &x, &y, &z);
 
 		// 그림자 잔상을 공격한 적에게 5초간 공용 핑 표시.
 		RenderPlayerSkillEnemyPing(
@@ -246,8 +253,7 @@ void maingame::RenderSuppressedEnemyPings(human* myHuman)
 	if (myHuman == NULL) { return; }
 	if (Camera_Debugmode == true) { return; }
 
-	d3dg->ResetWorldTransform();
-	d3dg->ResetZbuffer();
+	bool render_started = false;
 
 	for (int i = 0; i < MAX_HUMAN; i++) {
 		if (player_skill_suppress_mark_timer[i] <= 0) { continue; }
@@ -258,8 +264,14 @@ void maingame::RenderSuppressedEnemyPings(human* myHuman)
 		if (target->GetDeadFlag() == true) { continue; }
 		if (target->GetHP() <= 0) { continue; }
 
-		float x, y, z, rx;
-		target->GetPosData(&x, &y, &z, &rx);
+		if (render_started == false) {
+			d3dg->ResetWorldTransform();
+			d3dg->ResetZbuffer();
+			render_started = true;
+		}
+
+		float x, y, z;
+		GetSkillVisualHumanPosition(target, &x, &y, &z);
 
 		// 제압 명령은 전술 스캔/마킹 샷과 같은 디자인을 사용하되,
 		// 적 몸통이 아니라 머리 위에 작게 표시한다.
@@ -316,10 +328,10 @@ void maingame::RenderPlayerHookAimPreview(human* myHuman)
 	if (player_skill_targeting_type != PLAYER_SKILL_HOOK) { return; }
 	if (Camera_Debugmode == true) { return; }
 
-	float px, py, pz, prx;
+	float px, py, pz;
 	float rx, ry;
 
-	myHuman->GetPosData(&px, &py, &pz, &prx);
+	GetSkillVisualHumanPosition(myHuman, &px, &py, &pz);
 	myHuman->GetRxRy(&rx, &ry);
 
 	float aim_rx = rx * -1.0f + (float)M_PI / 2.0f;
@@ -403,8 +415,8 @@ void maingame::RenderPlayerHookAimPreview(human* myHuman)
 			(target->GetDeadFlag() == false) &&
 			(target->GetHP() > 0)) {
 
-			float tx, ty, tz, trx;
-			target->GetPosData(&tx, &ty, &tz, &trx);
+			float tx, ty, tz;
+			GetSkillVisualHumanPosition(target, &tx, &ty, &tz);
 
 			float hook_wrap_height = HUMAN_HEIGHT * PLAYER_SKILL_HOOK_WRAP_HEIGHT_RATE;
 			float hook_wrap_base_y =
@@ -444,10 +456,10 @@ void maingame::RenderPlayerHookSkill(human* myHuman)
 	if (target->GetDeadFlag() == true) { return; }
 	if (target->GetHP() <= 0) { return; }
 
-	float px, py, pz, prx;
-	float tx, ty, tz, trx;
-	myHuman->GetPosData(&px, &py, &pz, &prx);
-	target->GetPosData(&tx, &ty, &tz, &trx);
+	float px, py, pz;
+	float tx, ty, tz;
+	GetSkillVisualHumanPosition(myHuman, &px, &py, &pz);
+	GetSkillVisualHumanPosition(target, &tx, &ty, &tz);
 
 	float prx2, pry2;
 	myHuman->GetRxRy(&prx2, &pry2);
@@ -550,13 +562,47 @@ void maingame::RenderPlayerSkillTargetPreview(human* myHuman)
 
 	player_skill_target_valid = valid;
 
+	// 실제 설치/충돌 판정용 좌표는 위의 기존 로직 경로를 그대로 유지한다.
+	// 화면에 그릴 미리보기만 보간된 플레이어 위치와 최신 렌더 카메라 각도로 다시 계산한다.
+	float render_target_x = tx;
+	float render_target_y = ty;
+	float render_target_z = tz;
+
+	bool render_aim_found = UpdatePlayerSkillAimTargetVisualRaw(
+		myHuman,
+		max_dist,
+		true,
+		&render_target_x,
+		&render_target_y,
+		&render_target_z
+	);
+
+	bool render_valid = false;
+
+	if (render_aim_found == true) {
+		render_valid = IsPlayerSkillGroundTargetValid(
+			player_skill_targeting_type,
+			render_target_x,
+			render_target_y,
+			render_target_z
+		);
+	}
+	else if (aim_found == true) {
+		// 렌더 시점의 ray가 모서리에서 일시적으로 실패하면 기존 미리보기를 유지한다.
+		render_aim_found = true;
+		render_target_x = tx;
+		render_target_y = ty;
+		render_target_z = tz;
+		render_valid = valid;
+	}
+
 	d3dg->ResetWorldTransform();
 	d3dg->ResetZbuffer();
 
 	int fill_color;
 	int border_color;
 
-	if (valid == true) {
+	if (render_valid == true) {
 		if (player_skill_targeting_type == PLAYER_SKILL_DISTRACTION) {
 			fill_color = d3dg->GetColorCode(1.0f, 0.8f, 0.0f, 0.24f);
 			border_color = d3dg->GetColorCode(1.0f, 0.9f, 0.1f, 1.0f);
@@ -607,11 +653,11 @@ void maingame::RenderPlayerSkillTargetPreview(human* myHuman)
 	float render_y = 0.0f;
 	float render_z = 0.0f;
 
-	if (aim_found == true) {
+	if (render_aim_found == true) {
 		render_preview = true;
-		render_x = tx;
-		render_y = ty;
-		render_z = tz;
+		render_x = render_target_x;
+		render_y = render_target_y;
+		render_z = render_target_z;
 	}
 	else {
 		if ((player_skill_target_x != 0.0f) ||
@@ -660,7 +706,8 @@ void maingame::RenderPlayerSkillTargetPreview(human* myHuman)
 			);
 
 			float px, py, pz, prx;
-			myHuman->GetPosData(&px, &py, &pz, &prx);
+			GetSkillVisualHumanPosition(myHuman, &px, &py, &pz);
+			myHuman->GetPosData(NULL, NULL, NULL, &prx);
 
 			float mine_rx = prx * -1.0f + (float)M_PI / 2.0f;
 			float dir_x = render_x - px;
@@ -691,7 +738,7 @@ void maingame::RenderPlayerSkillTargetPreview(human* myHuman)
 			int device_dark_color;
 			int device_border_color = border_color;
 
-			if (valid == true) {
+			if (render_valid == true) {
 				device_fill_color = d3dg->GetColorCode(0.08f, 0.22f, 0.14f, 0.36f);
 				device_dark_color = d3dg->GetColorCode(0.03f, 0.10f, 0.06f, 0.55f);
 			}
@@ -1103,6 +1150,8 @@ void maingame::RenderRobotExecutePings(human* myHuman)
 		PLAYER_SKILL_ROBOT_EXECUTE_MAX_TARGETS
 	);
 
+	if (count <= 0) { return; }
+
 	d3dg->ResetWorldTransform();
 	d3dg->ResetZbuffer();
 
@@ -1113,8 +1162,8 @@ void maingame::RenderRobotExecutePings(human* myHuman)
 		if (target->GetDeadFlag() == true) { continue; }
 		if (target->GetHP() <= 0) { continue; }
 
-		float x, y, z, rx;
-		target->GetPosData(&x, &y, &z, &rx);
+		float x, y, z;
+		GetSkillVisualHumanPosition(target, &x, &y, &z);
 
 		// 머리 쪽에 마커 표시
 		RenderPlayerSkillEnemyPing(

@@ -478,6 +478,32 @@ bool InputControl::CheckKeyNow(int id)
 	return false;
 }
 
+//! @brief 렌더 프레임용 실시간 키 입력 확인
+//! @details keys/keys_lt를 변경하지 않으므로 33FPS 로직의 Down/Up 판정에 영향을 주지 않는다.
+bool InputControl::CheckKeyNowRealtime(int id)
+{
+	if ((id < 0) || (256 <= id)) { return false; }
+	if (GetForegroundWindow() != hWnd) { return false; }
+
+#if INPUT_INTERFACE == 0
+	return ((GetAsyncKeyState(id) & 0x8000) != 0);
+#elif INPUT_INTERFACE == 1
+	return ((keys_proc[id] & 0x80) != 0);
+#elif INPUT_INTERFACE == 2
+	if (pDIDevice == NULL) { return false; }
+
+	char realtime_keys[256] = { 0 };
+	HRESULT hr = pDIDevice->Acquire();
+	if ((hr != DI_OK) && (hr != S_FALSE)) { return false; }
+	if (FAILED(pDIDevice->GetDeviceState(sizeof(realtime_keys), realtime_keys))) {
+		return false;
+	}
+	return ((realtime_keys[id] & 0x80) != 0);
+#else
+	return false;
+#endif
+}
+
 //! @brief 긌???긤궻볺쀍귩?긃긞긏걁돓궠귢궫뢷듩걂
 //! @return 돓궠귢궫뢷듩궳궶궋갌false?돓궠귢궫뢷듩궳궇귡갌true
 bool InputControl::CheckKeyDown(int id)
@@ -511,6 +537,65 @@ void InputControl::GetMouseMovement(int *x, int *y)
 	//?긂긚띆뷭귩묆볺
 	*x = mx;
 	*y = my;
+}
+
+// 렌더링 주기에서 마우스 이동량만 안전하게 읽는다.
+// GetInputState()와 달리 키/버튼의 이전 상태(keys_lt, mbl_lt 등)는 변경하지 않는다.
+void InputControl::GetMouseMovementRealtime(int *x, int *y)
+{
+	if ((x == NULL) || (y == NULL)) { return; }
+
+	*x = 0;
+	*y = 0;
+
+	if (GetForegroundWindow() != hWnd) {
+		return;
+	}
+
+#if INPUT_INTERFACE == 0
+	POINT point;
+	GetCursorPos(&point);
+	ScreenToClient(hWnd, &point);
+
+	POINT center;
+	center.x = GameConfig.GetScreenWidth() / 2;
+	center.y = GameConfig.GetScreenHeight() / 2;
+
+	*x = point.x - center.x;
+	*y = point.y - center.y;
+
+	// 다음 GetInputState(true)가 같은 이동을 다시 읽지 않도록 기준점을 중앙에 맞춘다.
+	point_lt = center;
+
+	if ((*x != 0) || (*y != 0)) {
+		POINT screen_center = center;
+		ClientToScreen(hWnd, &screen_center);
+		SetCursorPos(screen_center.x, screen_center.y);
+	}
+#elif INPUT_INTERFACE == 1
+	*x = mx_proc;
+	*y = my_proc;
+	mx_proc = 0;
+	my_proc = 0;
+#elif INPUT_INTERFACE == 2
+	if (pMouse != NULL) {
+		DIMOUSESTATE2 state = { 0 };
+		if (FAILED(pMouse->GetDeviceState(sizeof(DIMOUSESTATE2), &state))) {
+			pMouse->Acquire();
+		}
+		else {
+			*x = state.lX;
+			*y = state.lY;
+		}
+	}
+#endif
+
+	if (MouseLimitFlag == true) {
+		if (*x > 127) { *x = 127; }
+		if (*x < -128) { *x = -128; }
+		if (*y > 127) { *y = 127; }
+		if (*y < -128) { *y = -128; }
+	}
 }
 
 //! @brief ?긂긚갋뜺??깛궻볺쀍귩?긃긞긏걁깏귺깑?귽?걂

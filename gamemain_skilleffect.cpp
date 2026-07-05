@@ -11,8 +11,8 @@ void maingame::RenderPlayerHealEffect(human* myHuman)
 	if (Camera_Debugmode == true) { return; }
 	if (myHuman->GetHP() <= 0) { return; }
 
-	float x, y, z, rx;
-	myHuman->GetPosData(&x, &y, &z, &rx);
+	float x, y, z;
+	GetSkillVisualHumanPosition(myHuman, &x, &y, &z);
 
 	d3dg->ResetWorldTransform();
 
@@ -125,8 +125,8 @@ void maingame::RenderPlayerSurvivalEffect(human* myHuman)
 	if (Camera_Debugmode == true) { return; }
 	if (myHuman->GetHP() <= 0) { return; }
 
-	float x, y, z, rx;
-	myHuman->GetPosData(&x, &y, &z, &rx);
+	float x, y, z;
+	GetSkillVisualHumanPosition(myHuman, &x, &y, &z);
 
 	d3dg->ResetWorldTransform();
 
@@ -895,15 +895,14 @@ void maingame::RenderPlayerBattleAbsorbEffect(human* myHuman)
 	if (Camera_Debugmode == true) { return; }
 	if (myHuman->GetHP() <= 0) { return; }
 
-	float x, y, z, rx;
-	myHuman->GetPosData(&x, &y, &z, &rx);
+	float x, y, z;
+	GetSkillVisualHumanPosition(myHuman, &x, &y, &z);
 
 	d3dg->ResetWorldTransform();
 
 	// ObjMgr.Render() 이후에 호출되므로 캐릭터 주변 효과가 몸에 묻히지 않게 한다.
 	d3dg->ResetZbuffer();
 
-	int timer = myHuman->GetSkillAbsorbTimer();
 	float fade = 1.0f;
 
 	// 검보라 느낌은 유지하되, 실제 게임 화면에서 보이도록 보라 명도와 알파를 올린다.
@@ -1022,8 +1021,8 @@ void maingame::RenderPlayerRageAura(human* myHuman)
 	if (Camera_Debugmode == true) { return; }
 	if (myHuman->GetHP() <= 0) { return; }
 
-	float x, y, z, rx;
-	myHuman->GetPosData(&x, &y, &z, &rx);
+	float x, y, z;
+	GetSkillVisualHumanPosition(myHuman, &x, &y, &z);
 
 	d3dg->ResetWorldTransform();
 
@@ -1131,8 +1130,8 @@ void maingame::RenderPlayerBattleBoostEffect(human* myHuman)
 	if (Camera_Debugmode == true) { return; }
 	if (myHuman->GetHP() <= 0) { return; }
 
-	float x, y, z, rx;
-	myHuman->GetPosData(&x, &y, &z, &rx);
+	float x, y, z;
+	GetSkillVisualHumanPosition(myHuman, &x, &y, &z);
 
 	d3dg->ResetWorldTransform();
 

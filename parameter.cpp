@@ -567,7 +567,7 @@ void ParameterInfo::InitInfo()
 	Weapon[1].blazings = 4;						// 연사 속도 (값이 작을수록 빠름)
 	Weapon[1].speed = 10;						// 탄속
 	Weapon[1].nbsmax = 30;						// 최대 장탄수
-	Weapon[1].reloads = 70;						// 재장전 시간
+	Weapon[1].reloads = 79;						// 재장전 시간
 	Weapon[1].reaction = 6;						// 반동
 	Weapon[1].ErrorRangeMIN = 0;					// 최소 명중률 오차
 	Weapon[1].ErrorRangeMAX = 21;					// 최대 명중률 오차
@@ -575,8 +575,8 @@ void ParameterInfo::InitInfo()
 	Weapon[1].my = 2.0f;						// 1인칭 손 위치 Y
 	Weapon[1].mz = 30.0f;						// 1인칭 손 위치 Z
 	Weapon[1].flashx = 9.0f;					// 총구 화염 위치 X
-	Weapon[1].flashy = 15.0f;					// 총구 화염 위치 Y
-	Weapon[1].flashz = 71.0f;					// 총구 화염 위치 Z
+	Weapon[1].flashy = 14.0f;					// 총구 화염 위치 Y
+	Weapon[1].flashz = 69.0f;					// 총구 화염 위치 Z
 	Weapon[1].yakkyou_px = 8.0f;					// 탄피 배출 위치 X
 	Weapon[1].yakkyou_py = 12.0f;					// 탄피 배출 위치 Y
 	Weapon[1].yakkyou_pz = 35.0f;					// 탄피 배출 위치 Z
@@ -588,7 +588,7 @@ void ParameterInfo::InitInfo()
 	Weapon[1].scopemode = 0;					// 스코프 모드
 	Weapon[1].size = 7.0f;						// 3인칭 모델 크기
 	Weapon[1].soundid = 0;						// 발사음 ID
-	Weapon[1].soundvolume = 90;					// 발사음 크기
+	Weapon[1].soundvolume = 90;				// 발사음 크기
 	Weapon[1].silencer = false;					// 소음기 여부
 	Weapon[1].WeaponP = 0;						// 무기 종류 (0: 양손, 1: 한손)
 	Weapon[1].ChangeWeaponID = -1;					// 발사모드 전환 시 바뀔 무기 ID
@@ -596,7 +596,7 @@ void ParameterInfo::InitInfo()
 	Weapon[1].pellet = 1;						// 샷건 펠릿 수
 	Weapon[1].is_shell_reload = false;				// 셸 단위 재장전 여부
 	Weapon[1].bHasChamber = true;
-	Weapon[1].TacticalReloadFrame = 45;
+	Weapon[1].TacticalReloadFrame = 57;
 	Weapon[1].SoundID_Reload = -1;
 	Weapon[1].SoundID_Tactical = -1;
 
@@ -608,7 +608,7 @@ void ParameterInfo::InitInfo()
 	Weapon[2].blazings = 7;						// 연사 속도
 	Weapon[2].speed = 255;						// 탄속
 	Weapon[2].nbsmax = 5;						// 최대 장탄수
-	Weapon[2].reloads = 85;						// 재장전 시간
+	Weapon[2].reloads = 84;						// 재장전 시간
 	Weapon[2].reaction = 30;					// 반동
 	Weapon[2].ErrorRangeMIN = 0;					// 최소 명중률 오차
 	Weapon[2].ErrorRangeMAX = 19;					// 최대 명중률 오차
@@ -617,7 +617,7 @@ void ParameterInfo::InitInfo()
 	Weapon[2].mz = 45.0f;						// 1인칭 손 위치 Z
 	Weapon[2].flashx = 9.0f;					// 총구 화염 위치 X
 	Weapon[2].flashy = 16.0f;					// 총구 화염 위치 Y
-	Weapon[2].flashz = 115.0f;					// 총구 화염 위치 Z
+	Weapon[2].flashz = 108.0f;					// 총구 화염 위치 Z
 	Weapon[2].yakkyou_px = 8.0f;					// 탄피 배출 위치 X
 	Weapon[2].yakkyou_py = 13.0f;					// 탄피 배출 위치 Y
 	Weapon[2].yakkyou_pz = 38.0f;					// 탄피 배출 위치 Z
@@ -629,7 +629,7 @@ void ParameterInfo::InitInfo()
 	Weapon[2].scopemode = 7;					// 스코프 모드
 	Weapon[2].size = 7.0f;						// 3인칭 모델 크기
 	Weapon[2].soundid = 1;						// 발사음 ID
-	Weapon[2].soundvolume = 85;					// 발사음 크기
+	Weapon[2].soundvolume = 90;				// 발사음 크기
 	Weapon[2].silencer = false;					// 소음기 여부
 	Weapon[2].WeaponP = 0;						// 무기 종류
 	Weapon[2].ChangeWeaponID = -1;					// 발사모드 전환 시 바뀔 무기 ID
@@ -637,7 +637,7 @@ void ParameterInfo::InitInfo()
 	Weapon[2].pellet = 1;						// 샷건 펠릿 수
 	Weapon[2].is_shell_reload = false;				// 셸 단위 재장전 여부
 	Weapon[2].bHasChamber = true;
-	Weapon[2].TacticalReloadFrame = 61;
+	Weapon[2].TacticalReloadFrame = 62;
 	Weapon[2].SoundID_Reload = -1;
 	Weapon[2].SoundID_Tactical = -1;
 
@@ -649,7 +649,7 @@ void ParameterInfo::InitInfo()
 	Weapon[3].blazings = 5;						// 연사 속도
 	Weapon[3].speed = 9;						// 탄속
 	Weapon[3].nbsmax = 15;						// 최대 장탄수
-	Weapon[3].reloads = 57;						// 재장전 시간
+	Weapon[3].reloads = 55;						// 재장전 시간
 	Weapon[3].reaction = 10;					// 반동
 	Weapon[3].ErrorRangeMIN = 0;					// 최소 명중률 오차
 	Weapon[3].ErrorRangeMAX = 26;					// 최대 명중률 오차
@@ -657,8 +657,8 @@ void ParameterInfo::InitInfo()
 	Weapon[3].my = 10.0f;						// 1인칭 손 위치 Y
 	Weapon[3].mz = 58.0f;						// 1인칭 손 위치 Z
 	Weapon[3].flashx = 3.0f;					// 총구 화염 위치 X
-	Weapon[3].flashy = 20.0f;					// 총구 화염 위치 Y
-	Weapon[3].flashz = 76.0f;					// 총구 화염 위치 Z
+	Weapon[3].flashy = 19.0f;					// 총구 화염 위치 Y
+	Weapon[3].flashz = 73.0f;					// 총구 화염 위치 Z
 	Weapon[3].yakkyou_px = 2.0f;					// 탄피 배출 위치 X
 	Weapon[3].yakkyou_py = 15.0f;					// 탄피 배출 위치 Y
 	Weapon[3].yakkyou_pz = 56.0f;					// 탄피 배출 위치 Z
@@ -670,7 +670,7 @@ void ParameterInfo::InitInfo()
 	Weapon[3].scopemode = 0;					// 스코프 모드
 	Weapon[3].size = 7.0f;						// 3인칭 모델 크기
 	Weapon[3].soundid = 28;						// 발사음 ID
-	Weapon[3].soundvolume = 85;					// 발사음 크기
+	Weapon[3].soundvolume = 90;				// 발사음 크기
 	Weapon[3].silencer = false;					// 소음기 여부
 	Weapon[3].WeaponP = 1;						// 무기 종류
 	Weapon[3].ChangeWeaponID = -1;					// 발사모드 전환 시 바뀔 무기 ID
@@ -690,7 +690,7 @@ void ParameterInfo::InitInfo()
 	Weapon[4].blazings = 5;						// 연사 속도
 	Weapon[4].speed = 9;						// 탄속
 	Weapon[4].nbsmax = 19;						// 최대 장탄수
-	Weapon[4].reloads = 56;						// 재장전 시간
+	Weapon[4].reloads = 55;						// 재장전 시간
 	Weapon[4].reaction = 9;						// 반동
 	Weapon[4].ErrorRangeMIN = 0;					// 최소 명중률 오차
 	Weapon[4].ErrorRangeMAX = 26;					// 최대 명중률 오차
@@ -698,8 +698,8 @@ void ParameterInfo::InitInfo()
 	Weapon[4].my = 11.0f;						// 1인칭 손 위치 Y
 	Weapon[4].mz = 59.0f;						// 1인칭 손 위치 Z
 	Weapon[4].flashx = 3.0f;					// 총구 화염 위치 X
-	Weapon[4].flashy = 21.0f;					// 총구 화염 위치 Y
-	Weapon[4].flashz = 75.0f;					// 총구 화염 위치 Z
+	Weapon[4].flashy = 19.0f;					// 총구 화염 위치 Y
+	Weapon[4].flashz = 72.0f;					// 총구 화염 위치 Z
 	Weapon[4].yakkyou_px = 2.0f;					// 탄피 배출 위치 X
 	Weapon[4].yakkyou_py = 14.0f;					// 탄피 배출 위치 Y
 	Weapon[4].yakkyou_pz = 54.0f;					// 탄피 배출 위치 Z
@@ -711,7 +711,7 @@ void ParameterInfo::InitInfo()
 	Weapon[4].scopemode = 0;					// 스코프 모드
 	Weapon[4].size = 7.0f;						// 3인칭 모델 크기
 	Weapon[4].soundid = 34;						// 발사음 ID
-	Weapon[4].soundvolume = 85;					// 발사음 크기
+	Weapon[4].soundvolume = 90;				// 발사음 크기
 	Weapon[4].silencer = false;					// 소음기 여부
 	Weapon[4].WeaponP = 1;						// 무기 종류
 	Weapon[4].ChangeWeaponID = 16;					// 발사모드 전환 시 바뀔 무기 ID
@@ -719,7 +719,7 @@ void ParameterInfo::InitInfo()
 	Weapon[4].pellet = 1;						// 샷건 펠릿 수
 	Weapon[4].is_shell_reload = false;				// 셸 단위 재장전 여부
 	Weapon[4].bHasChamber = true;
-	Weapon[4].TacticalReloadFrame = 34;
+	Weapon[4].TacticalReloadFrame = 35;
 	Weapon[4].SoundID_Reload = -1;
 	Weapon[4].SoundID_Tactical = -1;
 
@@ -731,7 +731,7 @@ void ParameterInfo::InitInfo()
 	Weapon[5].blazings = 5;						// 연사 속도
 	Weapon[5].speed = 10;						// 탄속
 	Weapon[5].nbsmax = 7;						// 최대 장탄수
-	Weapon[5].reloads = 55;						// 재장전 시간
+	Weapon[5].reloads = 53;						// 재장전 시간
 	Weapon[5].reaction = 13;					// 반동
 	Weapon[5].ErrorRangeMIN = 0;					// 최소 명중률 오차
 	Weapon[5].ErrorRangeMAX = 26;					// 최대 명중률 오차
@@ -740,7 +740,7 @@ void ParameterInfo::InitInfo()
 	Weapon[5].mz = 56.0f;						// 1인칭 손 위치 Z
 	Weapon[5].flashx = 3.0f;					// 총구 화염 위치 X
 	Weapon[5].flashy = 19.0f;					// 총구 화염 위치 Y
-	Weapon[5].flashz = 81.0f;					// 총구 화염 위치 Z
+	Weapon[5].flashz = 76.0f;					// 총구 화염 위치 Z
 	Weapon[5].yakkyou_px = 2.0f;					// 탄피 배출 위치 X
 	Weapon[5].yakkyou_py = 15.0f;					// 탄피 배출 위치 Y
 	Weapon[5].yakkyou_pz = 56.0f;					// 탄피 배출 위치 Z
@@ -752,7 +752,7 @@ void ParameterInfo::InitInfo()
 	Weapon[5].scopemode = 0;					// 스코프 모드
 	Weapon[5].size = 7.0f;						// 3인칭 모델 크기
 	Weapon[5].soundid = 2;						// 발사음 ID
-	Weapon[5].soundvolume = 90;					// 발사음 크기
+	Weapon[5].soundvolume = 90;				// 발사음 크기
 	Weapon[5].silencer = false;					// 소음기 여부
 	Weapon[5].WeaponP = 1;						// 무기 종류
 	Weapon[5].ChangeWeaponID = -1;					// 발사모드 전환 시 바뀔 무기 ID
@@ -760,7 +760,7 @@ void ParameterInfo::InitInfo()
 	Weapon[5].pellet = 1;						// 샷건 펠릿 수
 	Weapon[5].is_shell_reload = false;				// 셸 단위 재장전 여부
 	Weapon[5].bHasChamber = true;
-	Weapon[5].TacticalReloadFrame = 36;
+	Weapon[5].TacticalReloadFrame = 37;
 	Weapon[5].SoundID_Reload = -1;
 	Weapon[5].SoundID_Tactical = -1;
 
@@ -772,7 +772,7 @@ void ParameterInfo::InitInfo()
 	Weapon[6].blazings = 3;						// 연사 속도
 	Weapon[6].speed = 10;						// 탄속
 	Weapon[6].nbsmax = 30;						// 최대 장탄수
-	Weapon[6].reloads = 66;						// 재장전 시간
+	Weapon[6].reloads = 67;						// 재장전 시간
 	Weapon[6].reaction = 9;						// 반동
 	Weapon[6].ErrorRangeMIN = 0;					// 최소 명중률 오차
 	Weapon[6].ErrorRangeMAX = 25;					// 최대 명중률 오차
@@ -780,8 +780,8 @@ void ParameterInfo::InitInfo()
 	Weapon[6].my = 11.0f;						// 1인칭 손 위치 Y
 	Weapon[6].mz = 56.0f;						// 1인칭 손 위치 Z
 	Weapon[6].flashx = 3.0f;					// 총구 화염 위치 X
-	Weapon[6].flashy = 21.0f;					// 총구 화염 위치 Y
-	Weapon[6].flashz = 76.0f;					// 총구 화염 위치 Z
+	Weapon[6].flashy = 19.0f;					// 총구 화염 위치 Y
+	Weapon[6].flashz = 73.0f;					// 총구 화염 위치 Z
 	Weapon[6].yakkyou_px = 2.0f;					// 탄피 배출 위치 X
 	Weapon[6].yakkyou_py = 16.0f;					// 탄피 배출 위치 Y
 	Weapon[6].yakkyou_pz = 52.0f;					// 탄피 배출 위치 Z
@@ -793,7 +793,7 @@ void ParameterInfo::InitInfo()
 	Weapon[6].scopemode = 0;					// 스코프 모드
 	Weapon[6].size = 7.0f;						// 3인칭 모델 크기
 	Weapon[6].soundid = 22;						// 발사음 ID
-	Weapon[6].soundvolume = 90;					// 발사음 크기
+	Weapon[6].soundvolume = 90;				// 발사음 크기
 	Weapon[6].silencer = false;					// 소음기 여부
 	Weapon[6].WeaponP = 1;						// 무기 종류
 	Weapon[6].ChangeWeaponID = 79;					// 발사모드 전환 시 바뀔 무기 ID
@@ -814,7 +814,7 @@ void ParameterInfo::InitInfo()
 	Weapon[7].blazings = 5;						// 연사 속도
 	Weapon[7].speed = 10;						// 탄속
 	Weapon[7].nbsmax = 25;						// 최대 장탄수
-	Weapon[7].reloads = 72;						// 재장전 시간
+	Weapon[7].reloads = 79;						// 재장전 시간
 	Weapon[7].reaction = 7;						// 반동
 	Weapon[7].ErrorRangeMIN = 0;					// 최소 명중률 오차
 	Weapon[7].ErrorRangeMAX = 19;					// 최대 명중률 오차
@@ -822,8 +822,8 @@ void ParameterInfo::InitInfo()
 	Weapon[7].my = 6.0f;						// 1인칭 손 위치 Y
 	Weapon[7].mz = 29.0f;						// 1인칭 손 위치 Z
 	Weapon[7].flashx = 8.0f;					// 총구 화염 위치 X
-	Weapon[7].flashy = 17.0f;					// 총구 화염 위치 Y
-	Weapon[7].flashz = 65.0f;					// 총구 화염 위치 Z
+	Weapon[7].flashy = 16.5f;					// 총구 화염 위치 Y
+	Weapon[7].flashz = 64.0f;					// 총구 화염 위치 Z
 	Weapon[7].yakkyou_px = 8.0f;					// 탄피 배출 위치 X
 	Weapon[7].yakkyou_py = 11.0f;					// 탄피 배출 위치 Y
 	Weapon[7].yakkyou_pz = 41.0f;					// 탄피 배출 위치 Z
@@ -835,7 +835,7 @@ void ParameterInfo::InitInfo()
 	Weapon[7].scopemode = 1;					// 스코프 모드
 	Weapon[7].size = 7.0f;						// 3인칭 모델 크기
 	Weapon[7].soundid = 32;						// 발사음 ID
-	Weapon[7].soundvolume = 90;					// 발사음 크기
+	Weapon[7].soundvolume = 90;				// 발사음 크기
 	Weapon[7].silencer = false;					// 소음기 여부
 	Weapon[7].WeaponP = 0;						// 무기 종류
 	Weapon[7].ChangeWeaponID = -1;					// 발사모드 전환 시 바뀔 무기 ID
@@ -843,7 +843,7 @@ void ParameterInfo::InitInfo()
 	Weapon[7].pellet = 1;						// 샷건 펠릿 수
 	Weapon[7].is_shell_reload = false;				// 셸 단위 재장전 여부
 	Weapon[7].bHasChamber = true;
-	Weapon[7].TacticalReloadFrame = 46;
+	Weapon[7].TacticalReloadFrame = 57;
 	Weapon[7].SoundID_Reload = -1;
 	Weapon[7].SoundID_Tactical = -1;
 
@@ -863,8 +863,8 @@ void ParameterInfo::InitInfo()
 	Weapon[8].my = 9.0f;						// 1인칭 손 위치 Y
 	Weapon[8].mz = 38.0f;						// 1인칭 손 위치 Z
 	Weapon[8].flashx = 9.0f;					// 총구 화염 위치 X
-	Weapon[8].flashy = 16.0f;					// 총구 화염 위치 Y
-	Weapon[8].flashz = 58.0f;					// 총구 화염 위치 Z
+	Weapon[8].flashy = 15.0f;					// 총구 화염 위치 Y
+	Weapon[8].flashz = 54.0f;					// 총구 화염 위치 Z
 	Weapon[8].yakkyou_px = 8.0f;					// 탄피 배출 위치 X
 	Weapon[8].yakkyou_py = 4.0f;					// 탄피 배출 위치 Y
 	Weapon[8].yakkyou_pz = 18.0f;					// 탄피 배출 위치 Z
@@ -876,7 +876,7 @@ void ParameterInfo::InitInfo()
 	Weapon[8].scopemode = 1;					// 스코프 모드
 	Weapon[8].size = 7.0f;						// 3인칭 모델 크기
 	Weapon[8].soundid = 9;						// 발사음 ID
-	Weapon[8].soundvolume = 90;					// 발사음 크기
+	Weapon[8].soundvolume = 90;				// 발사음 크기
 	Weapon[8].silencer = false;					// 소음기 여부
 	Weapon[8].WeaponP = 0;						// 무기 종류
 	Weapon[8].ChangeWeaponID = 80;					// 발사모드 전환 시 바뀔 무기 ID
@@ -884,7 +884,7 @@ void ParameterInfo::InitInfo()
 	Weapon[8].pellet = 1;						// 샷건 펠릿 수
 	Weapon[8].is_shell_reload = false;				// 셸 단위 재장전 여부
 	Weapon[8].bHasChamber = true;
-	Weapon[8].TacticalReloadFrame = 75;
+	Weapon[8].TacticalReloadFrame = 74;
 	Weapon[8].SoundID_Reload = -1;
 	Weapon[8].SoundID_Tactical = -1;
 
@@ -904,8 +904,8 @@ void ParameterInfo::InitInfo()
 	Weapon[9].my = 6.0f;						// 1인칭 손 위치 Y
 	Weapon[9].mz = 29.0f;						// 1인칭 손 위치 Z
 	Weapon[9].flashx = 9.0f;					// 총구 화염 위치 X
-	Weapon[9].flashy = 17.0f;					// 총구 화염 위치 Y
-	Weapon[9].flashz = 87.0f;					// 총구 화염 위치 Z
+	Weapon[9].flashy = 16.0f;					// 총구 화염 위치 Y
+	Weapon[9].flashz = 84.0f;					// 총구 화염 위치 Z
 	Weapon[9].yakkyou_px = 10.0f;					// 탄피 배출 위치 X
 	Weapon[9].yakkyou_py = 12.0f;					// 탄피 배출 위치 Y
 	Weapon[9].yakkyou_pz = 40.0f;					// 탄피 배출 위치 Z
@@ -917,7 +917,7 @@ void ParameterInfo::InitInfo()
 	Weapon[9].scopemode = 2;					// 스코프 모드
 	Weapon[9].size = 7.0f;						// 3인칭 모델 크기
 	Weapon[9].soundid = 13;						// 발사음 ID
-	Weapon[9].soundvolume = 90;					// 발사음 크기
+	Weapon[9].soundvolume = 90;				// 발사음 크기
 	Weapon[9].silencer = false;					// 소음기 여부
 	Weapon[9].WeaponP = 0;						// 무기 종류
 	Weapon[9].ChangeWeaponID = 24;					// 발사모드 전환 시 바뀔 무기 ID
@@ -925,7 +925,7 @@ void ParameterInfo::InitInfo()
 	Weapon[9].pellet = 1;						// 샷건 펠릿 수
 	Weapon[9].is_shell_reload = false;				// 셸 단위 재장전 여부
 	Weapon[9].bHasChamber = true;
-	Weapon[9].TacticalReloadFrame = 50;
+	Weapon[9].TacticalReloadFrame = 51;
 	Weapon[9].SoundID_Reload = -1;
 	Weapon[9].SoundID_Tactical = -1;
 
@@ -937,15 +937,15 @@ void ParameterInfo::InitInfo()
 	Weapon[10].blazings = 4;					// 연사 속도
 	Weapon[10].speed = 11;						// 탄속
 	Weapon[10].nbsmax = 30;						// 최대 장탄수
-	Weapon[10].reloads = 85;					// 재장전 시간
+	Weapon[10].reloads = 89;					// 재장전 시간
 	Weapon[10].reaction = 9;					// 반동
 	Weapon[10].ErrorRangeMIN = 0;					// 최소 명중률 오차
 	Weapon[10].ErrorRangeMAX = 20;					// 최대 명중률 오차
 	Weapon[10].mx = 9.0f;						// 1인칭 손 위치 X
 	Weapon[10].my = 7.0f;						// 1인칭 손 위치 Y
-	Weapon[10].mz = 28.0f;						// 1인칭 손 위치 Z
+	Weapon[10].mz = 28.0f;						// 1인칭 손 위치 ZF
 	Weapon[10].flashx = 9.0f;					// 총구 화염 위치 X
-	Weapon[10].flashy = 17.0f;					// 총구 화염 위치 Y
+	Weapon[10].flashy = 14.5f;					// 총구 화염 위치 Y
 	Weapon[10].flashz = 88.0f;					// 총구 화염 위치 Z
 	Weapon[10].yakkyou_px = 9.0f;					// 탄피 배출 위치 X
 	Weapon[10].yakkyou_py = 12.0f;					// 탄피 배출 위치 Y
@@ -958,7 +958,7 @@ void ParameterInfo::InitInfo()
 	Weapon[10].scopemode = 0;					// 스코프 모드
 	Weapon[10].size = 7.0f;						// 3인칭 모델 크기
 	Weapon[10].soundid = 6;						// 발사음 ID
-	Weapon[10].soundvolume = 90;					// 발사음 크기
+	Weapon[10].soundvolume = 90;				// 발사음 크기
 	Weapon[10].silencer = false;					// 소음기 여부
 	Weapon[10].WeaponP = 0;						// 무기 종류
 	Weapon[10].ChangeWeaponID = 85;					// 발사모드 전환 시 바뀔 무기 ID
@@ -966,7 +966,7 @@ void ParameterInfo::InitInfo()
 	Weapon[10].pellet = 1;						// 샷건 펠릿 수
 	Weapon[10].is_shell_reload = false;				// 셸 단위 재장전 여부
 	Weapon[10].bHasChamber = true;
-	Weapon[10].TacticalReloadFrame = 57;
+	Weapon[10].TacticalReloadFrame = 64;
 	Weapon[10].SoundID_Reload = -1;
 	Weapon[10].SoundID_Tactical = -1;
 
@@ -986,8 +986,8 @@ void ParameterInfo::InitInfo()
 	Weapon[11].my = 9.0f;						// 1인칭 손 위치 Y
 	Weapon[11].mz = 31.0f;						// 1인칭 손 위치 Z
 	Weapon[11].flashx = 9.0f;					// 총구 화염 위치 X
-	Weapon[11].flashy = 17.0f;					// 총구 화염 위치 Y
-	Weapon[11].flashz = 77.0f;					// 총구 화염 위치 Z
+	Weapon[11].flashy = 16.0f;					// 총구 화염 위치 Y
+	Weapon[11].flashz = 76.0f;					// 총구 화염 위치 Z
 	Weapon[11].yakkyou_px = 8.0f;					// 탄피 배출 위치 X
 	Weapon[11].yakkyou_py = 11.0f;					// 탄피 배출 위치 Y
 	Weapon[11].yakkyou_pz = 15.0f;					// 탄피 배출 위치 Z
@@ -999,7 +999,7 @@ void ParameterInfo::InitInfo()
 	Weapon[11].scopemode = 3;					// 스코프 모드
 	Weapon[11].size = 7.0f;						// 3인칭 모델 크기
 	Weapon[11].soundid = 69;						// 발사음 ID
-	Weapon[11].soundvolume = 90;					// 발사음 크기
+	Weapon[11].soundvolume = 90;				// 발사음 크기
 	Weapon[11].silencer = false;					// 소음기 여부
 	Weapon[11].WeaponP = 0;						// 무기 종류
 	Weapon[11].ChangeWeaponID = 90;					// 발사모드 전환 시 바뀔 무기 ID
@@ -1007,7 +1007,7 @@ void ParameterInfo::InitInfo()
 	Weapon[11].pellet = 1;						// 샷건 펠릿 수
 	Weapon[11].is_shell_reload = false;				// 셸 단위 재장전 여부
 	Weapon[11].bHasChamber = true;
-	Weapon[11].TacticalReloadFrame = 63;
+	Weapon[11].TacticalReloadFrame = 67;
 	Weapon[11].SoundID_Reload = -1;
 	Weapon[11].SoundID_Tactical = -1;
 
@@ -1019,7 +1019,7 @@ void ParameterInfo::InitInfo()
 	Weapon[12].blazings = 4;					// 연사 속도
 	Weapon[12].speed = 11;						// 탄속
 	Weapon[12].nbsmax = 100;					// 최대 장탄수
-	Weapon[12].reloads = 168;					// 재장전 시간
+	Weapon[12].reloads = 167;					// 재장전 시간
 	Weapon[12].reaction = 7;					// 반동
 	Weapon[12].ErrorRangeMIN = 0;					// 최소 명중률 오차
 	Weapon[12].ErrorRangeMAX = 22;					// 최대 명중률 오차
@@ -1027,8 +1027,8 @@ void ParameterInfo::InitInfo()
 	Weapon[12].my = 7.0f;						// 1인칭 손 위치 Y
 	Weapon[12].mz = 31.0f;						// 1인칭 손 위치 Z
 	Weapon[12].flashx = 9.0f;					// 총구 화염 위치 X
-	Weapon[12].flashy = 19.0f;					// 총구 화염 위치 Y
-	Weapon[12].flashz = 92.0f;					// 총구 화염 위치 Z
+	Weapon[12].flashy = 19.5f;					// 총구 화염 위치 Y
+	Weapon[12].flashz = 88.0f;					// 총구 화염 위치 Z
 	Weapon[12].yakkyou_px = 9.0f;					// 탄피 배출 위치 X
 	Weapon[12].yakkyou_py = 11.0f;					// 탄피 배출 위치 Y
 	Weapon[12].yakkyou_pz = 45.0f;					// 탄피 배출 위치 Z
@@ -1040,7 +1040,7 @@ void ParameterInfo::InitInfo()
 	Weapon[12].scopemode = 0;					// 스코프 모드
 	Weapon[12].size = 7.0f;						// 3인칭 모델 크기
 	Weapon[12].soundid = 17;						// 발사음 ID
-	Weapon[12].soundvolume = 90;					// 발사음 크기
+	Weapon[12].soundvolume = 90;				// 발사음 크기
 	Weapon[12].silencer = false;					// 소음기 여부
 	Weapon[12].WeaponP = 0;						// 무기 종류
 	Weapon[12].ChangeWeaponID = -1;					// 발사모드 전환 시 바뀔 무기 ID
@@ -1081,7 +1081,7 @@ void ParameterInfo::InitInfo()
 	Weapon[13].scopemode = 0;					// 스코프 모드
 	Weapon[13].size = 7.0f;						// 3인칭 모델 크기
 	Weapon[13].soundid = 62;						// 발사음 ID
-	Weapon[13].soundvolume = 80;					// 발사음 크기
+	Weapon[13].soundvolume = 90;				// 발사음 크기
 	Weapon[13].silencer = false;					// 소음기 여부
 	Weapon[13].WeaponP = 1;						// 무기 종류
 	Weapon[13].ChangeWeaponID = -1;					// 발사모드 전환 시 바뀔 무기 ID
@@ -1101,7 +1101,7 @@ void ParameterInfo::InitInfo()
 	Weapon[14].blazings = 4;					// 연사 속도
 	Weapon[14].speed = 9;						// 탄속
 	Weapon[14].nbsmax = 30;						// 최대 장탄수
-	Weapon[14].reloads = 70;					// 재장전 시간
+	Weapon[14].reloads = 79;					// 재장전 시간
 	Weapon[14].reaction = 6;					// 반동
 	Weapon[14].ErrorRangeMIN = 0;					// 최소 명중률 오차
 	Weapon[14].ErrorRangeMAX = 21;					// 최대 명중률 오차
@@ -1109,8 +1109,8 @@ void ParameterInfo::InitInfo()
 	Weapon[14].my = 3.0f;						// 1인칭 손 위치 Y
 	Weapon[14].mz = 30.0f;						// 1인칭 손 위치 Z
 	Weapon[14].flashx = 9.0f;					// 총구 화염 위치 X
-	Weapon[14].flashy = 16.0f;					// 총구 화염 위치 Y
-	Weapon[14].flashz = 80.0f;					// 총구 화염 위치 Z
+	Weapon[14].flashy = 14.0f;					// 총구 화염 위치 Y
+	Weapon[14].flashz = 79.0f;					// 총구 화염 위치 Z
 	Weapon[14].yakkyou_px = 8.0f;					// 탄피 배출 위치 X
 	Weapon[14].yakkyou_py = 12.0f;					// 탄피 배출 위치 Y
 	Weapon[14].yakkyou_pz = 35.0f;					// 탄피 배출 위치 Z
@@ -1122,7 +1122,7 @@ void ParameterInfo::InitInfo()
 	Weapon[14].scopemode = 4;					// 스코프 모드
 	Weapon[14].size = 7.0f;						// 3인칭 모델 크기
 	Weapon[14].soundid = 5;					// 발사음 ID
-	Weapon[14].soundvolume = 80;					// 발사음 크기
+	Weapon[14].soundvolume = 80;				// 발사음 크기
 	Weapon[14].silencer = true;					// 소음기 여부
 	Weapon[14].WeaponP = 0;						// 무기 종류
 	Weapon[14].ChangeWeaponID = -1;					// 발사모드 전환 시 바뀔 무기 ID
@@ -1130,7 +1130,7 @@ void ParameterInfo::InitInfo()
 	Weapon[14].pellet = 1;						// 샷건 펠릿 수
 	Weapon[14].is_shell_reload = false;				// 셸 단위 재장전 여부
 	Weapon[14].bHasChamber = true;
-	Weapon[14].TacticalReloadFrame = 45;
+	Weapon[14].TacticalReloadFrame = 57;
 	Weapon[14].SoundID_Reload = -1;
 	Weapon[14].SoundID_Tactical = -1;
 
@@ -1183,7 +1183,7 @@ void ParameterInfo::InitInfo()
 	Weapon[16].blazings = 3;					// 연사 속도
 	Weapon[16].speed = 9;						// 탄속
 	Weapon[16].nbsmax = 19;						// 최대 장탄수
-	Weapon[16].reloads = 56;					// 재장전 시간
+	Weapon[16].reloads = 55;					// 재장전 시간
 	Weapon[16].reaction = 9;					// 반동
 	Weapon[16].ErrorRangeMIN = 0;					// 최소 명중률 오차
 	Weapon[16].ErrorRangeMAX = 26;					// 최대 명중률 오차
@@ -1191,8 +1191,8 @@ void ParameterInfo::InitInfo()
 	Weapon[16].my = 11.0f;						// 1인칭 손 위치 Y
 	Weapon[16].mz = 59.0f;						// 1인칭 손 위치 Z
 	Weapon[16].flashx = 3.0f;					// 총구 화염 위치 X
-	Weapon[16].flashy = 21.0f;					// 총구 화염 위치 Y
-	Weapon[16].flashz = 75.0f;					// 총구 화염 위치 Z
+	Weapon[16].flashy = 19.0f;					// 총구 화염 위치 Y
+	Weapon[16].flashz = 72.0f;					// 총구 화염 위치 Z
 	Weapon[16].yakkyou_px = 2.0f;					// 탄피 배출 위치 X
 	Weapon[16].yakkyou_py = 14.0f;					// 탄피 배출 위치 Y
 	Weapon[16].yakkyou_pz = 54.0f;					// 탄피 배출 위치 Z
@@ -1204,7 +1204,7 @@ void ParameterInfo::InitInfo()
 	Weapon[16].scopemode = 0;					// 스코프 모드
 	Weapon[16].size = 7.0f;						// 3인칭 모델 크기
 	Weapon[16].soundid = 34;						// 발사음 ID
-	Weapon[16].soundvolume = 85;					// 발사음 크기
+	Weapon[16].soundvolume = 90;				// 발사음 크기
 	Weapon[16].silencer = false;					// 소음기 여부
 	Weapon[16].WeaponP = 1;						// 무기 종류
 	Weapon[16].ChangeWeaponID = 4;					// 발사모드 전환 시 바뀔 무기 ID
@@ -1212,7 +1212,7 @@ void ParameterInfo::InitInfo()
 	Weapon[16].pellet = 1;						// 샷건 펠릿 수
 	Weapon[16].is_shell_reload = false;				// 셸 단위 재장전 여부
 	Weapon[16].bHasChamber = true;
-	Weapon[16].TacticalReloadFrame = 34;
+	Weapon[16].TacticalReloadFrame = 35;
 	Weapon[16].SoundID_Reload = -1;
 	Weapon[16].SoundID_Tactical = -1;
 
@@ -1232,7 +1232,7 @@ void ParameterInfo::InitInfo()
 	Weapon[17].my = 10.0f;						// 1인칭 손 위치 Y
 	Weapon[17].mz = 58.0f;						// 1인칭 손 위치 Z
 	Weapon[17].flashx = 3.0f;					// 총구 화염 위치 X
-	Weapon[17].flashy = 18.0f;					// 총구 화염 위치 Y
+	Weapon[17].flashy = 17.5f;					// 총구 화염 위치 Y
 	Weapon[17].flashz = 75.0f;					// 총구 화염 위치 Z
 	Weapon[17].yakkyou_px = 2.0f;					// 탄피 배출 위치 X
 	Weapon[17].yakkyou_py = 16.0f;					// 탄피 배출 위치 Y
@@ -1245,7 +1245,7 @@ void ParameterInfo::InitInfo()
 	Weapon[17].scopemode = 0;					// 스코프 모드
 	Weapon[17].size = 7.0f;						// 3인칭 모델 크기
 	Weapon[17].soundid = 4;						// 발사음 ID
-	Weapon[17].soundvolume = 85;					// 발사음 크기
+	Weapon[17].soundvolume = 90;				// 발사음 크기
 	Weapon[17].silencer = false;					// 소음기 여부
 	Weapon[17].WeaponP = 1;						// 무기 종류
 	Weapon[17].ChangeWeaponID = -1;					// 발사모드 전환 시 바뀔 무기 ID
@@ -1253,7 +1253,7 @@ void ParameterInfo::InitInfo()
 	Weapon[17].pellet = 1;						// 샷건 펠릿 수
 	Weapon[17].is_shell_reload = false;				// 셸 단위 재장전 여부
 	Weapon[17].bHasChamber = true;
-	Weapon[17].TacticalReloadFrame = 34;
+	Weapon[17].TacticalReloadFrame = 35;
 	Weapon[17].SoundID_Reload = -1;
 	Weapon[17].SoundID_Tactical = -1;
 
@@ -1273,8 +1273,8 @@ void ParameterInfo::InitInfo()
 	Weapon[18].my = 11.0f;						// 1인칭 손 위치 Y
 	Weapon[18].mz = 58.0f;						// 1인칭 손 위치 Z
 	Weapon[18].flashx = 3.0f;					// 총구 화염 위치 X
-	Weapon[18].flashy = 21.0f;					// 총구 화염 위치 Y
-	Weapon[18].flashz = 75.0f;					// 총구 화염 위치 Z
+	Weapon[18].flashy = 19.0f;					// 총구 화염 위치 Y
+	Weapon[18].flashz = 72.0f;					// 총구 화염 위치 Z
 	Weapon[18].yakkyou_px = 2.0f;					// 탄피 배출 위치 X
 	Weapon[18].yakkyou_py = 14.0f;					// 탄피 배출 위치 Y
 	Weapon[18].yakkyou_pz = 54.0f;					// 탄피 배출 위치 Z
@@ -1286,7 +1286,7 @@ void ParameterInfo::InitInfo()
 	Weapon[18].scopemode = 0;					// 스코프 모드
 	Weapon[18].size = 7.0f;						// 3인칭 모델 크기
 	Weapon[18].soundid = 70;						// 발사음 ID
-	Weapon[18].soundvolume = 85;					// 발사음 크기
+	Weapon[18].soundvolume = 90;				// 발사음 크기
 	Weapon[18].silencer = false;					// 소음기 여부
 	Weapon[18].WeaponP = 1;						// 무기 종류
 	Weapon[18].ChangeWeaponID = 75;					// 발사모드 전환 시 바뀔 무기 ID
@@ -1294,7 +1294,7 @@ void ParameterInfo::InitInfo()
 	Weapon[18].pellet = 1;						// 샷건 펠릿 수
 	Weapon[18].is_shell_reload = false;				// 셸 단위 재장전 여부
 	Weapon[18].bHasChamber = true;
-	Weapon[18].TacticalReloadFrame = 34;
+	Weapon[18].TacticalReloadFrame = 35;
 	Weapon[18].SoundID_Reload = -1;
 	Weapon[18].SoundID_Tactical = -1;
 
@@ -1306,7 +1306,7 @@ void ParameterInfo::InitInfo()
 	Weapon[19].blazings = 30;					// 연사 속도
 	Weapon[19].speed = 9;						// 탄속
 	Weapon[19].nbsmax = 7;						// 최대 장탄수
-	Weapon[19].reloads = 15;					// 재장전 시간
+	Weapon[19].reloads = 20;					// 재장전 시간
 	Weapon[19].reaction = 18;					// 반동
 	Weapon[19].ErrorRangeMIN = 0;					// 최소 명중률 오차
 	Weapon[19].ErrorRangeMAX = 23;					// 최대 명중률 오차
@@ -1314,7 +1314,7 @@ void ParameterInfo::InitInfo()
 	Weapon[19].my = 8.0f;						// 1인칭 손 위치 Y
 	Weapon[19].mz = 13.0f;						// 1인칭 손 위치 Z
 	Weapon[19].flashx = 9.0f;					// 총구 화염 위치 X
-	Weapon[19].flashy = 14.0f;					// 총구 화염 위치 Y
+	Weapon[19].flashy = 16.0f;					// 총구 화염 위치 Y
 	Weapon[19].flashz = 97.0f;					// 총구 화염 위치 Z
 	Weapon[19].yakkyou_px = 8.0f;					// 탄피 배출 위치 X
 	Weapon[19].yakkyou_py = 11.0f;					// 탄피 배출 위치 Y
@@ -1327,7 +1327,7 @@ void ParameterInfo::InitInfo()
 	Weapon[19].scopemode = 0;					// 스코프 모드
 	Weapon[19].size = 7.0f;						// 3인칭 모델 크기
 	Weapon[19].soundid = 18;						// 발사음 ID
-	Weapon[19].soundvolume = 90;					// 발사음 크기
+	Weapon[19].soundvolume = 90;				// 발사음 크기
 	Weapon[19].silencer = false;					// 소음기 여부
 	Weapon[19].WeaponP = 0;						// 무기 종류
 	Weapon[19].ChangeWeaponID = -1;					// 발사모드 전환 시 바뀔 무기 ID
@@ -1347,7 +1347,7 @@ void ParameterInfo::InitInfo()
 	Weapon[20].blazings = 3;					// 연사 속도
 	Weapon[20].speed = 11;						// 탄속
 	Weapon[20].nbsmax = 25;						// 최대 장탄수
-	Weapon[20].reloads = 90;					// 재장전 시간
+	Weapon[20].reloads = 91;					// 재장전 시간
 	Weapon[20].reaction = 7;					// 반동
 	Weapon[20].ErrorRangeMIN = 0;					// 최소 명중률 오차
 	Weapon[20].ErrorRangeMAX = 19;					// 최대 명중률 오차
@@ -1355,7 +1355,7 @@ void ParameterInfo::InitInfo()
 	Weapon[20].my = 8.0f;						// 1인칭 손 위치 Y
 	Weapon[20].mz = 32.0f;						// 1인칭 손 위치 Z
 	Weapon[20].flashx = 9.0f;					// 총구 화염 위치 X
-	Weapon[20].flashy = 16.0f;					// 총구 화염 위치 Y
+	Weapon[20].flashy = 15.0f;					// 총구 화염 위치 Y
 	Weapon[20].flashz = 70.0f;					// 총구 화염 위치 Z
 	Weapon[20].yakkyou_px = 9.0f;					// 탄피 배출 위치 X
 	Weapon[20].yakkyou_py = 11.0f;					// 탄피 배출 위치 Y
@@ -1368,7 +1368,7 @@ void ParameterInfo::InitInfo()
 	Weapon[20].scopemode = 2;					// 스코프 모드
 	Weapon[20].size = 7.0f;						// 3인칭 모델 크기
 	Weapon[20].soundid = 10;						// 발사음 ID
-	Weapon[20].soundvolume = 90;					// 발사음 크기
+	Weapon[20].soundvolume = 90;				// 발사음 크기
 	Weapon[20].silencer = false;					// 소음기 여부
 	Weapon[20].WeaponP = 0;						// 무기 종류
 	Weapon[20].ChangeWeaponID = 86;					// 발사모드 전환 시 바뀔 무기 ID
@@ -1376,7 +1376,7 @@ void ParameterInfo::InitInfo()
 	Weapon[20].pellet = 1;						// 샷건 펠릿 수
 	Weapon[20].is_shell_reload = false;				// 셸 단위 재장전 여부
 	Weapon[20].bHasChamber = true;
-	Weapon[20].TacticalReloadFrame = 62;
+	Weapon[20].TacticalReloadFrame = 67;
 	Weapon[20].SoundID_Reload = -1;
 	Weapon[20].SoundID_Tactical = -1;
 
@@ -1388,7 +1388,7 @@ void ParameterInfo::InitInfo()
 	Weapon[21].blazings = 5;					// 연사 속도
 	Weapon[21].speed = 9;						// 탄속
 	Weapon[21].nbsmax = 12;						// 최대 장탄수
-	Weapon[21].reloads = 54;					// 재장전 시간
+	Weapon[21].reloads = 53;					// 재장전 시간
 	Weapon[21].reaction = 10;					// 반동
 	Weapon[21].ErrorRangeMIN = 0;					// 최소 명중률 오차
 	Weapon[21].ErrorRangeMAX = 26;					// 최대 명중률 오차
@@ -1396,8 +1396,8 @@ void ParameterInfo::InitInfo()
 	Weapon[21].my = 10.0f;						// 1인칭 손 위치 Y
 	Weapon[21].mz = 58.0f;						// 1인칭 손 위치 Z
 	Weapon[21].flashx = 3.0f;					// 총구 화염 위치 X
-	Weapon[21].flashy = 20.0f;					// 총구 화염 위치 Y
-	Weapon[21].flashz = 77.0f;					// 총구 화염 위치 Z
+	Weapon[21].flashy = 18.5f;					// 총구 화염 위치 Y
+	Weapon[21].flashz = 75.0f;					// 총구 화염 위치 Z
 	Weapon[21].yakkyou_px = 1.0f;					// 탄피 배출 위치 X
 	Weapon[21].yakkyou_py = 16.0f;					// 탄피 배출 위치 Y
 	Weapon[21].yakkyou_pz = 60.0f;					// 탄피 배출 위치 Z
@@ -1409,7 +1409,7 @@ void ParameterInfo::InitInfo()
 	Weapon[21].scopemode = 0;					// 스코프 모드
 	Weapon[21].size = 7.0f;						// 3인칭 모델 크기
 	Weapon[21].soundid = 23;						// 발사음 ID
-	Weapon[21].soundvolume = 85;					// 발사음 크기
+	Weapon[21].soundvolume = 90;				// 발사음 크기
 	Weapon[21].silencer = false;					// 소음기 여부
 	Weapon[21].WeaponP = 1;						// 무기 종류
 	Weapon[21].ChangeWeaponID = 22;					// 발사모드 전환 시 바뀔 무기 ID
@@ -1417,7 +1417,7 @@ void ParameterInfo::InitInfo()
 	Weapon[21].pellet = 1;						// 샷건 펠릿 수
 	Weapon[21].is_shell_reload = false;				// 셸 단위 재장전 여부
 	Weapon[21].bHasChamber = true;
-	Weapon[21].TacticalReloadFrame = 36;
+	Weapon[21].TacticalReloadFrame = 37;
 	Weapon[21].SoundID_Reload = -1;
 	Weapon[21].SoundID_Tactical = -1;
 
@@ -1429,7 +1429,7 @@ void ParameterInfo::InitInfo()
 	Weapon[22].blazings = 5;					// 연사 속도
 	Weapon[22].speed = 9;						// 탄속
 	Weapon[22].nbsmax = 12;						// 최대 장탄수
-	Weapon[22].reloads = 54;					// 재장전 시간
+	Weapon[22].reloads = 53;					// 재장전 시간
 	Weapon[22].reaction = 9;					// 반동
 	Weapon[22].ErrorRangeMIN = 0;					// 최소 명중률 오차
 	Weapon[22].ErrorRangeMAX = 26;					// 최대 명중률 오차
@@ -1437,8 +1437,8 @@ void ParameterInfo::InitInfo()
 	Weapon[22].my = 10.0f;						// 1인칭 손 위치 Y
 	Weapon[22].mz = 58.0f;						// 1인칭 손 위치 Z
 	Weapon[22].flashx = 3.0f;					// 총구 화염 위치 X
-	Weapon[22].flashy = 20.0f;					// 총구 화염 위치 Y
-	Weapon[22].flashz = 95.0f;					// 총구 화염 위치 Z
+	Weapon[22].flashy = 18.5f;					// 총구 화염 위치 Y
+	Weapon[22].flashz = 94.0f;					// 총구 화염 위치 Z
 	Weapon[22].yakkyou_px = 1.0f;					// 탄피 배출 위치 X
 	Weapon[22].yakkyou_py = 16.0f;					// 탄피 배출 위치 Y
 	Weapon[22].yakkyou_pz = 60.0f;					// 탄피 배출 위치 Z
@@ -1449,8 +1449,8 @@ void ParameterInfo::InitInfo()
 	Weapon[22].burstcnt = 1;					// 점사
 	Weapon[22].scopemode = 0;					// 스코프 모드
 	Weapon[22].size = 7.0f;						// 3인칭 모델 크기
-	Weapon[22].soundid = 36;					// 발사음 ID
-	Weapon[22].soundvolume = 80;					// 발사음 크기
+	Weapon[22].soundid = 24;					// 발사음 ID
+	Weapon[22].soundvolume = 80;				// 발사음 크기
 	Weapon[22].silencer = true;					// 소음기 여부
 	Weapon[22].WeaponP = 1;						// 무기 종류
 	Weapon[22].ChangeWeaponID = 21;					// 발사모드 전환 시 바뀔 무기 ID
@@ -1458,7 +1458,7 @@ void ParameterInfo::InitInfo()
 	Weapon[22].pellet = 1;						// 샷건 펠릿 수
 	Weapon[22].is_shell_reload = false;				// 셸 단위 재장전 여부
 	Weapon[22].bHasChamber = true;
-	Weapon[22].TacticalReloadFrame = 36;
+	Weapon[22].TacticalReloadFrame = 37;
 	Weapon[22].SoundID_Reload = -1;
 	Weapon[22].SoundID_Tactical = -1;
 
@@ -1470,7 +1470,7 @@ void ParameterInfo::InitInfo()
 	Weapon[23].blazings = 7;         				// 연사 속도
 	Weapon[23].speed = 80;           				// 탄속
 	Weapon[23].nbsmax = 15;          				// 최대 장탄수
-	Weapon[23].reloads = 70;         				// 재장전 시간
+	Weapon[23].reloads = 79;         				// 재장전 시간
 	Weapon[23].reaction = 10;         				// 반동
 	Weapon[23].ErrorRangeMIN = 0;    				// 최소 명중률 오차
 	Weapon[23].ErrorRangeMAX = 19;   				// 최대 명중률 오차
@@ -1478,8 +1478,8 @@ void ParameterInfo::InitInfo()
 	Weapon[23].my = 8.0f;            				// 1인칭 손 위치 Y
 	Weapon[23].mz = 28.0f;           				// 1인칭 손 위치 Z
 	Weapon[23].flashx = 9.0f;        				// 총구 화염 위치 X
-	Weapon[23].flashy = 15.0f;       				// 총구 화염 위치 Y
-	Weapon[23].flashz = 93.0f;       				// 총구 화염 위치 Z
+	Weapon[23].flashy = 16.0f;       				// 총구 화염 위치 Y
+	Weapon[23].flashz = 91.0f;       				// 총구 화염 위치 Z
 	Weapon[23].yakkyou_px = 10.0f;   				// 탄피 배출 위치 X
 	Weapon[23].yakkyou_py = 12.0f;   				// 탄피 배출 위치 Y
 	Weapon[23].yakkyou_pz = 40.0f;   				// 탄피 배출 위치 Z
@@ -1491,7 +1491,7 @@ void ParameterInfo::InitInfo()
 	Weapon[23].scopemode = 4;        				// 스코프 모드
 	Weapon[23].size = 7.0f;          				// 3인칭 모델 크기
 	Weapon[23].soundid = 12;          				// 발사음 ID
-	Weapon[23].soundvolume = 90;     				// 발사음 크기
+	Weapon[23].soundvolume = 80;     				// 발사음 크기
 	Weapon[23].silencer = false;     				// 소음기 여부
 	Weapon[23].WeaponP = 0;          				// 무기 종류
 	Weapon[23].ChangeWeaponID = -1;  				// 발사모드 전환 시 바뀔 무기 ID
@@ -1499,7 +1499,7 @@ void ParameterInfo::InitInfo()
 	Weapon[23].pellet = 1;           				// 샷건 펠릿 수
 	Weapon[23].is_shell_reload = false;				// 셸 단위 재장전 여부
 	Weapon[23].bHasChamber = true;
-	Weapon[23].TacticalReloadFrame = 45;
+	Weapon[23].TacticalReloadFrame = 57;
 	Weapon[23].SoundID_Reload = -1;
 	Weapon[23].SoundID_Tactical = -1;
 
@@ -1519,8 +1519,8 @@ void ParameterInfo::InitInfo()
 	Weapon[24].my = 6.0f;						// 1인칭 손 위치 Y
 	Weapon[24].mz = 29.0f;						// 1인칭 손 위치 Z
 	Weapon[24].flashx = 9.0f;					// 총구 화염 위치 X
-	Weapon[24].flashy = 17.0f;					// 총구 화염 위치 Y
-	Weapon[24].flashz = 100.0f;					// 총구 화염 위치 Z
+	Weapon[24].flashy = 16.0f;					// 총구 화염 위치 Y
+	Weapon[24].flashz = 98.0f;					// 총구 화염 위치 Z
 	Weapon[24].yakkyou_px = 10.0f;					// 탄피 배출 위치 X
 	Weapon[24].yakkyou_py = 12.0f;					// 탄피 배출 위치 Y
 	Weapon[24].yakkyou_pz = 40.0f;					// 탄피 배출 위치 Z
@@ -1532,7 +1532,7 @@ void ParameterInfo::InitInfo()
 	Weapon[24].scopemode = 2;					// 스코프 모드
 	Weapon[24].size = 7.0f;						// 3인칭 모델 크기
 	Weapon[24].soundid = 14;					// 발사음 ID
-	Weapon[24].soundvolume = 80;					// 발사음 크기
+	Weapon[24].soundvolume = 80;				// 발사음 크기
 	Weapon[24].silencer = true;					// 소음기 여부
 	Weapon[24].WeaponP = 0;						// 무기 종류
 	Weapon[24].ChangeWeaponID = 9;					// 발사모드 전환 시 바뀔 무기 ID
@@ -1540,7 +1540,7 @@ void ParameterInfo::InitInfo()
 	Weapon[24].pellet = 1;						// 샷건 펠릿 수
 	Weapon[24].is_shell_reload = false;				// 셸 단위 재장전 여부
 	Weapon[24].bHasChamber = true;
-	Weapon[24].TacticalReloadFrame = 50;
+	Weapon[24].TacticalReloadFrame = 51;
 	Weapon[24].SoundID_Reload = -1;
 	Weapon[24].SoundID_Tactical = -1;
 
@@ -1552,7 +1552,7 @@ void ParameterInfo::InitInfo()
 	Weapon[25].blazings = 10;					// 연사 속도
 	Weapon[25].speed = 9;						// 탄속
 	Weapon[25].nbsmax = 8;						// 최대 장탄수
-	Weapon[25].reloads = 15;					// 재장전 시간
+	Weapon[25].reloads = 20;					// 재장전 시간
 	Weapon[25].reaction = 20;					// 반동
 	Weapon[25].ErrorRangeMIN = 4;					// 최소 명중률 오차
 	Weapon[25].ErrorRangeMAX = 23;					// 최대 명중률 오차
@@ -1560,7 +1560,7 @@ void ParameterInfo::InitInfo()
 	Weapon[25].my = 8.0f;						// 1인칭 손 위치 Y
 	Weapon[25].mz = 28.0f;						// 1인칭 손 위치 Z
 	Weapon[25].flashx = 9.0f;					// 총구 화염 위치 X
-	Weapon[25].flashy = 18.0f;					// 총구 화염 위치 Y
+	Weapon[25].flashy = 17.0f;					// 총구 화염 위치 Y
 	Weapon[25].flashz = 106.0f;					// 총구 화염 위치 Z
 	Weapon[25].yakkyou_px = 8.0f;					// 탄피 배출 위치 X
 	Weapon[25].yakkyou_py = 11.0f;					// 탄피 배출 위치 Y
@@ -1573,7 +1573,7 @@ void ParameterInfo::InitInfo()
 	Weapon[25].scopemode = 0;					// 스코프 모드
 	Weapon[25].size = 7.0f;						// 3인칭 모델 크기
 	Weapon[25].soundid = 31;						// 발사음 ID
-	Weapon[25].soundvolume = 90;					// 발사음 크기
+	Weapon[25].soundvolume = 90;				// 발사음 크기
 	Weapon[25].silencer = false;					// 소음기 여부
 	Weapon[25].WeaponP = 0;						// 무기 종류
 	Weapon[25].ChangeWeaponID = 68;					// 발사모드 전환 시 바뀔 무기 ID
@@ -1593,7 +1593,7 @@ void ParameterInfo::InitInfo()
 	Weapon[26].blazings = 5;					// 연사 속도
 	Weapon[26].speed = 10;						// 탄속
 	Weapon[26].nbsmax = 25;						// 최대 장탄수
-	Weapon[26].reloads = 72;					// 재장전 시간
+	Weapon[26].reloads = 79;					// 재장전 시간
 	Weapon[26].reaction = 7;					// 반동
 	Weapon[26].ErrorRangeMIN = 0;					// 최소 명중률 오차
 	Weapon[26].ErrorRangeMAX = 19;					// 최대 명중률 오차
@@ -1601,8 +1601,8 @@ void ParameterInfo::InitInfo()
 	Weapon[26].my = 5.0f;						// 1인칭 손 위치 Y
 	Weapon[26].mz = 29.0f;						// 1인칭 손 위치 Z
 	Weapon[26].flashx = 9.0f;					// 총구 화염 위치 X
-	Weapon[26].flashy = 16.0f;					// 총구 화염 위치 Y
-	Weapon[26].flashz = 82.0f;					// 총구 화염 위치 Z
+	Weapon[26].flashy = 16.5f;					// 총구 화염 위치 Y
+	Weapon[26].flashz = 80.0f;					// 총구 화염 위치 Z
 	Weapon[26].yakkyou_px = 8.0f;					// 탄피 배출 위치 X
 	Weapon[26].yakkyou_py = 11.0f;					// 탄피 배출 위치 Y
 	Weapon[26].yakkyou_pz = 41.0f;					// 탄피 배출 위치 Z
@@ -1614,7 +1614,7 @@ void ParameterInfo::InitInfo()
 	Weapon[26].scopemode = 3;					// 스코프 모드
 	Weapon[26].size = 7.0f;						// 3인칭 모델 크기
 	Weapon[26].soundid = 33;					// 발사음 ID
-	Weapon[26].soundvolume = 80;					// 발사음 크기
+	Weapon[26].soundvolume = 80;				// 발사음 크기
 	Weapon[26].silencer = true;					// 소음기 여부
 	Weapon[26].WeaponP = 0;						// 무기 종류
 	Weapon[26].ChangeWeaponID = -1;					// 발사모드 전환 시 바뀔 무기 ID
@@ -1622,7 +1622,7 @@ void ParameterInfo::InitInfo()
 	Weapon[26].pellet = 1;						// 샷건 펠릿 수
 	Weapon[26].is_shell_reload = false;				// 셸 단위 재장전 여부
 	Weapon[26].bHasChamber = true;
-	Weapon[26].TacticalReloadFrame = 46;
+	Weapon[26].TacticalReloadFrame = 57;
 	Weapon[26].SoundID_Reload = -1;
 	Weapon[26].SoundID_Tactical = -1;
 
@@ -1634,7 +1634,7 @@ void ParameterInfo::InitInfo()
 	Weapon[27].blazings = 10;        				// 연사 속도
 	Weapon[27].speed = 80;           				// 탄속
 	Weapon[27].nbsmax = 20;          				// 최대 장탄수
-	Weapon[27].reloads = 86;         				// 재장전 시간
+	Weapon[27].reloads = 84;         				// 재장전 시간
 	Weapon[27].reaction = 15;         				// 반동
 	Weapon[27].ErrorRangeMIN = 0;    				// 최소 명중률 오차
 	Weapon[27].ErrorRangeMAX = 19;   				// 최대 명중률 오차
@@ -1642,8 +1642,8 @@ void ParameterInfo::InitInfo()
 	Weapon[27].my = 7.0f;            				// 1인칭 손 위치 Y
 	Weapon[27].mz = 28.0f;           				// 1인칭 손 위치 Z
 	Weapon[27].flashx = 9.0f;        				// 총구 화염 위치 X
-	Weapon[27].flashy = 18.0f;       				// 총구 화염 위치 Y
-	Weapon[27].flashz = 100.0f;       				// 총구 화염 위치 Z
+	Weapon[27].flashy = 17.0f;       				// 총구 화염 위치 Y
+	Weapon[27].flashz = 99.0f;       				// 총구 화염 위치 Z
 	Weapon[27].yakkyou_px = 10.0f;   				// 탄피 배출 위치 X
 	Weapon[27].yakkyou_py = 12.0f;   				// 탄피 배출 위치 Y
 	Weapon[27].yakkyou_pz = 40.0f;   				// 탄피 배출 위치 Z
@@ -1655,7 +1655,7 @@ void ParameterInfo::InitInfo()
 	Weapon[27].scopemode = 6;        				// 스코프 모드
 	Weapon[27].size = 7.0f;          				// 3인칭 모델 크기
 	Weapon[27].soundid = 16;          				// 발사음 ID
-	Weapon[27].soundvolume = 90;     				// 발사음 크기
+	Weapon[27].soundvolume = 80;     				// 발사음 크기
 	Weapon[27].silencer = false;     				// 소음기 여부
 	Weapon[27].WeaponP = 0;          				// 무기 종류
 	Weapon[27].ChangeWeaponID = -1;  				// 발사모드 전환 시 바뀔 무기 ID
@@ -1675,7 +1675,7 @@ void ParameterInfo::InitInfo()
 	Weapon[28].blazings = 5;					// 연사 속도
 	Weapon[28].speed = 11;						// 탄속
 	Weapon[28].nbsmax = 30;						// 최대 장탄수
-	Weapon[28].reloads = 69;					// 재장전 시간
+	Weapon[28].reloads = 79;					// 재장전 시간
 	Weapon[28].reaction = 6;					// 반동
 	Weapon[28].ErrorRangeMIN = 0;					// 최소 명중률 오차
 	Weapon[28].ErrorRangeMAX = 15;					// 최대 명중률 오차
@@ -1683,8 +1683,8 @@ void ParameterInfo::InitInfo()
 	Weapon[28].my = 7.0f;						// 1인칭 손 위치 Y
 	Weapon[28].mz = 29.0f;						// 1인칭 손 위치 Z
 	Weapon[28].flashx = 9.0f;					// 총구 화염 위치 X
-	Weapon[28].flashy = 17.0f;					// 총구 화염 위치 Y
-	Weapon[28].flashz = 68.0f;					// 총구 화염 위치 Z
+	Weapon[28].flashy = 16.5f;					// 총구 화염 위치 Y
+	Weapon[28].flashz = 65.0f;					// 총구 화염 위치 Z
 	Weapon[28].yakkyou_px = 8.0f;					// 탄피 배출 위치 X
 	Weapon[28].yakkyou_py = 11.0f;					// 탄피 배출 위치 Y
 	Weapon[28].yakkyou_pz = 25.0f;					// 탄피 배출 위치 Z
@@ -1696,7 +1696,7 @@ void ParameterInfo::InitInfo()
 	Weapon[28].scopemode = 2;        				// 스코프 모드
 	Weapon[28].size = 7.0f;          				// 3인칭 모델 크기
 	Weapon[28].soundid = 29;          				// 발사음 ID
-	Weapon[28].soundvolume = 85;     				// 발사음 크기
+	Weapon[28].soundvolume = 80;     				// 발사음 크기
 	Weapon[28].silencer = false;     				// 소음기 여부
 	Weapon[28].WeaponP = 0;          				// 무기 종류
 	Weapon[28].ChangeWeaponID = 81;  				// 발사모드 전환 시 바뀔 무기 ID
@@ -1704,7 +1704,7 @@ void ParameterInfo::InitInfo()
 	Weapon[28].pellet = 1;           				// 샷건 펠릿 수
 	Weapon[28].is_shell_reload = false;				// 셸 단위 재장전 여부
 	Weapon[28].bHasChamber = true;
-	Weapon[28].TacticalReloadFrame = 45;
+	Weapon[28].TacticalReloadFrame = 57;
 	Weapon[28].SoundID_Reload = -1;
 	Weapon[28].SoundID_Tactical = -1;
 
@@ -1716,7 +1716,7 @@ void ParameterInfo::InitInfo()
 	Weapon[29].blazings = 4;					// 연사 속도
 	Weapon[29].speed = 11;						// 탄속
 	Weapon[29].nbsmax = 35;						// 최대 장탄수
-	Weapon[29].reloads = 84;					// 재장전 시간
+	Weapon[29].reloads = 89;					// 재장전 시간
 	Weapon[29].reaction = 9;					// 반동
 	Weapon[29].ErrorRangeMIN = 0;					// 최소 명중률 오차
 	Weapon[29].ErrorRangeMAX = 20;					// 최대 명중률 오차
@@ -1724,8 +1724,8 @@ void ParameterInfo::InitInfo()
 	Weapon[29].my = 9.0f;						// 1인칭 손 위치 Y
 	Weapon[29].mz = 30.0f;						// 1인칭 손 위치 Z
 	Weapon[29].flashx = 9.0f;					// 총구 화염 위치 X
-	Weapon[29].flashy = 18.0f;					// 총구 화염 위치 Y
-	Weapon[29].flashz = 95.0f;					// 총구 화염 위치 Z
+	Weapon[29].flashy = 17.0f;					// 총구 화염 위치 Y
+	Weapon[29].flashz = 96.0f;					// 총구 화염 위치 Z
 	Weapon[29].yakkyou_px = 9.0f;					// 탄피 배출 위치 X
 	Weapon[29].yakkyou_py = 12.0f;					// 탄피 배출 위치 Y
 	Weapon[29].yakkyou_pz = 41.0f;					// 탄피 배출 위치 Z
@@ -1737,7 +1737,7 @@ void ParameterInfo::InitInfo()
 	Weapon[29].scopemode = 0;					// 스코프 모드
 	Weapon[29].size = 7.0f;						// 3인칭 모델 크기
 	Weapon[29].soundid = 19;						// 발사음 ID
-	Weapon[29].soundvolume = 90;					// 발사음 크기
+	Weapon[29].soundvolume = 90;				// 발사음 크기
 	Weapon[29].silencer = false;					// 소음기 여부
 	Weapon[29].WeaponP = 0;						// 무기 종류
 	Weapon[29].ChangeWeaponID = -1;					// 발사모드 전환 시 바뀔 무기 ID
@@ -1745,7 +1745,7 @@ void ParameterInfo::InitInfo()
 	Weapon[29].pellet = 1;						// 샷건 펠릿 수
 	Weapon[29].is_shell_reload = false;				// 셸 단위 재장전 여부
 	Weapon[29].bHasChamber = true;
-	Weapon[29].TacticalReloadFrame = 56;
+	Weapon[29].TacticalReloadFrame = 64;
 	Weapon[29].SoundID_Reload = -1;
 	Weapon[29].SoundID_Tactical = -1;
 
@@ -1757,7 +1757,7 @@ void ParameterInfo::InitInfo()
 	Weapon[30].blazings = 4.5;					// 연사 속도
 	Weapon[30].speed = 11;						// 탄속
 	Weapon[30].nbsmax = 100;					// 최대 장탄수
-	Weapon[30].reloads = 168;					// 재장전 시간
+	Weapon[30].reloads = 167;					// 재장전 시간
 	Weapon[30].reaction = 8;					// 반동
 	Weapon[30].ErrorRangeMIN = 0;					// 최소 명중률 오차
 	Weapon[30].ErrorRangeMAX = 20;					// 최대 명중률 오차
@@ -1765,8 +1765,8 @@ void ParameterInfo::InitInfo()
 	Weapon[30].my = 7.0f;						// 1인칭 손 위치 Y
 	Weapon[30].mz = 29.0f;						// 1인칭 손 위치 Z
 	Weapon[30].flashx = 9.0f;					// 총구 화염 위치 X
-	Weapon[30].flashy = 19.0f;					// 총구 화염 위치 Y
-	Weapon[30].flashz = 103.0f;					// 총구 화염 위치 Z
+	Weapon[30].flashy = 17.0f;					// 총구 화염 위치 Y
+	Weapon[30].flashz = 104.0f;					// 총구 화염 위치 Z
 	Weapon[30].yakkyou_px = 9.0f;					// 탄피 배출 위치 X
 	Weapon[30].yakkyou_py = 11.0f;					// 탄피 배출 위치 Y
 	Weapon[30].yakkyou_pz = 45.0f;					// 탄피 배출 위치 Z
@@ -1778,7 +1778,7 @@ void ParameterInfo::InitInfo()
 	Weapon[30].scopemode = 0;					// 스코프 모드
 	Weapon[30].size = 7.0f;						// 3인칭 모델 크기
 	Weapon[30].soundid = 3;						// 발사음 ID
-	Weapon[30].soundvolume = 85;					// 발사음 크기
+	Weapon[30].soundvolume = 90;				// 발사음 크기
 	Weapon[30].silencer = false;					// 소음기 여부
 	Weapon[30].WeaponP = 0;						// 무기 종류
 	Weapon[30].ChangeWeaponID = -1;					// 발사모드 전환 시 바뀔 무기 ID
@@ -1806,7 +1806,7 @@ void ParameterInfo::InitInfo()
 	Weapon[31].my = 8.0f;						// 1인칭 손 위치 Y
 	Weapon[31].mz = 30.0f;						// 1인칭 손 위치 Z
 	Weapon[31].flashx = 9.0f;					// 총구 화염 위치 X
-	Weapon[31].flashy = 17.0f;					// 총구 화염 위치 Y
+	Weapon[31].flashy = 16.0f;					// 총구 화염 위치 Y
 	Weapon[31].flashz = 106.0f;					// 총구 화염 위치 Z
 	Weapon[31].yakkyou_px = 10.0f;					// 탄피 배출 위치 X
 	Weapon[31].yakkyou_py = 12.0f;					// 탄피 배출 위치 Y
@@ -1819,7 +1819,7 @@ void ParameterInfo::InitInfo()
 	Weapon[31].scopemode = 1;					// 스코프 모드
 	Weapon[31].size = 7.0f;						// 3인칭 모델 크기
 	Weapon[31].soundid = 20;						// 발사음 ID
-	Weapon[31].soundvolume = 85;					// 발사음 크기
+	Weapon[31].soundvolume = 90;				// 발사음 크기
 	Weapon[31].silencer = false;					// 소음기 여부
 	Weapon[31].WeaponP = 0;						// 무기 종류
 	Weapon[31].ChangeWeaponID = 32;					// 발사모드 전환 시 바뀔 무기 ID
@@ -1827,7 +1827,7 @@ void ParameterInfo::InitInfo()
 	Weapon[31].pellet = 1;						// 샷건 펠릿 수
 	Weapon[31].is_shell_reload = false;				// 셸 단위 재장전 여부
 	Weapon[31].bHasChamber = true;
-	Weapon[31].TacticalReloadFrame = 50;
+	Weapon[31].TacticalReloadFrame = 51;
 	Weapon[31].SoundID_Reload = -1;
 	Weapon[31].SoundID_Tactical = -1;
 
@@ -1847,7 +1847,7 @@ void ParameterInfo::InitInfo()
 	Weapon[32].my = 8.0f;						// 1인칭 손 위치 Y
 	Weapon[32].mz = 30.0f;						// 1인칭 손 위치 Z
 	Weapon[32].flashx = 9.0f;					// 총구 화염 위치 X
-	Weapon[32].flashy = 18.0f;					// 총구 화염 위치 Y
+	Weapon[32].flashy = 16.0f;					// 총구 화염 위치 Y
 	Weapon[32].flashz = 126.0f;					// 총구 화염 위치 Z
 	Weapon[32].yakkyou_px = 10.0f;					// 탄피 배출 위치 X
 	Weapon[32].yakkyou_py = 12.0f;					// 탄피 배출 위치 Y
@@ -1860,7 +1860,7 @@ void ParameterInfo::InitInfo()
 	Weapon[32].scopemode = 1;					// 스코프 모드
 	Weapon[32].size = 7.0f;						// 3인칭 모델 크기
 	Weapon[32].soundid = 21;					// 발사음 ID
-	Weapon[32].soundvolume = 80;					// 발사음 크기
+	Weapon[32].soundvolume = 80;				// 발사음 크기
 	Weapon[32].silencer = true;					// 소음기 여부
 	Weapon[32].WeaponP = 0;						// 무기 종류
 	Weapon[32].ChangeWeaponID = 31;					// 발사모드 전환 시 바뀔 무기 ID
@@ -1868,7 +1868,7 @@ void ParameterInfo::InitInfo()
 	Weapon[32].pellet = 1;						// 샷건 펠릿 수
 	Weapon[32].is_shell_reload = false;				// 셸 단위 재장전 여부
 	Weapon[32].bHasChamber = true;
-	Weapon[32].TacticalReloadFrame = 50;
+	Weapon[32].TacticalReloadFrame = 51;
 	Weapon[32].SoundID_Reload = -1;
 	Weapon[32].SoundID_Tactical = -1;
 
@@ -1880,7 +1880,7 @@ void ParameterInfo::InitInfo()
 	Weapon[33].blazings = 4;					// 연사 속도
 	Weapon[33].speed = 10;						// 탄속
 	Weapon[33].nbsmax = 32;						// 최대 장탄수
-	Weapon[33].reloads = 68;					// 재장전 시간
+	Weapon[33].reloads = 67;					// 재장전 시간
 	Weapon[33].reaction = 5;					// 반동
 	Weapon[33].ErrorRangeMIN = 0;					// 최소 명중률 오차
 	Weapon[33].ErrorRangeMAX = 25;					// 최대 명중률 오차
@@ -1888,7 +1888,7 @@ void ParameterInfo::InitInfo()
 	Weapon[33].my = 7.0f;						// 1인칭 손 위치 Y
 	Weapon[33].mz = 28.0f;						// 1인칭 손 위치 Z
 	Weapon[33].flashx = 9.0f;					// 총구 화염 위치 X
-	Weapon[33].flashy = 19.0f;					// 총구 화염 위치 Y
+	Weapon[33].flashy = 18.0f;					// 총구 화염 위치 Y
 	Weapon[33].flashz = 83.0f;					// 총구 화염 위치 Z
 	Weapon[33].yakkyou_px = 8.0f;					// 탄피 배출 위치 X
 	Weapon[33].yakkyou_py = 12.0f;					// 탄피 배출 위치 Y
@@ -1901,7 +1901,7 @@ void ParameterInfo::InitInfo()
 	Weapon[33].scopemode = 0;					// 스코프 모드
 	Weapon[33].size = 7.0f;						// 3인칭 모델 크기
 	Weapon[33].soundid = 7;						// 발사음 ID
-	Weapon[33].soundvolume = 85;					// 발사음 크기
+	Weapon[33].soundvolume = 90;				// 발사음 크기
 	Weapon[33].silencer = false;					// 소음기 여부
 	Weapon[33].WeaponP = 0;						// 무기 종류
 	Weapon[33].ChangeWeaponID = -1;					// 발사모드 전환 시 바뀔 무기 ID
@@ -1921,7 +1921,7 @@ void ParameterInfo::InitInfo()
 	Weapon[34].blazings = 4;					// 연사 속도
 	Weapon[34].speed = 10;						// 탄속
 	Weapon[34].nbsmax = 30;						// 최대 장탄수
-	Weapon[34].reloads = 67;					// 재장전 시간
+	Weapon[34].reloads = 79;					// 재장전 시간
 	Weapon[34].reaction = 7;					// 반동
 	Weapon[34].ErrorRangeMIN = 0;					// 최소 명중률 오차
 	Weapon[34].ErrorRangeMAX = 19;					// 최대 명중률 오차
@@ -1930,7 +1930,7 @@ void ParameterInfo::InitInfo()
 	Weapon[34].mz = 35.0f;						// 1인칭 손 위치 Z
 	Weapon[34].flashx = 9.0f;					// 총구 화염 위치 X
 	Weapon[34].flashy = 16.0f;					// 총구 화염 위치 Y
-	Weapon[34].flashz = 60.0f;					// 총구 화염 위치 Z
+	Weapon[34].flashz = 59.0f;					// 총구 화염 위치 Z
 	Weapon[34].yakkyou_px = 9.0f;					// 탄피 배출 위치 X
 	Weapon[34].yakkyou_py = 12.0f;					// 탄피 배출 위치 Y
 	Weapon[34].yakkyou_pz = 35.0f;					// 탄피 배출 위치 Z
@@ -1942,7 +1942,7 @@ void ParameterInfo::InitInfo()
 	Weapon[34].scopemode = 3;					// 스코프 모드
 	Weapon[34].size = 7.0f;						// 3인칭 모델 크기
 	Weapon[34].soundid = 27;						// 발사음 ID
-	Weapon[34].soundvolume = 90;					// 발사음 크기
+	Weapon[34].soundvolume = 90;				// 발사음 크기
 	Weapon[34].silencer = false;					// 소음기 여부
 	Weapon[34].WeaponP = 0;						// 무기 종류
 	Weapon[34].ChangeWeaponID = -1;					// 발사모드 전환 시 바뀔 무기 ID
@@ -1950,7 +1950,7 @@ void ParameterInfo::InitInfo()
 	Weapon[34].pellet = 1;						// 샷건 펠릿 수
 	Weapon[34].is_shell_reload = false;				// 셸 단위 재장전 여부
 	Weapon[34].bHasChamber = true;
-	Weapon[34].TacticalReloadFrame = 44;
+	Weapon[34].TacticalReloadFrame = 57;
 	Weapon[34].SoundID_Reload = -1;
 	Weapon[34].SoundID_Tactical = -1;
 
@@ -1970,7 +1970,7 @@ void ParameterInfo::InitInfo()
 	Weapon[35].my = 6.0f;						// 1인칭 손 위치 Y
 	Weapon[35].mz = 29.0f;						// 1인칭 손 위치 Z
 	Weapon[35].flashx = 9.0f;					// 총구 화염 위치 X
-	Weapon[35].flashy = 17.0f;					// 총구 화염 위치 Y
+	Weapon[35].flashy = 14.0f;					// 총구 화염 위치 Y
 	Weapon[35].flashz = 97.0f;					// 총구 화염 위치 Z
 	Weapon[35].yakkyou_px = 8.0f;					// 탄피 배출 위치 X
 	Weapon[35].yakkyou_py = 11.0f;					// 탄피 배출 위치 Y
@@ -1983,7 +1983,7 @@ void ParameterInfo::InitInfo()
 	Weapon[35].scopemode = 0;					// 스코프 모드
 	Weapon[35].size = 7.0f;						// 3인칭 모델 크기
 	Weapon[35].soundid = 30;						// 발사음 ID
-	Weapon[35].soundvolume = 85;					// 발사음 크기
+	Weapon[35].soundvolume = 90;				// 발사음 크기
 	Weapon[35].silencer = false;					// 소음기 여부
 	Weapon[35].WeaponP = 0;						// 무기 종류
 	Weapon[35].ChangeWeaponID = -1;					// 발사모드 전환 시 바뀔 무기 ID
@@ -1991,7 +1991,7 @@ void ParameterInfo::InitInfo()
 	Weapon[35].pellet = 6;						// 샷건 펠릿 수
 	Weapon[35].is_shell_reload = false;				// 셸 단위 재장전 여부
 	Weapon[35].bHasChamber = true;
-	Weapon[35].TacticalReloadFrame = 56;
+	Weapon[35].TacticalReloadFrame = 57;
 	Weapon[35].SoundID_Reload = -1;
 	Weapon[35].SoundID_Tactical = -1;
 
@@ -2003,7 +2003,7 @@ void ParameterInfo::InitInfo()
 	Weapon[36].blazings = 25;					// 연사 속도
 	Weapon[36].speed = 80;						// 탄속
 	Weapon[36].nbsmax = 15;						// 최대 장탄수
-	Weapon[36].reloads = 5;					// 재장전 시간
+	Weapon[36].reloads = 10;					// 재장전 시간
 	Weapon[36].reaction = 10;					// 반동
 	Weapon[36].ErrorRangeMIN = 0;					// 최소 명중률 오차
 	Weapon[36].ErrorRangeMAX = 20;					// 최대 명중률 오차
@@ -2011,8 +2011,8 @@ void ParameterInfo::InitInfo()
 	Weapon[36].my = 4.0f;						// 1인칭 손 위치 Y
 	Weapon[36].mz = 18.0f;						// 1인칭 손 위치 Z
 	Weapon[36].flashx = 9.0f;					// 총구 화염 위치 X
-	Weapon[36].flashy = 18.0f;					// 총구 화염 위치 Y
-	Weapon[36].flashz = 103.0f;					// 총구 화염 위치 Z
+	Weapon[36].flashy = 16.5f;					// 총구 화염 위치 Y
+	Weapon[36].flashz = 101.0f;					// 총구 화염 위치 Z
 	Weapon[36].yakkyou_px = 8.0f;					// 탄피 배출 위치 X
 	Weapon[36].yakkyou_py = 11.0f;					// 탄피 배출 위치 Y
 	Weapon[36].yakkyou_pz = 42.0f;					// 탄피 배출 위치 Z
@@ -2024,7 +2024,7 @@ void ParameterInfo::InitInfo()
 	Weapon[36].scopemode = 4;					// 스코프 모드
 	Weapon[36].size = 7.0f;						// 3인칭 모델 크기
 	Weapon[36].soundid = 11;						// 발사음 ID
-	Weapon[36].soundvolume = 90;					// 발사음 크기
+	Weapon[36].soundvolume = 90;				// 발사음 크기
 	Weapon[36].silencer = false;					// 소음기 여부
 	Weapon[36].WeaponP = 0;						// 무기 종류
 	Weapon[36].ChangeWeaponID = -1;					// 발사모드 전환 시 바뀔 무기 ID
@@ -2044,7 +2044,7 @@ void ParameterInfo::InitInfo()
 	Weapon[37].blazings = 5.5;					// 연사 속도
 	Weapon[37].speed = 11;						// 탄속
 	Weapon[37].nbsmax = 30;						// 최대 장탄수
-	Weapon[37].reloads = 79;					// 재장전 시간
+	Weapon[37].reloads = 78;					// 재장전 시간
 	Weapon[37].reaction = 7;					// 반동
 	Weapon[37].ErrorRangeMIN = 0;					// 최소 명중률 오차
 	Weapon[37].ErrorRangeMAX = 17;					// 최대 명중률 오차
@@ -2052,7 +2052,7 @@ void ParameterInfo::InitInfo()
 	Weapon[37].my = 5.0f;						// 1인칭 손 위치 Y
 	Weapon[37].mz = 28.0f;						// 1인칭 손 위치 Z
 	Weapon[37].flashx = 9.0f;					// 총구 화염 위치 X
-	Weapon[37].flashy = 15.0f;					// 총구 화염 위치 Y
+	Weapon[37].flashy = 14.5f;					// 총구 화염 위치 Y
 	Weapon[37].flashz = 75.0f;					// 총구 화염 위치 Z
 	Weapon[37].yakkyou_px = 10.0f;					// 탄피 배출 위치 X
 	Weapon[37].yakkyou_py = 12.0f;					// 탄피 배출 위치 Y
@@ -2065,7 +2065,7 @@ void ParameterInfo::InitInfo()
 	Weapon[37].scopemode = 4;					// 스코프 모드
 	Weapon[37].size = 7.0f;						// 3인칭 모델 크기
 	Weapon[37].soundid = 25;						// 발사음 ID
-	Weapon[37].soundvolume = 85;					// 발사음 크기
+	Weapon[37].soundvolume = 90;				// 발사음 크기
 	Weapon[37].silencer = false;					// 소음기 여부
 	Weapon[37].WeaponP = 0;						// 무기 종류
 	Weapon[37].ChangeWeaponID = 38;					// 발사모드 전환 시 바뀔 무기 ID
@@ -2085,7 +2085,7 @@ void ParameterInfo::InitInfo()
 	Weapon[38].blazings = 5.5;					// 연사 속도
 	Weapon[38].speed = 11;						// 탄속
 	Weapon[38].nbsmax = 30;						// 최대 장탄수
-	Weapon[38].reloads = 79;					// 재장전 시간
+	Weapon[38].reloads = 78;					// 재장전 시간
 	Weapon[38].reaction = 7;					// 반동
 	Weapon[38].ErrorRangeMIN = 0;					// 최소 명중률 오차
 	Weapon[38].ErrorRangeMAX = 17;					// 최대 명중률 오차
@@ -2093,8 +2093,8 @@ void ParameterInfo::InitInfo()
 	Weapon[38].my = 5.0f;						// 1인칭 손 위치 Y
 	Weapon[38].mz = 28.0f;						// 1인칭 손 위치 Z
 	Weapon[38].flashx = 9.0f;					// 총구 화염 위치 X
-	Weapon[38].flashy = 15.0f;					// 총구 화염 위치 Y
-	Weapon[38].flashz = 93.0f;					// 총구 화염 위치 Z
+	Weapon[38].flashy = 14.5f;					// 총구 화염 위치 Y
+	Weapon[38].flashz = 92.0f;					// 총구 화염 위치 Z
 	Weapon[38].yakkyou_px = 10.0f;					// 탄피 배출 위치 X
 	Weapon[38].yakkyou_py = 12.0f;					// 탄피 배출 위치 Y
 	Weapon[38].yakkyou_pz = 40.0f;					// 탄피 배출 위치 Z
@@ -2106,7 +2106,7 @@ void ParameterInfo::InitInfo()
 	Weapon[38].scopemode = 4;					// 스코프 모드
 	Weapon[38].size = 7.0f;						// 3인칭 모델 크기
 	Weapon[38].soundid = 26;					// 발사음 ID
-	Weapon[38].soundvolume = 80;					// 발사음 크기
+	Weapon[38].soundvolume = 80;				// 발사음 크기
 	Weapon[38].silencer = true;					// 소음기 여부
 	Weapon[38].WeaponP = 0;						// 무기 종류
 	Weapon[38].ChangeWeaponID = 37;					// 발사모드 전환 시 바뀔 무기 ID
@@ -2126,7 +2126,7 @@ void ParameterInfo::InitInfo()
 	Weapon[39].blazings = 13;					// 연사 속도
 	Weapon[39].speed = 255;						// 탄속
 	Weapon[39].nbsmax = 10;						// 최대 장탄수
-	Weapon[39].reloads = 85;					// 재장전 시간
+	Weapon[39].reloads = 84;					// 재장전 시간
 	Weapon[39].reaction = 15;					// 반동
 	Weapon[39].ErrorRangeMIN = 0;					// 최소 명중률 오차
 	Weapon[39].ErrorRangeMAX = 19;					// 최대 명중률 오차
@@ -2134,8 +2134,8 @@ void ParameterInfo::InitInfo()
 	Weapon[39].my = 5.0f;						// 1인칭 손 위치 Y
 	Weapon[39].mz = 28.0f;						// 1인칭 손 위치 Z
 	Weapon[39].flashx = 9.0f;					// 총구 화염 위치 X
-	Weapon[39].flashy = 17.0f;					// 총구 화염 위치 Y
-	Weapon[39].flashz = 126.0f;					// 총구 화염 위치 Z
+	Weapon[39].flashy = 14.5f;					// 총구 화염 위치 Y
+	Weapon[39].flashz = 125.0f;					// 총구 화염 위치 Z
 	Weapon[39].yakkyou_px = 8.0f;					// 탄피 배출 위치 X
 	Weapon[39].yakkyou_py = 13.0f;					// 탄피 배출 위치 Y
 	Weapon[39].yakkyou_pz = 38.0f;					// 탄피 배출 위치 Z
@@ -2147,7 +2147,7 @@ void ParameterInfo::InitInfo()
 	Weapon[39].scopemode = 5;					// 스코프 모드
 	Weapon[39].size = 7.0f;						// 3인칭 모델 크기
 	Weapon[39].soundid = 15;						// 발사음 ID
-	Weapon[39].soundvolume = 90;					// 발사음 크기
+	Weapon[39].soundvolume = 90;				// 발사음 크기
 	Weapon[39].silencer = false;					// 소음기 여부
 	Weapon[39].WeaponP = 0;						// 무기 종류
 	Weapon[39].ChangeWeaponID = -1;					// 발사모드 전환 시 바뀔 무기 ID
@@ -2155,7 +2155,7 @@ void ParameterInfo::InitInfo()
 	Weapon[39].pellet = 1;						// 샷건 펠릿 수
 	Weapon[39].is_shell_reload = false;				// 셸 단위 재장전 여부
 	Weapon[39].bHasChamber = true;
-	Weapon[39].TacticalReloadFrame = 61;
+	Weapon[39].TacticalReloadFrame = 62;
 	Weapon[39].SoundID_Reload = -1;
 	Weapon[39].SoundID_Tactical = -1;
 
@@ -2175,8 +2175,8 @@ void ParameterInfo::InitInfo()
 	Weapon[40].my = 5.0f;						// 1인칭 손 위치 Y
 	Weapon[40].mz = 28.0f;						// 1인칭 손 위치 Z
 	Weapon[40].flashx = 9.0f;					// 총구 화염 위치 X
-	Weapon[40].flashy = 16.0f;					// 총구 화염 위치 Y
-	Weapon[40].flashz = 115.0f;					// 총구 화염 위치 Z
+	Weapon[40].flashy = 15.0f;					// 총구 화염 위치 Y
+	Weapon[40].flashz = 109.0f;					// 총구 화염 위치 Z
 	Weapon[40].yakkyou_px = 8.0f;					// 탄피 배출 위치 X
 	Weapon[40].yakkyou_py = 13.0f;					// 탄피 배출 위치 Y
 	Weapon[40].yakkyou_pz = 38.0f;					// 탄피 배출 위치 Z
@@ -2188,7 +2188,7 @@ void ParameterInfo::InitInfo()
 	Weapon[40].scopemode = 7;					 // 스코프 모드 (0: 자동, 1:acog, 2:저격, 3:레드닷)
 	Weapon[40].size = 7.0f;						// 3인칭 모델 크기
 	Weapon[40].soundid = 8;						// 발사음 ID (0:mp5,1 :ak47,2 :이글,3 :m249, 4 :AUG, 13 :소음기)
-	Weapon[40].soundvolume = 85;					// 발사음 크기
+	Weapon[40].soundvolume = 90;				// 발사음 크기
 	Weapon[40].silencer = false;					// 소음기 여부
 	Weapon[40].WeaponP = 0;						// 무기 종류 (0: 양손, 1: 한손)
 	Weapon[40].ChangeWeaponID = -1;					// 발사모드 전환 시 바뀔 무기 ID
@@ -2196,7 +2196,7 @@ void ParameterInfo::InitInfo()
 	Weapon[40].pellet = 1;						// 샷건 펠릿 수
 	Weapon[40].is_shell_reload = false;				// 셸 단위 재장전 여부
 	Weapon[40].bHasChamber = true;
-	Weapon[40].TacticalReloadFrame = 65;
+	Weapon[40].TacticalReloadFrame = 66;
 	Weapon[40].SoundID_Reload = -1;
 	Weapon[40].SoundID_Tactical = -1;
 
@@ -2216,7 +2216,7 @@ void ParameterInfo::InitInfo()
 	Weapon[41].my = 5.0f;						// 1인칭 손 위치 Y
 	Weapon[41].mz = 29.0f;						// 1인칭 손 위치 Z
 	Weapon[41].flashx = 9.0f;					// 총구 화염 위치 X
-	Weapon[41].flashy = 16.0f;					// 총구 화염 위치 Y
+	Weapon[41].flashy = 14.5f;					// 총구 화염 위치 Y
 	Weapon[41].flashz = 89.0f;					// 총구 화염 위치 Z
 	Weapon[41].yakkyou_px = 9.0f;					// 탄피 배출 위치 X
 	Weapon[41].yakkyou_py = 12.0f;					// 탄피 배출 위치 Y
@@ -2229,7 +2229,7 @@ void ParameterInfo::InitInfo()
 	Weapon[41].scopemode = 2;					// 스코프 모드
 	Weapon[41].size = 7.0f;						// 3인칭 모델 크기
 	Weapon[41].soundid = 37;						// 발사음 ID
-	Weapon[41].soundvolume = 90;					// 발사음 크기
+	Weapon[41].soundvolume = 90;				// 발사음 크기
 	Weapon[41].silencer = false;					// 소음기 여부
 	Weapon[41].WeaponP = 0;						// 무기 종류
 	Weapon[41].ChangeWeaponID = 42;					// 발사모드 전환 시 바뀔 무기 ID
@@ -2237,7 +2237,7 @@ void ParameterInfo::InitInfo()
 	Weapon[41].pellet = 1;						// 샷건 펠릿 수
 	Weapon[41].is_shell_reload = false;				// 셸 단위 재장전 여부
 	Weapon[41].bHasChamber = true;
-	Weapon[41].TacticalReloadFrame = 50;
+	Weapon[41].TacticalReloadFrame = 51;
 	Weapon[41].SoundID_Reload = -1;
 	Weapon[41].SoundID_Tactical = -1;
 
@@ -2257,8 +2257,8 @@ void ParameterInfo::InitInfo()
 	Weapon[42].my = 5.0f;						// 1인칭 손 위치 Y
 	Weapon[42].mz = 29.0f;						// 1인칭 손 위치 Z
 	Weapon[42].flashx = 9.0f;					// 총구 화염 위치 X
-	Weapon[42].flashy = 16.0f;					// 총구 화염 위치 Y
-	Weapon[42].flashz = 104.0f;					// 총구 화염 위치 Z
+	Weapon[42].flashy = 14.5f;					// 총구 화염 위치 Y
+	Weapon[42].flashz = 103.0f;					// 총구 화염 위치 Z
 	Weapon[42].yakkyou_px = 9.0f;					// 탄피 배출 위치 X
 	Weapon[42].yakkyou_py = 12.0f;					// 탄피 배출 위치 Y
 	Weapon[42].yakkyou_pz = 41.0f;					// 탄피 배출 위치 Z
@@ -2270,7 +2270,7 @@ void ParameterInfo::InitInfo()
 	Weapon[42].scopemode = 2;					// 스코프 모드
 	Weapon[42].size = 7.0f;						// 3인칭 모델 크기
 	Weapon[42].soundid = 38;						// 발사음 ID
-	Weapon[42].soundvolume = 80;					// 발사음 크기
+	Weapon[42].soundvolume = 80;				// 발사음 크기
 	Weapon[42].silencer = true;					// 소음기 여부
 	Weapon[42].WeaponP = 0;						// 무기 종류
 	Weapon[42].ChangeWeaponID = 41;					// 발사모드 전환 시 바뀔 무기 ID
@@ -2278,7 +2278,7 @@ void ParameterInfo::InitInfo()
 	Weapon[42].pellet = 1;						// 샷건 펠릿 수
 	Weapon[42].is_shell_reload = false;				// 셸 단위 재장전 여부
 	Weapon[42].bHasChamber = true;
-	Weapon[42].TacticalReloadFrame = 50;
+	Weapon[42].TacticalReloadFrame = 51;
 	Weapon[42].SoundID_Reload = -1;
 	Weapon[42].SoundID_Tactical = -1;
 
@@ -2290,7 +2290,7 @@ void ParameterInfo::InitInfo()
 	Weapon[43].blazings = 4;						// 연사 속도
 	Weapon[43].speed = 11;						// 탄속
 	Weapon[43].nbsmax = 30;						// 최대 장탄수
-	Weapon[43].reloads = 79;						// 재장전 시간
+	Weapon[43].reloads = 78;						// 재장전 시간
 	Weapon[43].reaction = 6;						// 반동
 	Weapon[43].ErrorRangeMIN = 0;					// 최소 명중률 오차
 	Weapon[43].ErrorRangeMAX = 19;					// 최대 명중률 오차
@@ -2298,8 +2298,8 @@ void ParameterInfo::InitInfo()
 	Weapon[43].my = 5.0f;						// 1인칭 손 위치 Y
 	Weapon[43].mz = 29.0f;						// 1인칭 손 위치 Z
 	Weapon[43].flashx = 9.0f;					// 총구 화염 위치 X
-	Weapon[43].flashy = 16.0f;					// 총구 화염 위치 Y
-	Weapon[43].flashz = 105.0f;					// 총구 화염 위치 Z
+	Weapon[43].flashy = 14.5f;					// 총구 화염 위치 Y
+	Weapon[43].flashz = 103.0f;					// 총구 화염 위치 Z
 	Weapon[43].yakkyou_px = 10.0f;					// 탄피 배출 위치 X
 	Weapon[43].yakkyou_py = 12.0f;					// 탄피 배출 위치 Y
 	Weapon[43].yakkyou_pz = 40.0f;					// 탄피 배출 위치 Z
@@ -2311,7 +2311,7 @@ void ParameterInfo::InitInfo()
 	Weapon[43].scopemode = 5;					// 스코프 모드
 	Weapon[43].size = 7.0f;						// 3인칭 모델 크기
 	Weapon[43].soundid = 41;						// 발사음 ID
-	Weapon[43].soundvolume = 90;					// 발사음 크기
+	Weapon[43].soundvolume = 90;				// 발사음 크기
 	Weapon[43].silencer = false;					// 소음기 여부
 	Weapon[43].WeaponP = 0;						// 무기 종류
 	Weapon[43].ChangeWeaponID = 87;					// 발사모드 전환 시 바뀔 무기 ID
@@ -2319,7 +2319,7 @@ void ParameterInfo::InitInfo()
 	Weapon[43].pellet = 1;						// 샷건 펠릿 수
 	Weapon[43].is_shell_reload = false;				// 셸 단위 재장전 여부
 	Weapon[43].bHasChamber = true;
-	Weapon[43].TacticalReloadFrame = 50;
+	Weapon[43].TacticalReloadFrame = 51;
 	Weapon[43].SoundID_Reload = -1;
 	Weapon[43].SoundID_Tactical = -1;
 
@@ -2339,8 +2339,8 @@ void ParameterInfo::InitInfo()
 	Weapon[44].my = 5.0f;						// 1인칭 손 위치 Y
 	Weapon[44].mz = 29.0f;						// 1인칭 손 위치 Z
 	Weapon[44].flashx = 9.0f;					// 총구 화염 위치 X
-	Weapon[44].flashy = 17.0f;					// 총구 화염 위치 Y
-	Weapon[44].flashz = 82.0f;					// 총구 화염 위치 Z
+	Weapon[44].flashy = 14.5f;					// 총구 화염 위치 Y
+	Weapon[44].flashz = 83.0f;					// 총구 화염 위치 Z
 	Weapon[44].yakkyou_px = 8.0f;					// 탄피 배출 위치 X
 	Weapon[44].yakkyou_py = 11.0f;					// 탄피 배출 위치 Y
 	Weapon[44].yakkyou_pz = 15.0f;					// 탄피 배출 위치 Z
@@ -2352,7 +2352,7 @@ void ParameterInfo::InitInfo()
 	Weapon[44].scopemode = 3;					// 스코프 모드
 	Weapon[44].size = 7.0f;						// 3인칭 모델 크기
 	Weapon[44].soundid = 40;						// 발사음 ID
-	Weapon[44].soundvolume = 90;					// 발사음 크기
+	Weapon[44].soundvolume = 90;				// 발사음 크기
 	Weapon[44].silencer = false;					// 소음기 여부
 	Weapon[44].WeaponP = 0;						// 무기 종류
 	Weapon[44].ChangeWeaponID = 88;					// 발사모드 전환 시 바뀔 무기 ID
@@ -2360,7 +2360,7 @@ void ParameterInfo::InitInfo()
 	Weapon[44].pellet = 1;						// 샷건 펠릿 수
 	Weapon[44].is_shell_reload = false;				// 셸 단위 재장전 여부
 	Weapon[44].bHasChamber = true;
-	Weapon[44].TacticalReloadFrame = 50;
+	Weapon[44].TacticalReloadFrame = 51;
 	Weapon[44].SoundID_Reload = -1;
 	Weapon[44].SoundID_Tactical = -1;
 
@@ -2372,7 +2372,7 @@ void ParameterInfo::InitInfo()
 	Weapon[45].blazings = 5;					// 연사 속도
 	Weapon[45].speed = 11;						// 탄속
 	Weapon[45].nbsmax = 30;						// 최대 장탄수
-	Weapon[45].reloads = 89;					// 재장전 시간
+	Weapon[45].reloads = 91;					// 재장전 시간
 	Weapon[45].reaction = 6;					// 반동
 	Weapon[45].ErrorRangeMIN = 0;					// 최소 명중률 오차
 	Weapon[45].ErrorRangeMAX = 25;					// 최대 명중률 오차
@@ -2393,7 +2393,7 @@ void ParameterInfo::InitInfo()
 	Weapon[45].scopemode = 5;					// 스코프 모드
 	Weapon[45].size = 7.0f;						// 3인칭 모델 크기
 	Weapon[45].soundid = 43;						// 발사음 ID
-	Weapon[45].soundvolume = 80;					// 발사음 크기
+	Weapon[45].soundvolume = 80;				// 발사음 크기
 	Weapon[45].silencer = true;					// 소음기 여부
 	Weapon[45].WeaponP = 0;						// 무기 종류
 	Weapon[45].ChangeWeaponID = -1;					// 발사모드 전환 시 바뀔 무기 ID
@@ -2401,7 +2401,7 @@ void ParameterInfo::InitInfo()
 	Weapon[45].pellet = 1;						// 샷건 펠릿 수
 	Weapon[45].is_shell_reload = false;				// 셸 단위 재장전 여부
 	Weapon[45].bHasChamber = true;
-	Weapon[45].TacticalReloadFrame = 62;
+	Weapon[45].TacticalReloadFrame = 67;
 	Weapon[45].SoundID_Reload = -1;
 	Weapon[45].SoundID_Tactical = -1;
 
@@ -2413,7 +2413,7 @@ void ParameterInfo::InitInfo()
 	Weapon[46].blazings = 4;					// 연사 속도
 	Weapon[46].speed = 11;						// 탄속
 	Weapon[46].nbsmax = 30;						// 최대 장탄수
-	Weapon[46].reloads = 90;					// 재장전 시간
+	Weapon[46].reloads = 91;					// 재장전 시간
 	Weapon[46].reaction = 8;					// 반동
 	Weapon[46].ErrorRangeMIN = 0;					// 최소 명중률 오차
 	Weapon[46].ErrorRangeMAX = 20;					// 최대 명중률 오차
@@ -2421,8 +2421,8 @@ void ParameterInfo::InitInfo()
 	Weapon[46].my = 9.0f;						// 1인칭 손 위치 Y
 	Weapon[46].mz = 31.0f;						// 1인칭 손 위치 Z
 	Weapon[46].flashx = 9.0f;					// 총구 화염 위치 X
-	Weapon[46].flashy = 17.0f;					// 총구 화염 위치 Y
-	Weapon[46].flashz = 67.0f;					// 총구 화염 위치 Z
+	Weapon[46].flashy = 16.0f;					// 총구 화염 위치 Y
+	Weapon[46].flashz = 65.0f;					// 총구 화염 위치 Z
 	Weapon[46].yakkyou_px = 9.0f;					// 탄피 배출 위치 X
 	Weapon[46].yakkyou_py = 12.0f;					// 탄피 배출 위치 Y
 	Weapon[46].yakkyou_pz = 41.0f;					// 탄피 배출 위치 Z
@@ -2434,7 +2434,7 @@ void ParameterInfo::InitInfo()
 	Weapon[46].scopemode = 1;					// 스코프 모드
 	Weapon[46].size = 7.0f;						// 3인칭 모델 크기
 	Weapon[46].soundid = 39;						// 발사음 ID
-	Weapon[46].soundvolume = 90;					// 발사음 크기
+	Weapon[46].soundvolume = 90;				// 발사음 크기
 	Weapon[46].silencer = false;					// 소음기 여부
 	Weapon[46].WeaponP = 0;						// 무기 종류
 	Weapon[46].ChangeWeaponID = 89;					// 발사모드 전환 시 바뀔 무기 ID
@@ -2442,7 +2442,7 @@ void ParameterInfo::InitInfo()
 	Weapon[46].pellet = 3;						// 샷건 펠릿 수
 	Weapon[46].is_shell_reload = false;				// 셸 단위 재장전 여부
 	Weapon[46].bHasChamber = true;
-	Weapon[46].TacticalReloadFrame = 63;
+	Weapon[46].TacticalReloadFrame = 67;
 	Weapon[46].SoundID_Reload = -1;
 	Weapon[46].SoundID_Tactical = -1;
 
@@ -2454,7 +2454,7 @@ void ParameterInfo::InitInfo()
 	Weapon[47].blazings = 3;						// 연사 속도 (값이 작을수록 빠름)
 	Weapon[47].speed = 10;						// 탄속
 	Weapon[47].nbsmax = 30;						// 최대 장탄수
-	Weapon[47].reloads = 71;						// 재장전 시간
+	Weapon[47].reloads = 79;						// 재장전 시간
 	Weapon[47].reaction = 8;						// 반동
 	Weapon[47].ErrorRangeMIN = 0;					// 최소 명중률 오차
 	Weapon[47].ErrorRangeMAX = 25;					// 최대 명중률 오차
@@ -2463,7 +2463,7 @@ void ParameterInfo::InitInfo()
 	Weapon[47].mz = 28.0f;						// 1인칭 손 위치 Z
 	Weapon[47].flashx = 9.0f;					// 총구 화염 위치 X
 	Weapon[47].flashy = 15.0f;					// 총구 화염 위치 Y
-	Weapon[47].flashz = 66.0f;					// 총구 화염 위치 Z
+	Weapon[47].flashz = 62.0f;					// 총구 화염 위치 Z
 	Weapon[47].yakkyou_px = 8.0f;					// 탄피 배출 위치 X
 	Weapon[47].yakkyou_py = 12.0f;					// 탄피 배출 위치 Y
 	Weapon[47].yakkyou_pz = 35.0f;					// 탄피 배출 위치 Z
@@ -2475,7 +2475,7 @@ void ParameterInfo::InitInfo()
 	Weapon[47].scopemode = 1;					// 스코프 모드
 	Weapon[47].size = 7.0f;						// 3인칭 모델 크기
 	Weapon[47].soundid = 44;						// 발사음 ID
-	Weapon[47].soundvolume = 90;					// 발사음 크기
+	Weapon[47].soundvolume = 90;				// 발사음 크기
 	Weapon[47].silencer = false;					// 소음기 여부
 	Weapon[47].WeaponP = 0;						// 무기 종류 (0: 양손, 1: 한손)
 	Weapon[47].ChangeWeaponID = 82;					// 발사모드 전환 시 바뀔 무기 ID
@@ -2483,7 +2483,7 @@ void ParameterInfo::InitInfo()
 	Weapon[47].pellet = 1;						// 샷건 펠릿 수
 	Weapon[47].is_shell_reload = false;				// 셸 단위 재장전 여부
 	Weapon[47].bHasChamber = true;
-	Weapon[47].TacticalReloadFrame = 45;
+	Weapon[47].TacticalReloadFrame = 57;
 	Weapon[47].SoundID_Reload = -1;
 	Weapon[47].SoundID_Tactical = -1;
 
@@ -2495,7 +2495,7 @@ void ParameterInfo::InitInfo()
 	Weapon[48].blazings = 3.5;						// 연사 속도
 	Weapon[48].speed = 10;						// 탄속
 	Weapon[48].nbsmax = 25;						// 최대 장탄수
-	Weapon[48].reloads = 66;						// 재장전 시간
+	Weapon[48].reloads = 67;						// 재장전 시간
 	Weapon[48].reaction = 7;						// 반동
 	Weapon[48].ErrorRangeMIN = 0;					// 최소 명중률 오차
 	Weapon[48].ErrorRangeMAX = 25;					// 최대 명중률 오차
@@ -2503,8 +2503,8 @@ void ParameterInfo::InitInfo()
 	Weapon[48].my = 6.0f;						// 1인칭 손 위치 Y
 	Weapon[48].mz = 38.0f;						// 1인칭 손 위치 Z
 	Weapon[48].flashx = 9.0f;					// 총구 화염 위치 X
-	Weapon[48].flashy = 14.0f;					// 총구 화염 위치 Y
-	Weapon[48].flashz = 60.0f;					// 총구 화염 위치 Z
+	Weapon[48].flashy = 13.0f;					// 총구 화염 위치 Y
+	Weapon[48].flashz = 57.0f;					// 총구 화염 위치 Z
 	Weapon[48].yakkyou_px = 8.0f;					// 탄피 배출 위치 X
 	Weapon[48].yakkyou_py = 13.0f;					// 탄피 배출 위치 Y
 	Weapon[48].yakkyou_pz = 35.0f;					// 탄피 배출 위치 Z
@@ -2516,7 +2516,7 @@ void ParameterInfo::InitInfo()
 	Weapon[48].scopemode = 0;					// 스코프 모드
 	Weapon[48].size = 7.0f;						// 3인칭 모델 크기
 	Weapon[48].soundid = 45;						// 발사음 ID
-	Weapon[48].soundvolume = 85;					// 발사음 크기
+	Weapon[48].soundvolume = 90;				// 발사음 크기
 	Weapon[48].silencer = false;					// 소음기 여부
 	Weapon[48].WeaponP = 0;						// 무기 종류
 	Weapon[48].ChangeWeaponID = 83;					// 발사모드 전환 시 바뀔 무기 ID
@@ -2544,8 +2544,8 @@ void ParameterInfo::InitInfo()
 	Weapon[49].my = 8.0f;						// 1인칭 손 위치 Y
 	Weapon[49].mz = 30.0f;						// 1인칭 손 위치 Z
 	Weapon[49].flashx = 9.0f;					// 총구 화염 위치 X
-	Weapon[49].flashy = 19.0f;					// 총구 화염 위치 Y
-	Weapon[49].flashz = 73.0f;					// 총구 화염 위치 Z
+	Weapon[49].flashy = 18.0f;					// 총구 화염 위치 Y
+	Weapon[49].flashz = 71.0f;					// 총구 화염 위치 Z
 	Weapon[49].yakkyou_px = 8.0f;					// 탄피 배출 위치 X
 	Weapon[49].yakkyou_py = 11.0f;					// 탄피 배출 위치 Y
 	Weapon[49].yakkyou_pz = 42.0f;					// 탄피 배출 위치 Z
@@ -2557,7 +2557,7 @@ void ParameterInfo::InitInfo()
 	Weapon[49].scopemode = 0;					// 스코프 모드
 	Weapon[49].size = 7.0f;						// 3인칭 모델 크기
 	Weapon[49].soundid = 48;						// 발사음 ID
-	Weapon[49].soundvolume = 85;					// 발사음 크기
+	Weapon[49].soundvolume = 90;				// 발사음 크기
 	Weapon[49].silencer = false;					// 소음기 여부
 	Weapon[49].WeaponP = 0;						// 무기 종류
 	Weapon[49].ChangeWeaponID = -1;					// 발사모드 전환 시 바뀔 무기 ID
@@ -2577,7 +2577,7 @@ void ParameterInfo::InitInfo()
 	Weapon[50].blazings = 15;					// 연사 속도
 	Weapon[50].speed = 9;						// 탄속
 	Weapon[50].nbsmax = 2;						// 최대 장탄수
-	Weapon[50].reloads = 70;					// 재장전 시간
+	Weapon[50].reloads = 69;					// 재장전 시간
 	Weapon[50].reaction = 15;					// 반동
 	Weapon[50].ErrorRangeMIN = 0;					// 최소 명중률 오차
 	Weapon[50].ErrorRangeMAX = 27;					// 최대 명중률 오차
@@ -2585,8 +2585,8 @@ void ParameterInfo::InitInfo()
 	Weapon[50].my = 8.0f;						// 1인칭 손 위치 Y
 	Weapon[50].mz = 28.0f;						// 1인칭 손 위치 Z
 	Weapon[50].flashx = 9.0f;					// 총구 화염 위치 X
-	Weapon[50].flashy = 18.0f;					// 총구 화염 위치 Y
-	Weapon[50].flashz = 106.0f;					// 총구 화염 위치 Z
+	Weapon[50].flashy = 15.0f;					// 총구 화염 위치 Y
+	Weapon[50].flashz = 102.0f;					// 총구 화염 위치 Z
 	Weapon[50].yakkyou_px = 8.0f;					// 탄피 배출 위치 X
 	Weapon[50].yakkyou_py = 11.0f;					// 탄피 배출 위치 Y
 	Weapon[50].yakkyou_pz = 42.0f;					// 탄피 배출 위치 Z
@@ -2598,7 +2598,7 @@ void ParameterInfo::InitInfo()
 	Weapon[50].scopemode = 0;					// 스코프 모드
 	Weapon[50].size = 7.0f;						// 3인칭 모델 크기
 	Weapon[50].soundid = 49;						// 발사음 ID
-	Weapon[50].soundvolume = 85;					// 발사음 크기
+	Weapon[50].soundvolume = 90;				// 발사음 크기
 	Weapon[50].silencer = false;					// 소음기 여부
 	Weapon[50].WeaponP = 0;						// 무기 종류
 	Weapon[50].ChangeWeaponID = -1;					// 발사모드 전환 시 바뀔 무기 ID
@@ -2618,7 +2618,7 @@ void ParameterInfo::InitInfo()
 	Weapon[51].blazings = 4;						// 연사 속도
 	Weapon[51].speed = 10;						// 탄속
 	Weapon[51].nbsmax = 20;						// 최대 장탄수
-	Weapon[51].reloads = 67;						// 재장전 시간
+	Weapon[51].reloads = 79;						// 재장전 시간
 	Weapon[51].reaction = 6;						// 반동
 	Weapon[51].ErrorRangeMIN = 0;					// 최소 명중률 오차
 	Weapon[51].ErrorRangeMAX = 20;					// 최대 명중률 오차
@@ -2626,7 +2626,7 @@ void ParameterInfo::InitInfo()
 	Weapon[51].my = 8.0f;						// 1인칭 손 위치 Y
 	Weapon[51].mz = 45.0f;						// 1인칭 손 위치 Z
 	Weapon[51].flashx = 9.0f;					// 총구 화염 위치 X
-	Weapon[51].flashy = 15.0f;					// 총구 화염 위치 Y
+	Weapon[51].flashy = 14.5f;					// 총구 화염 위치 Y
 	Weapon[51].flashz = 82.0f;					// 총구 화염 위치 Z
 	Weapon[51].yakkyou_px = 8.0f;					// 탄피 배출 위치 X
 	Weapon[51].yakkyou_py = 13.0f;					// 탄피 배출 위치 Y
@@ -2639,7 +2639,7 @@ void ParameterInfo::InitInfo()
 	Weapon[51].scopemode = 0;					// 스코프 모드
 	Weapon[51].size = 7.0f;						// 3인칭 모델 크기
 	Weapon[51].soundid = 42;						// 발사음 ID
-	Weapon[51].soundvolume = 80;					// 발사음 크기
+	Weapon[51].soundvolume = 80;				// 발사음 크기
 	Weapon[51].silencer = true;					// 소음기 여부
 	Weapon[51].WeaponP = 0;						// 무기 종류
 	Weapon[51].ChangeWeaponID = 78;					// 발사모드 전환 시 바뀔 무기 ID
@@ -2647,7 +2647,7 @@ void ParameterInfo::InitInfo()
 	Weapon[51].pellet = 1;						// 샷건 펠릿 수
 	Weapon[51].is_shell_reload = false;				// 셸 단위 재장전 여부
 	Weapon[51].bHasChamber = true;
-	Weapon[51].TacticalReloadFrame = 44;
+	Weapon[51].TacticalReloadFrame = 57;
 	Weapon[51].SoundID_Reload = -1;
 	Weapon[51].SoundID_Tactical = -1;
 
@@ -2659,7 +2659,7 @@ void ParameterInfo::InitInfo()
 	Weapon[52].blazings = 3;						// 연사 속도
 	Weapon[52].speed = 10;						// 탄속
 	Weapon[52].nbsmax = 15;						// 최대 장탄수
-	Weapon[52].reloads = 56;						// 재장전 시간
+	Weapon[52].reloads = 55;						// 재장전 시간
 	Weapon[52].reaction = 9;						// 반동
 	Weapon[52].ErrorRangeMIN = 0;					// 최소 명중률 오차
 	Weapon[52].ErrorRangeMAX = 28;					// 최대 명중률 오차
@@ -2668,7 +2668,7 @@ void ParameterInfo::InitInfo()
 	Weapon[52].mz = 58.0f;						// 1인칭 손 위치 Z
 	Weapon[52].flashx = 3.0f;					// 총구 화염 위치 X
 	Weapon[52].flashy = 19.0f;					// 총구 화염 위치 Y
-	Weapon[52].flashz = 76.0f;					// 총구 화염 위치 Z
+	Weapon[52].flashz = 72.0f;					// 총구 화염 위치 Z
 	Weapon[52].yakkyou_px = 2.0f;					// 탄피 배출 위치 X
 	Weapon[52].yakkyou_py = 16.0f;					// 탄피 배출 위치 Y
 	Weapon[52].yakkyou_pz = 52.0f;					// 탄피 배출 위치 Z
@@ -2680,7 +2680,7 @@ void ParameterInfo::InitInfo()
 	Weapon[52].scopemode = 0;					// 스코프 모드
 	Weapon[52].size = 7.0f;						// 3인칭 모델 크기
 	Weapon[52].soundid = 46;						// 발사음 ID
-	Weapon[52].soundvolume = 85;					// 발사음 크기
+	Weapon[52].soundvolume = 90;				// 발사음 크기
 	Weapon[52].silencer = false;					// 소음기 여부
 	Weapon[52].WeaponP = 1;						// 무기 종류
 	Weapon[52].ChangeWeaponID = 76;					// 발사모드 전환 시 바뀔 무기 ID
@@ -2688,7 +2688,7 @@ void ParameterInfo::InitInfo()
 	Weapon[52].pellet = 1;						// 샷건 펠릿 수
 	Weapon[52].is_shell_reload = false;				// 셸 단위 재장전 여부
 	Weapon[52].bHasChamber = true;
-	Weapon[52].TacticalReloadFrame = 34;
+	Weapon[52].TacticalReloadFrame = 35;
 	Weapon[52].SoundID_Reload = -1;
 	Weapon[52].SoundID_Tactical = -1;
 
@@ -2700,7 +2700,7 @@ void ParameterInfo::InitInfo()
 	Weapon[53].blazings = 5.5;						// 연사 속도
 	Weapon[53].speed = 10;						// 탄속
 	Weapon[53].nbsmax = 6;						// 최대 장탄수
-	Weapon[53].reloads = 76;						// 재장전 시간
+	Weapon[53].reloads = 74;						// 재장전 시간
 	Weapon[53].reaction = 10;					// 반동
 	Weapon[53].ErrorRangeMIN = 0;					// 최소 명중률 오차
 	Weapon[53].ErrorRangeMAX = 23;					// 최대 명중률 오차
@@ -2708,8 +2708,8 @@ void ParameterInfo::InitInfo()
 	Weapon[53].my = 8.0f;						// 1인칭 손 위치 Y
 	Weapon[53].mz = 59.0f;						// 1인칭 손 위치 Z
 	Weapon[53].flashx = 3.0f;					// 총구 화염 위치 X
-	Weapon[53].flashy = 19.0f;					// 총구 화염 위치 Y
-	Weapon[53].flashz = 90.0f;					// 총구 화염 위치 Z
+	Weapon[53].flashy = 18.0f;					// 총구 화염 위치 Y
+	Weapon[53].flashz = 89.0f;					// 총구 화염 위치 Z
 	Weapon[53].yakkyou_px = 2.0f;					// 탄피 배출 위치 X
 	Weapon[53].yakkyou_py = 15.0f;					// 탄피 배출 위치 Y
 	Weapon[53].yakkyou_pz = 56.0f;					// 탄피 배출 위치 Z
@@ -2721,7 +2721,7 @@ void ParameterInfo::InitInfo()
 	Weapon[53].scopemode = 0;					// 스코프 모드
 	Weapon[53].size = 7.0f;						// 3인칭 모델 크기
 	Weapon[53].soundid = 47;						// 발사음 ID
-	Weapon[53].soundvolume = 85;					// 발사음 크기
+	Weapon[53].soundvolume = 90;				// 발사음 크기
 	Weapon[53].silencer = false;					// 소음기 여부
 	Weapon[53].WeaponP = 1;						// 무기 종류
 	Weapon[53].ChangeWeaponID = -1;					// 발사모드 전환 시 바뀔 무기 ID
@@ -2741,7 +2741,7 @@ void ParameterInfo::InitInfo()
 	Weapon[54].blazings = 12;					// 연사 속도
 	Weapon[54].speed = 255;						// 탄속
 	Weapon[54].nbsmax = 6;						// 최대 장탄수
-	Weapon[54].reloads = 85;					// 재장전 시간
+	Weapon[54].reloads = 84;					// 재장전 시간
 	Weapon[54].reaction = 15;					// 반동
 	Weapon[54].ErrorRangeMIN = 0;					// 최소 명중률 오차
 	Weapon[54].ErrorRangeMAX = 19;					// 최대 명중률 오차
@@ -2749,8 +2749,8 @@ void ParameterInfo::InitInfo()
 	Weapon[54].my = 8.0f;						// 1인칭 손 위치 Y
 	Weapon[54].mz = 30.0f;						// 1인칭 손 위치 Z
 	Weapon[54].flashx = 9.0f;					// 총구 화염 위치 X
-	Weapon[54].flashy = 17.0f;					// 총구 화염 위치 Y
-	Weapon[54].flashz = 95.0f;					// 총구 화염 위치 Z
+	Weapon[54].flashy = 17.5f;					// 총구 화염 위치 Y
+	Weapon[54].flashz = 90.0f;					// 총구 화염 위치 Z
 	Weapon[54].yakkyou_px = 8.0f;					// 탄피 배출 위치 X
 	Weapon[54].yakkyou_py = 13.0f;					// 탄피 배출 위치 Y
 	Weapon[54].yakkyou_pz = 38.0f;					// 탄피 배출 위치 Z
@@ -2762,7 +2762,7 @@ void ParameterInfo::InitInfo()
 	Weapon[54].scopemode = 5;					// 스코프 모드
 	Weapon[54].size = 7.0f;						// 3인칭 모델 크기
 	Weapon[54].soundid = 50;						// 발사음 ID
-	Weapon[54].soundvolume = 85;					// 발사음 크기
+	Weapon[54].soundvolume = 90;				// 발사음 크기
 	Weapon[54].silencer = false;					// 소음기 여부
 	Weapon[54].WeaponP = 0;						// 무기 종류
 	Weapon[54].ChangeWeaponID = -1;					// 발사모드 전환 시 바뀔 무기 ID
@@ -2770,7 +2770,7 @@ void ParameterInfo::InitInfo()
 	Weapon[54].pellet = 1;						// 샷건 펠릿 수
 	Weapon[54].is_shell_reload = false;				// 셸 단위 재장전 여부
 	Weapon[54].bHasChamber = true;
-	Weapon[54].TacticalReloadFrame = 61;
+	Weapon[54].TacticalReloadFrame = 62;
 	Weapon[54].SoundID_Reload = -1;
 	Weapon[54].SoundID_Tactical = -1;
 
@@ -2782,7 +2782,7 @@ void ParameterInfo::InitInfo()
 	Weapon[55].blazings = 4;					// 연사 속도
 	Weapon[55].speed = 11;						// 탄속
 	Weapon[55].nbsmax = 200;					// 최대 장탄수
-	Weapon[55].reloads = 170;					// 재장전 시간
+	Weapon[55].reloads = 167;					// 재장전 시간
 	Weapon[55].reaction = 10;					// 반동
 	Weapon[55].ErrorRangeMIN = 5;					// 최소 명중률 오차
 	Weapon[55].ErrorRangeMAX = 22;					// 최대 명중률 오차
@@ -2790,7 +2790,7 @@ void ParameterInfo::InitInfo()
 	Weapon[55].my = -4.0f;						// 1인칭 손 위치 Y
 	Weapon[55].mz = 41.0f;						// 1인칭 손 위치 Z
 	Weapon[55].flashx = 9.0f;					// 총구 화염 위치 X
-	Weapon[55].flashy = -2.0f;					// 총구 화염 위치 Y
+	Weapon[55].flashy = -4.0f;					// 총구 화염 위치 Y
 	Weapon[55].flashz = 102.0f;					// 총구 화염 위치 Z
 	Weapon[55].yakkyou_px = 9.0f;					// 탄피 배출 위치 X
 	Weapon[55].yakkyou_py = -4.0f;					// 탄피 배출 위치 Y
@@ -2803,7 +2803,7 @@ void ParameterInfo::InitInfo()
 	Weapon[55].scopemode = 0;					// 스코프 모드
 	Weapon[55].size = 7.0f;						// 3인칭 모델 크기
 	Weapon[55].soundid = 51;						// 발사음 ID
-	Weapon[55].soundvolume = 80;					// 발사음 크기
+	Weapon[55].soundvolume = 90;				// 발사음 크기
 	Weapon[55].silencer = false;					// 소음기 여부
 	Weapon[55].WeaponP = 0;						// 무기 종류
 	Weapon[55].ChangeWeaponID = -1;					// 발사모드 전환 시 바뀔 무기 ID
@@ -2823,7 +2823,7 @@ void ParameterInfo::InitInfo()
 	Weapon[56].blazings = 7.5;					// 연사 속도
 	Weapon[56].speed = 11;						// 탄속
 	Weapon[56].nbsmax = 20;						// 최대 장탄수
-	Weapon[56].reloads = 90;					// 재장전 시간
+	Weapon[56].reloads = 91;					// 재장전 시간
 	Weapon[56].reaction = 9;					// 반동
 	Weapon[56].ErrorRangeMIN = 0;					// 최소 명중률 오차
 	Weapon[56].ErrorRangeMAX = 20;					// 최대 명중률 오차
@@ -2831,8 +2831,8 @@ void ParameterInfo::InitInfo()
 	Weapon[56].my = 15.0f;						// 1인칭 손 위치 Y
 	Weapon[56].mz = 33.0f;						// 1인칭 손 위치 Z
 	Weapon[56].flashx = 9.0f;					// 총구 화염 위치 X
-	Weapon[56].flashy = 15.0f;					// 총구 화염 위치 Y
-	Weapon[56].flashz = 122.0f;					// 총구 화염 위치 Z
+	Weapon[56].flashy = 16.0f;					// 총구 화염 위치 Y
+	Weapon[56].flashz = 121.0f;					// 총구 화염 위치 Z
 	Weapon[56].yakkyou_px = 9.0f;					// 탄피 배출 위치 X
 	Weapon[56].yakkyou_py = 12.0f;					// 탄피 배출 위치 Y
 	Weapon[56].yakkyou_pz = 41.0f;					// 탄피 배출 위치 Z
@@ -2844,7 +2844,7 @@ void ParameterInfo::InitInfo()
 	Weapon[56].scopemode = 0;					// 스코프 모드
 	Weapon[56].size = 7.0f;						// 3인칭 모델 크기
 	Weapon[56].soundid = 52;						// 발사음 ID
-	Weapon[56].soundvolume = 85;					// 발사음 크기
+	Weapon[56].soundvolume = 90;				// 발사음 크기
 	Weapon[56].silencer = false;					// 소음기 여부
 	Weapon[56].WeaponP = 0;						// 무기 종류
 	Weapon[56].ChangeWeaponID = -1;					// 발사모드 전환 시 바뀔 무기 ID
@@ -2864,7 +2864,7 @@ void ParameterInfo::InitInfo()
 	Weapon[57].blazings = 6;						// 연사 속도
 	Weapon[57].speed = 10;						// 탄속
 	Weapon[57].nbsmax = 50;						// 최대 장탄수
-	Weapon[57].reloads = 90;						// 재장전 시간
+	Weapon[57].reloads = 86;						// 재장전 시간
 	Weapon[57].reaction = 8;						// 반동
 	Weapon[57].ErrorRangeMIN = 0;					// 최소 명중률 오차
 	Weapon[57].ErrorRangeMAX = 0;					// 최대 명중률 오차
@@ -2872,7 +2872,7 @@ void ParameterInfo::InitInfo()
 	Weapon[57].my = 10.0f;						// 1인칭 손 위치 Y
 	Weapon[57].mz = 52.0f;						// 1인칭 손 위치 Z
 	Weapon[57].flashx = 3.0f;					// 총구 화염 위치 X
-	Weapon[57].flashy = 16.0f;					// 총구 화염 위치 Y
+	Weapon[57].flashy = 14.0f;					// 총구 화염 위치 Y
 	Weapon[57].flashz = 94.0f;					// 총구 화염 위치 Z
 	Weapon[57].yakkyou_px = 2.0f;					// 탄피 배출 위치 X
 	Weapon[57].yakkyou_py = 16.0f;					// 탄피 배출 위치 Y
@@ -2885,7 +2885,7 @@ void ParameterInfo::InitInfo()
 	Weapon[57].scopemode = 0;					// 스코프 모드
 	Weapon[57].size = 7.0f;						// 3인칭 모델 크기
 	Weapon[57].soundid = 58;						// 발사음 ID
-	Weapon[57].soundvolume = 85;					// 발사음 크기
+	Weapon[57].soundvolume = 90;				// 발사음 크기
 	Weapon[57].silencer = false;					// 소음기 여부
 	Weapon[57].WeaponP = 1;						// 무기 종류
 	Weapon[57].ChangeWeaponID = -1;					// 발사모드 전환 시 바뀔 무기 ID
@@ -2893,7 +2893,7 @@ void ParameterInfo::InitInfo()
 	Weapon[57].pellet = 5;						// 샷건 펠릿 수
 	Weapon[57].is_shell_reload = false;				// 셸 단위 재장전 여부
 	Weapon[57].bHasChamber = true;
-	Weapon[57].TacticalReloadFrame = 52;
+	Weapon[57].TacticalReloadFrame = 65;
 	Weapon[57].SoundID_Reload = -1;
 	Weapon[57].SoundID_Tactical = -1;
 
@@ -2913,8 +2913,8 @@ void ParameterInfo::InitInfo()
 	Weapon[58].my = 9.0f;						// 1인칭 손 위치 Y
 	Weapon[58].mz = 30.0f;						// 1인칭 손 위치 Z
 	Weapon[58].flashx = 9.0f;					// 총구 화염 위치 X
-	Weapon[58].flashy = 15.0f;					// 총구 화염 위치 Y
-	Weapon[58].flashz = 105.0f;					// 총구 화염 위치 Z
+	Weapon[58].flashy = 13.5f;					// 총구 화염 위치 Y
+	Weapon[58].flashz = 103.0f;					// 총구 화염 위치 Z
 	Weapon[58].yakkyou_px = 8.0f;					// 탄피 배출 위치 X
 	Weapon[58].yakkyou_py = 11.0f;					// 탄피 배출 위치 Y
 	Weapon[58].yakkyou_pz = 42.0f;					// 탄피 배출 위치 Z
@@ -2926,7 +2926,7 @@ void ParameterInfo::InitInfo()
 	Weapon[58].scopemode = 0;					// 스코프 모드
 	Weapon[58].size = 7.0f;						// 3인칭 모델 크기
 	Weapon[58].soundid = 53;						// 발사음 ID
-	Weapon[58].soundvolume = 85;					// 발사음 크기
+	Weapon[58].soundvolume = 90;				// 발사음 크기
 	Weapon[58].silencer = false;					// 소음기 여부
 	Weapon[58].WeaponP = 0;						// 무기 종류
 	Weapon[58].ChangeWeaponID = -1;					// 발사모드 전환 시 바뀔 무기 ID
@@ -2946,7 +2946,7 @@ void ParameterInfo::InitInfo()
 	Weapon[59].blazings = 40;					// 연사 속도(값이 작을수록 빠름)
 	Weapon[59].speed = 255;						// 탄속
 	Weapon[59].nbsmax = 5;						// 최대 장탄수
-	Weapon[59].reloads = 20;					// 재장전 시간
+	Weapon[59].reloads = 18;					// 재장전 시간
 	Weapon[59].reaction = 10;					// 반동
 	Weapon[59].ErrorRangeMIN = 0;					// 최소 명중률 오차
 	Weapon[59].ErrorRangeMAX = 19;					// 최대 명중률 오차
@@ -2954,8 +2954,8 @@ void ParameterInfo::InitInfo()
 	Weapon[59].my = 9.0f;						// 1인칭 손 위치 Y
 	Weapon[59].mz = 30.0f;						// 1인칭 손 위치 Z
 	Weapon[59].flashx = 9.0f;					// 총구 화염 위치 X
-	Weapon[59].flashy = 15.0f;					// 총구 화염 위치 Y
-	Weapon[59].flashz = 105.0f;					// 총구 화염 위치 Z
+	Weapon[59].flashy = 13.5f;					// 총구 화염 위치 Y
+	Weapon[59].flashz = 103.0f;					// 총구 화염 위치 Z
 	Weapon[59].yakkyou_px = 8.0f;					// 탄피 배출 위치 X
 	Weapon[59].yakkyou_py = 13.0f;					// 탄피 배출 위치 Y
 	Weapon[59].yakkyou_pz = 38.0f;					// 탄피 배출 위치 Z
@@ -2966,8 +2966,8 @@ void ParameterInfo::InitInfo()
 	Weapon[59].burstcnt = 4;					// 점사 (0: 자동, 1: 단발, 3: 3점사)
 	Weapon[59].scopemode = 6;					 // 스코프 모드 (0: 자동, 1:acog, 2:저격, 3:레드닷)
 	Weapon[59].size = 7.0f;						// 3인칭 모델 크기
-	Weapon[59].soundid = 87;						// 발사음 ID (0:mp5,1 :ak47,2 :이글,3 :m249, 4 :AUG, 13 :소음기)
-	Weapon[59].soundvolume = 85;					// 발사음 크기
+	Weapon[59].soundid = 86;						// 발사음 ID (0:mp5,1 :ak47,2 :이글,3 :m249, 4 :AUG, 13 :소음기)
+	Weapon[59].soundvolume = 90;				// 발사음 크기
 	Weapon[59].silencer = false;					// 소음기 여부
 	Weapon[59].WeaponP = 0;						// 무기 종류 (0: 양손, 1: 한손)
 	Weapon[59].ChangeWeaponID = -1;					// 발사모드 전환 시 바뀔 무기 ID
@@ -2987,7 +2987,7 @@ void ParameterInfo::InitInfo()
 	Weapon[60].blazings = 7;         				// 연사 속도
 	Weapon[60].speed = 70;           				// 탄속
 	Weapon[60].nbsmax = 8;          				// 최대 장탄수
-	Weapon[60].reloads = 47;         				// 재장전 시간
+	Weapon[60].reloads = 58;         				// 재장전 시간
 	Weapon[60].reaction = 10;         				// 반동
 	Weapon[60].ErrorRangeMIN = 0;    				// 최소 명중률 오차
 	Weapon[60].ErrorRangeMAX = 15;   				// 최대 명중률 오차
@@ -2995,8 +2995,8 @@ void ParameterInfo::InitInfo()
 	Weapon[60].my = 5.0f;            				// 1인칭 손 위치 Y
 	Weapon[60].mz = 15.0f;           				// 1인칭 손 위치 Z
 	Weapon[60].flashx = 9.0f;        				// 총구 화염 위치 X
-	Weapon[60].flashy = 15.0f;       				// 총구 화염 위치 Y
-	Weapon[60].flashz = 100.0f;       				// 총구 화염 위치 Z
+	Weapon[60].flashy = 16.5f;       				// 총구 화염 위치 Y
+	Weapon[60].flashz = 99.0f;       				// 총구 화염 위치 Z
 	Weapon[60].yakkyou_px = 10.0f;   				// 탄피 배출 위치 X
 	Weapon[60].yakkyou_py = 12.0f;   				// 탄피 배출 위치 Y
 	Weapon[60].yakkyou_pz = 40.0f;   				// 탄피 배출 위치 Z
@@ -3008,7 +3008,7 @@ void ParameterInfo::InitInfo()
 	Weapon[60].scopemode = 0;        				// 스코프 모드
 	Weapon[60].size = 7.0f;          				// 3인칭 모델 크기
 	Weapon[60].soundid = 54;          				// 발사음 ID
-	Weapon[60].soundvolume = 85;     				// 발사음 크기
+	Weapon[60].soundvolume = 80;     				// 발사음 크기
 	Weapon[60].silencer = false;     				// 소음기 여부
 	Weapon[60].WeaponP = 0;          				// 무기 종류
 	Weapon[60].ChangeWeaponID = -1;  				// 발사모드 전환 시 바뀔 무기 ID
@@ -3036,7 +3036,7 @@ void ParameterInfo::InitInfo()
 	Weapon[61].my = 10.0f;						// 1인칭 손 위치 Y
 	Weapon[61].mz = 62.0f;						// 1인칭 손 위치 Z
 	Weapon[61].flashx = 3.0f;					// 총구 화염 위치 X
-	Weapon[61].flashy = 19.0f;					// 총구 화염 위치 Y
+	Weapon[61].flashy = 18.5f;					// 총구 화염 위치 Y
 	Weapon[61].flashz = 75.0f;					// 총구 화염 위치 Z
 	Weapon[61].yakkyou_px = 2.0f;					// 탄피 배출 위치 X
 	Weapon[61].yakkyou_py = 16.0f;					// 탄피 배출 위치 Y
@@ -3049,7 +3049,7 @@ void ParameterInfo::InitInfo()
 	Weapon[61].scopemode = 0;					// 스코프 모드
 	Weapon[61].size = 7.0f;						// 3인칭 모델 크기
 	Weapon[61].soundid = 35;						// 발사음 ID
-	Weapon[61].soundvolume = 85;					// 발사음 크기
+	Weapon[61].soundvolume = 90;				// 발사음 크기
 	Weapon[61].silencer = false;					// 소음기 여부
 	Weapon[61].WeaponP = 1;						// 무기 종류
 	Weapon[61].ChangeWeaponID = -1;					// 발사모드 전환 시 바뀔 무기 ID
@@ -3057,7 +3057,7 @@ void ParameterInfo::InitInfo()
 	Weapon[61].pellet = 1;						// 샷건 펠릿 수
 	Weapon[61].is_shell_reload = false;				// 셸 단위 재장전 여부
 	Weapon[61].bHasChamber = true;
-	Weapon[61].TacticalReloadFrame = 34;
+	Weapon[61].TacticalReloadFrame = 35;
 	Weapon[61].SoundID_Reload = -1;
 	Weapon[61].SoundID_Tactical = -1;
 
@@ -3069,7 +3069,7 @@ void ParameterInfo::InitInfo()
 	Weapon[62].blazings = 4;					// 연사 속도
 	Weapon[62].speed = 10;						// 탄속
 	Weapon[62].nbsmax = 71;						// 최대 장탄수
-	Weapon[62].reloads = 70;					// 재장전 시간
+	Weapon[62].reloads = 67;					// 재장전 시간
 	Weapon[62].reaction = 6;					// 반동
 	Weapon[62].ErrorRangeMIN = 0;					// 최소 명중률 오차
 	Weapon[62].ErrorRangeMAX = 25;					// 최대 명중률 오차
@@ -3077,8 +3077,8 @@ void ParameterInfo::InitInfo()
 	Weapon[62].my = 7.0f;						// 1인칭 손 위치 Y
 	Weapon[62].mz = 33.0f;						// 1인칭 손 위치 Z
 	Weapon[62].flashx = 9.0f;					// 총구 화염 위치 X
-	Weapon[62].flashy = 13.0f;					// 총구 화염 위치 Y
-	Weapon[62].flashz = 88.0f;					// 총구 화염 위치 Z
+	Weapon[62].flashy = 11.0f;					// 총구 화염 위치 Y
+	Weapon[62].flashz = 86.0f;					// 총구 화염 위치 Z
 	Weapon[62].yakkyou_px = 8.0f;					// 탄피 배출 위치 X
 	Weapon[62].yakkyou_py = 12.0f;					// 탄피 배출 위치 Y
 	Weapon[62].yakkyou_pz = 35.0f;					// 탄피 배출 위치 Z
@@ -3090,7 +3090,7 @@ void ParameterInfo::InitInfo()
 	Weapon[62].scopemode = 0;					// 스코프 모드
 	Weapon[62].size = 7.0f;						// 3인칭 모델 크기
 	Weapon[62].soundid = 55;						// 발사음 ID
-	Weapon[62].soundvolume = 85;					// 발사음 크기
+	Weapon[62].soundvolume = 90;				// 발사음 크기
 	Weapon[62].silencer = false;					// 소음기 여부
 	Weapon[62].WeaponP = 0;						// 무기 종류
 	Weapon[62].ChangeWeaponID = -1;					// 발사모드 전환 시 바뀔 무기 ID
@@ -3110,7 +3110,7 @@ void ParameterInfo::InitInfo()
 	Weapon[63].blazings = 40;					// 연사 속도(값이 작을수록 빠름)
 	Weapon[63].speed = 255;						// 탄속
 	Weapon[63].nbsmax = 5;						// 최대 장탄수
-	Weapon[63].reloads = 20;					// 재장전 시간
+	Weapon[63].reloads = 18;					// 재장전 시간
 	Weapon[63].reaction = 15;					// 반동
 	Weapon[63].ErrorRangeMIN = 0;					// 최소 명중률 오차
 	Weapon[63].ErrorRangeMAX = 19;					// 최대 명중률 오차
@@ -3118,8 +3118,8 @@ void ParameterInfo::InitInfo()
 	Weapon[63].my = 5.0f;						// 1인칭 손 위치 Y
 	Weapon[63].mz = 26.0f;						// 1인칭 손 위치 Z
 	Weapon[63].flashx = 9.0f;					// 총구 화염 위치 X
-	Weapon[63].flashy = 15.0f;					// 총구 화염 위치 Y
-	Weapon[63].flashz = 115.0f;					// 총구 화염 위치 Z
+	Weapon[63].flashy = 14.0f;					// 총구 화염 위치 Y
+	Weapon[63].flashz = 111.0f;					// 총구 화염 위치 Z
 	Weapon[63].yakkyou_px = 8.0f;					// 탄피 배출 위치 X
 	Weapon[63].yakkyou_py = 13.0f;					// 탄피 배출 위치 Y
 	Weapon[63].yakkyou_pz = 38.0f;					// 탄피 배출 위치 Z
@@ -3131,7 +3131,7 @@ void ParameterInfo::InitInfo()
 	Weapon[63].scopemode = 6;					 // 스코프 모드 (0: 자동, 1:acog, 2:저격, 3:레드닷)
 	Weapon[63].size = 7.0f;						// 3인칭 모델 크기
 	Weapon[63].soundid = 60;						// 발사음 ID (0:mp5,1 :ak47,2 :이글,3 :m249, 4 :AUG, 13 :소음기)
-	Weapon[63].soundvolume = 85;					// 발사음 크기
+	Weapon[63].soundvolume = 90;				// 발사음 크기
 	Weapon[63].silencer = false;					// 소음기 여부
 	Weapon[63].WeaponP = 0;						// 무기 종류 (0: 양손, 1: 한손)
 	Weapon[63].ChangeWeaponID = -1;					// 발사모드 전환 시 바뀔 무기 ID
@@ -3151,7 +3151,7 @@ void ParameterInfo::InitInfo()
 	Weapon[64].blazings = 4.5;					// 연사 속도
 	Weapon[64].speed = 11;						// 탄속
 	Weapon[64].nbsmax = 30;						// 최대 장탄수
-	Weapon[64].reloads = 86;					// 재장전 시간
+	Weapon[64].reloads = 89;					// 재장전 시간
 	Weapon[64].reaction = 8;					// 반동
 	Weapon[64].ErrorRangeMIN = 0;					// 최소 명중률 오차
 	Weapon[64].ErrorRangeMAX = 20;					// 최대 명중률 오차
@@ -3159,7 +3159,7 @@ void ParameterInfo::InitInfo()
 	Weapon[64].my = 13.0f;						// 1인칭 손 위치 Y
 	Weapon[64].mz = 34.0f;						// 1인칭 손 위치 Z
 	Weapon[64].flashx = 9.0f;					// 총구 화염 위치 X
-	Weapon[64].flashy = 13.0f;					// 총구 화염 위치 Y
+	Weapon[64].flashy = 12.5f;					// 총구 화염 위치 Y
 	Weapon[64].flashz = 89.0f;					// 총구 화염 위치 Z
 	Weapon[64].yakkyou_px = 9.0f;					// 탄피 배출 위치 X
 	Weapon[64].yakkyou_py = 12.0f;					// 탄피 배출 위치 Y
@@ -3172,7 +3172,7 @@ void ParameterInfo::InitInfo()
 	Weapon[64].scopemode = 0;					// 스코프 모드
 	Weapon[64].size = 7.0f;						// 3인칭 모델 크기
 	Weapon[64].soundid = 56;						// 발사음 ID
-	Weapon[64].soundvolume = 85;					// 발사음 크기
+	Weapon[64].soundvolume = 90;				// 발사음 크기
 	Weapon[64].silencer = false;					// 소음기 여부
 	Weapon[64].WeaponP = 0;						// 무기 종류
 	Weapon[64].ChangeWeaponID = -1;					// 발사모드 전환 시 바뀔 무기 ID
@@ -3180,7 +3180,7 @@ void ParameterInfo::InitInfo()
 	Weapon[64].pellet = 1;						// 샷건 펠릿 수
 	Weapon[64].is_shell_reload = false;				// 셸 단위 재장전 여부
 	Weapon[64].bHasChamber = true;
-	Weapon[64].TacticalReloadFrame = 58;
+	Weapon[64].TacticalReloadFrame = 64;
 	Weapon[64].SoundID_Reload = -1;
 	Weapon[64].SoundID_Tactical = -1;
 
@@ -3192,7 +3192,7 @@ void ParameterInfo::InitInfo()
 	Weapon[65].blazings = 4;					// 연사 속도
 	Weapon[65].speed = 10;						// 탄속
 	Weapon[65].nbsmax = 30;						// 최대 장탄수
-	Weapon[65].reloads = 70;					// 재장전 시간
+	Weapon[65].reloads = 67;					// 재장전 시간
 	Weapon[65].reaction = 4;					// 반동
 	Weapon[65].ErrorRangeMIN = 0;					// 최소 명중률 오차
 	Weapon[65].ErrorRangeMAX = 25;					// 최대 명중률 오차
@@ -3200,8 +3200,8 @@ void ParameterInfo::InitInfo()
 	Weapon[65].my = 9.0f;						// 1인칭 손 위치 Y
 	Weapon[65].mz = 33.0f;						// 1인칭 손 위치 Z
 	Weapon[65].flashx = 9.0f;					// 총구 화염 위치 X
-	Weapon[65].flashy = 15.0f;					// 총구 화염 위치 Y
-	Weapon[65].flashz = 80.0f;					// 총구 화염 위치 Z
+	Weapon[65].flashy = 14.0f;					// 총구 화염 위치 Y
+	Weapon[65].flashz = 81.0f;					// 총구 화염 위치 Z
 	Weapon[65].yakkyou_px = 8.0f;					// 탄피 배출 위치 X
 	Weapon[65].yakkyou_py = 12.0f;					// 탄피 배출 위치 Y
 	Weapon[65].yakkyou_pz = 35.0f;					// 탄피 배출 위치 Z
@@ -3213,7 +3213,7 @@ void ParameterInfo::InitInfo()
 	Weapon[65].scopemode = 0;					// 스코프 모드
 	Weapon[65].size = 7.0f;						// 3인칭 모델 크기
 	Weapon[65].soundid = 57;						// 발사음 ID
-	Weapon[65].soundvolume = 85;					// 발사음 크기
+	Weapon[65].soundvolume = 90;				// 발사음 크기
 	Weapon[65].silencer = false;					// 소음기 여부
 	Weapon[65].WeaponP = 0;						// 무기 종류
 	Weapon[65].ChangeWeaponID = -1;					// 발사모드 전환 시 바뀔 무기 ID
@@ -3233,7 +3233,7 @@ void ParameterInfo::InitInfo()
 	Weapon[66].blazings = 10;					// 연사 속도
 	Weapon[66].speed = 9;						// 탄속
 	Weapon[66].nbsmax = 20;						// 최대 장탄수
-	Weapon[66].reloads = 83;					// 재장전 시간
+	Weapon[66].reloads = 82;					// 재장전 시간
 	Weapon[66].reaction = 15;					// 반동
 	Weapon[66].ErrorRangeMIN = 4;					// 최소 명중률 오차
 	Weapon[66].ErrorRangeMAX = 27;					// 최대 명중률 오차
@@ -3241,8 +3241,8 @@ void ParameterInfo::InitInfo()
 	Weapon[66].my = 8.0f;						// 1인칭 손 위치 Y
 	Weapon[66].mz = 40.0f;						// 1인칭 손 위치 Z
 	Weapon[66].flashx = 9.0f;					// 총구 화염 위치 X
-	Weapon[66].flashy = 12.0f;					// 총구 화염 위치 Y
-	Weapon[66].flashz = 87.0f;					// 총구 화염 위치 Z
+	Weapon[66].flashy = 11.5f;					// 총구 화염 위치 Y
+	Weapon[66].flashz = 84.0f;					// 총구 화염 위치 Z
 	Weapon[66].yakkyou_px = 8.0f;					// 탄피 배출 위치 X
 	Weapon[66].yakkyou_py = 11.0f;					// 탄피 배출 위치 Y
 	Weapon[66].yakkyou_pz = 42.0f;					// 탄피 배출 위치 Z
@@ -3254,7 +3254,7 @@ void ParameterInfo::InitInfo()
 	Weapon[66].scopemode = 0;					// 스코프 모드
 	Weapon[66].size = 7.0f;						// 3인칭 모델 크기
 	Weapon[66].soundid = 59;						// 발사음 ID
-	Weapon[66].soundvolume = 85;					// 발사음 크기
+	Weapon[66].soundvolume = 90;				// 발사음 크기
 	Weapon[66].silencer = false;					// 소음기 여부
 	Weapon[66].WeaponP = 0;						// 무기 종류
 	Weapon[66].ChangeWeaponID = -1;					// 발사모드 전환 시 바뀔 무기 ID
@@ -3262,7 +3262,7 @@ void ParameterInfo::InitInfo()
 	Weapon[66].pellet = 6;						// 샷건 펠릿 수
 	Weapon[66].is_shell_reload = false;				// 셸 단위 재장전 여부
 	Weapon[66].bHasChamber = true;
-	Weapon[66].TacticalReloadFrame = 56;
+	Weapon[66].TacticalReloadFrame = 57;
 	Weapon[66].SoundID_Reload = -1;
 	Weapon[66].SoundID_Tactical = -1;
 
@@ -3274,7 +3274,7 @@ void ParameterInfo::InitInfo()
 	Weapon[67].blazings = 3.5;					// 연사 속도
 	Weapon[67].speed = 11;						// 탄속
 	Weapon[67].nbsmax = 50;					// 최대 장탄수
-	Weapon[67].reloads = 168;					// 재장전 시간
+	Weapon[67].reloads = 167;					// 재장전 시간
 	Weapon[67].reaction = 9;					// 반동
 	Weapon[67].ErrorRangeMIN = 0;					// 최소 명중률 오차
 	Weapon[67].ErrorRangeMAX = 30;					// 최대 명중률 오차
@@ -3282,8 +3282,8 @@ void ParameterInfo::InitInfo()
 	Weapon[67].my = 12.0f;						// 1인칭 손 위치 Y
 	Weapon[67].mz = 31.0f;						// 1인칭 손 위치 Z
 	Weapon[67].flashx = 9.0f;					// 총구 화염 위치 X
-	Weapon[67].flashy = 13.0f;					// 총구 화염 위치 Y
-	Weapon[67].flashz = 100.0f;					// 총구 화염 위치 Z
+	Weapon[67].flashy = 11.0f;					// 총구 화염 위치 Y
+	Weapon[67].flashz = 98.0f;					// 총구 화염 위치 Z
 	Weapon[67].yakkyou_px = 9.0f;					// 탄피 배출 위치 X
 	Weapon[67].yakkyou_py = 8.0f;					// 탄피 배출 위치 Y
 	Weapon[67].yakkyou_pz = 55.0f;					// 탄피 배출 위치 Z
@@ -3295,7 +3295,7 @@ void ParameterInfo::InitInfo()
 	Weapon[67].scopemode = 0;					// 스코프 모드
 	Weapon[67].size = 7.0f;						// 3인칭 모델 크기
 	Weapon[67].soundid = 61;						// 발사음 ID
-	Weapon[67].soundvolume = 80;					// 발사음 크기
+	Weapon[67].soundvolume = 90;				// 발사음 크기
 	Weapon[67].silencer = false;					// 소음기 여부
 	Weapon[67].WeaponP = 0;						// 무기 종류
 	Weapon[67].ChangeWeaponID = -1;					// 발사모드 전환 시 바뀔 무기 ID
@@ -3315,7 +3315,7 @@ void ParameterInfo::InitInfo()
 	Weapon[68].blazings = 25;					// 연사 속도
 	Weapon[68].speed = 11;						// 탄속
 	Weapon[68].nbsmax = 8;						// 최대 장탄수
-	Weapon[68].reloads = 15;					// 재장전 시간
+	Weapon[68].reloads = 20;					// 재장전 시간
 	Weapon[68].reaction = 15;					// 반동
 	Weapon[68].ErrorRangeMIN = 0;					// 최소 명중률 오차
 	Weapon[68].ErrorRangeMAX = 18;					// 최대 명중률 오차
@@ -3323,7 +3323,7 @@ void ParameterInfo::InitInfo()
 	Weapon[68].my = 8.0f;						// 1인칭 손 위치 Y
 	Weapon[68].mz = 28.0f;						// 1인칭 손 위치 Z
 	Weapon[68].flashx = 9.0f;					// 총구 화염 위치 X
-	Weapon[68].flashy = 18.0f;					// 총구 화염 위치 Y
+	Weapon[68].flashy = 17.0f;					// 총구 화염 위치 Y
 	Weapon[68].flashz = 106.0f;					// 총구 화염 위치 Z
 	Weapon[68].yakkyou_px = 8.0f;					// 탄피 배출 위치 X
 	Weapon[68].yakkyou_py = 11.0f;					// 탄피 배출 위치 Y
@@ -3336,7 +3336,7 @@ void ParameterInfo::InitInfo()
 	Weapon[68].scopemode = 0;					// 스코프 모드
 	Weapon[68].size = 7.0f;						// 3인칭 모델 크기
 	Weapon[68].soundid = 31;						// 발사음 ID
-	Weapon[68].soundvolume = 90;					// 발사음 크기
+	Weapon[68].soundvolume = 90;				// 발사음 크기
 	Weapon[68].silencer = false;					// 소음기 여부
 	Weapon[68].WeaponP = 0;						// 무기 종류
 	Weapon[68].ChangeWeaponID = 25;					// 발사모드 전환 시 바뀔 무기 ID
@@ -3356,7 +3356,7 @@ void ParameterInfo::InitInfo()
 	Weapon[69].blazings = 4;						// 연사 속도
 	Weapon[69].speed = 10;						// 탄속
 	Weapon[69].nbsmax = 20;						// 최대 장탄수
-	Weapon[69].reloads = 66;						// 재장전 시간
+	Weapon[69].reloads = 79;						// 재장전 시간
 	Weapon[69].reaction = 10;						// 반동
 	Weapon[69].ErrorRangeMIN = 0;					// 최소 명중률 오차
 	Weapon[69].ErrorRangeMAX = 25;					// 최대 명중률 오차
@@ -3364,8 +3364,8 @@ void ParameterInfo::InitInfo()
 	Weapon[69].my = 9.0f;						// 1인칭 손 위치 Y
 	Weapon[69].mz = 55.0f;						// 1인칭 손 위치 Z
 	Weapon[69].flashx = 3.0f;					// 총구 화염 위치 X
-	Weapon[69].flashy = 20.0f;					// 총구 화염 위치 Y
-	Weapon[69].flashz = 80.0f;					// 총구 화염 위치 Z
+	Weapon[69].flashy = 18.0f;					// 총구 화염 위치 Y
+	Weapon[69].flashz = 77.0f;					// 총구 화염 위치 Z
 	Weapon[69].yakkyou_px = 2.0f;					// 탄피 배출 위치 X
 	Weapon[69].yakkyou_py = 16.0f;					// 탄피 배출 위치 Y
 	Weapon[69].yakkyou_pz = 52.0f;					// 탄피 배출 위치 Z
@@ -3377,7 +3377,7 @@ void ParameterInfo::InitInfo()
 	Weapon[69].scopemode = 0;					// 스코프 모드
 	Weapon[69].size = 7.0f;						// 3인칭 모델 크기
 	Weapon[69].soundid = 64;						// 발사음 ID
-	Weapon[69].soundvolume = 90;					// 발사음 크기
+	Weapon[69].soundvolume = 90;				// 발사음 크기
 	Weapon[69].silencer = false;					// 소음기 여부
 	Weapon[69].WeaponP = 1;						// 무기 종류
 	Weapon[69].ChangeWeaponID = 77;					// 발사모드 전환 시 바뀔 무기 ID
@@ -3385,7 +3385,7 @@ void ParameterInfo::InitInfo()
 	Weapon[69].pellet = 1;						// 샷건 펠릿 수
 	Weapon[69].is_shell_reload = false;				// 셸 단위 재장전 여부
 	Weapon[69].bHasChamber = true;
-	Weapon[69].TacticalReloadFrame = 44;
+	Weapon[69].TacticalReloadFrame = 57;
 	Weapon[69].SoundID_Reload = -1;
 	Weapon[69].SoundID_Tactical = -1;
 
@@ -3397,7 +3397,7 @@ void ParameterInfo::InitInfo()
 	Weapon[70].blazings = 4.5;						// 연사 속도 (값이 작을수록 빠름)
 	Weapon[70].speed = 10;						// 탄속
 	Weapon[70].nbsmax = 64;						// 최대 장탄수
-	Weapon[70].reloads = 87;						// 재장전 시간
+	Weapon[70].reloads = 86;						// 재장전 시간
 	Weapon[70].reaction = 6;						// 반동
 	Weapon[70].ErrorRangeMIN = 0;					// 최소 명중률 오차
 	Weapon[70].ErrorRangeMAX = 21;					// 최대 명중률 오차
@@ -3405,8 +3405,8 @@ void ParameterInfo::InitInfo()
 	Weapon[70].my = 8.0f;						// 1인칭 손 위치 Y
 	Weapon[70].mz = 28.0f;						// 1인칭 손 위치 Z
 	Weapon[70].flashx = 9.0f;					// 총구 화염 위치 X
-	Weapon[70].flashy = 18.0f;					// 총구 화염 위치 Y
-	Weapon[70].flashz = 70.0f;					// 총구 화염 위치 Z
+	Weapon[70].flashy = 16.0f;					// 총구 화염 위치 Y
+	Weapon[70].flashz = 68.0f;					// 총구 화염 위치 Z
 	Weapon[70].yakkyou_px = 8.0f;					// 탄피 배출 위치 X
 	Weapon[70].yakkyou_py = 12.0f;					// 탄피 배출 위치 Y
 	Weapon[70].yakkyou_pz = 35.0f;					// 탄피 배출 위치 Z
@@ -3418,7 +3418,7 @@ void ParameterInfo::InitInfo()
 	Weapon[70].scopemode = 0;					// 스코프 모드
 	Weapon[70].size = 7.0f;						// 3인칭 모델 크기
 	Weapon[70].soundid = 63;						// 발사음 ID
-	Weapon[70].soundvolume = 90;					// 발사음 크기
+	Weapon[70].soundvolume = 90;				// 발사음 크기
 	Weapon[70].silencer = false;					// 소음기 여부
 	Weapon[70].WeaponP = 0;						// 무기 종류 (0: 양손, 1: 한손)
 	Weapon[70].ChangeWeaponID = 84;					// 발사모드 전환 시 바뀔 무기 ID
@@ -3426,7 +3426,7 @@ void ParameterInfo::InitInfo()
 	Weapon[70].pellet = 1;						// 샷건 펠릿 수
 	Weapon[70].is_shell_reload = false;				// 셸 단위 재장전 여부
 	Weapon[70].bHasChamber = true;
-	Weapon[70].TacticalReloadFrame = 50;
+	Weapon[70].TacticalReloadFrame = 65;
 	Weapon[70].SoundID_Reload = -1;
 	Weapon[70].SoundID_Tactical = -1;
 
@@ -3438,7 +3438,7 @@ void ParameterInfo::InitInfo()
 	Weapon[71].blazings = 3;						// 연사 속도 (값이 작을수록 빠름)
 	Weapon[71].speed = 10;						// 탄속
 	Weapon[71].nbsmax = 50;						// 최대 장탄수
-	Weapon[71].reloads = 87;						// 재장전 시간
+	Weapon[71].reloads = 86;						// 재장전 시간
 	Weapon[71].reaction = 7;						// 반동
 	Weapon[71].ErrorRangeMIN = 0;					// 최소 명중률 오차
 	Weapon[71].ErrorRangeMAX = 21;					// 최대 명중률 오차
@@ -3446,8 +3446,8 @@ void ParameterInfo::InitInfo()
 	Weapon[71].my = 8.0f;						// 1인칭 손 위치 Y
 	Weapon[71].mz = 31.0f;						// 1인칭 손 위치 Z
 	Weapon[71].flashx = 9.0f;					// 총구 화염 위치 X
-	Weapon[71].flashy = 19.0f;					// 총구 화염 위치 Y
-	Weapon[71].flashz = 64.0f;					// 총구 화염 위치 Z
+	Weapon[71].flashy = 17.0f;					// 총구 화염 위치 Y
+	Weapon[71].flashz = 59.0f;					// 총구 화염 위치 Z
 	Weapon[71].yakkyou_px = 8.0f;					// 탄피 배출 위치 X
 	Weapon[71].yakkyou_py = 12.0f;					// 탄피 배출 위치 Y
 	Weapon[71].yakkyou_pz = 35.0f;					// 탄피 배출 위치 Z
@@ -3459,7 +3459,7 @@ void ParameterInfo::InitInfo()
 	Weapon[71].scopemode = 3;					// 스코프 모드
 	Weapon[71].size = 7.0f;						// 3인칭 모델 크기
 	Weapon[71].soundid = 65;						// 발사음 ID
-	Weapon[71].soundvolume = 90;					// 발사음 크기
+	Weapon[71].soundvolume = 90;				// 발사음 크기
 	Weapon[71].silencer = false;					// 소음기 여부
 	Weapon[71].WeaponP = 0;						// 무기 종류 (0: 양손, 1: 한손)
 	Weapon[71].ChangeWeaponID = -1;					// 발사모드 전환 시 바뀔 무기 ID
@@ -3467,7 +3467,7 @@ void ParameterInfo::InitInfo()
 	Weapon[71].pellet = 1;						// 샷건 펠릿 수
 	Weapon[71].is_shell_reload = false;				// 셸 단위 재장전 여부
 	Weapon[71].bHasChamber = true;
-	Weapon[71].TacticalReloadFrame = 50;
+	Weapon[71].TacticalReloadFrame = 65;
 	Weapon[71].SoundID_Reload = -1;
 	Weapon[71].SoundID_Tactical = -1;
 
@@ -3487,7 +3487,7 @@ void ParameterInfo::InitInfo()
 	Weapon[72].my = 7.0f;						// 1인칭 손 위치 Y
 	Weapon[72].mz = 29.0f;						// 1인칭 손 위치 Z
 	Weapon[72].flashx = 9.0f;					// 총구 화염 위치 X
-	Weapon[72].flashy = 18.0f;					// 총구 화염 위치 Y
+	Weapon[72].flashy = 16.5f;					// 총구 화염 위치 Y
 	Weapon[72].flashz = 86.0f;					// 총구 화염 위치 Z
 	Weapon[72].yakkyou_px = 8.0f;					// 탄피 배출 위치 X
 	Weapon[72].yakkyou_py = 12.0f;					// 탄피 배출 위치 Y
@@ -3500,7 +3500,7 @@ void ParameterInfo::InitInfo()
 	Weapon[72].scopemode = 3;					// 스코프 모드
 	Weapon[72].size = 7.0f;						// 3인칭 모델 크기
 	Weapon[72].soundid = 66;						// 발사음 ID
-	Weapon[72].soundvolume = 90;					// 발사음 크기
+	Weapon[72].soundvolume = 80;				// 발사음 크기
 	Weapon[72].silencer = true;					// 소음기 여부
 	Weapon[72].WeaponP = 0;						// 무기 종류 (0: 양손, 1: 한손)
 	Weapon[72].ChangeWeaponID = -1;					// 발사모드 전환 시 바뀔 무기 ID
@@ -3508,7 +3508,7 @@ void ParameterInfo::InitInfo()
 	Weapon[72].pellet = 1;						// 샷건 펠릿 수
 	Weapon[72].is_shell_reload = false;				// 셸 단위 재장전 여부
 	Weapon[72].bHasChamber = true;
-	Weapon[72].TacticalReloadFrame = 75;
+	Weapon[72].TacticalReloadFrame = 74;
 	Weapon[72].SoundID_Reload = -1;
 	Weapon[72].SoundID_Tactical = -1;
 
@@ -3520,7 +3520,7 @@ void ParameterInfo::InitInfo()
 	Weapon[73].blazings = 4;						// 연사 속도
 	Weapon[73].speed = 11;						// 탄속
 	Weapon[73].nbsmax = 20;						// 최대 장탄수
-	Weapon[73].reloads = 67;						// 재장전 시간
+	Weapon[73].reloads = 79;						// 재장전 시간
 	Weapon[73].reaction = 5;						// 반동
 	Weapon[73].ErrorRangeMIN = 0;					// 최소 명중률 오차
 	Weapon[73].ErrorRangeMAX = 21;					// 최대 명중률 오차
@@ -3528,8 +3528,8 @@ void ParameterInfo::InitInfo()
 	Weapon[73].my = 6.0f;						// 1인칭 손 위치 Y
 	Weapon[73].mz = 29.0f;						// 1인칭 손 위치 Z
 	Weapon[73].flashx = 9.0f;					// 총구 화염 위치 X
-	Weapon[73].flashy = 12.0f;					// 총구 화염 위치 Y
-	Weapon[73].flashz = 88.0f;					// 총구 화염 위치 Z
+	Weapon[73].flashy = 11.5f;					// 총구 화염 위치 Y
+	Weapon[73].flashz = 86.0f;					// 총구 화염 위치 Z
 	Weapon[73].yakkyou_px = 10.0f;					// 탄피 배출 위치 X
 	Weapon[73].yakkyou_py = 12.0f;					// 탄피 배출 위치 Y
 	Weapon[73].yakkyou_pz = 40.0f;					// 탄피 배출 위치 Z
@@ -3541,7 +3541,7 @@ void ParameterInfo::InitInfo()
 	Weapon[73].scopemode = 0;					// 스코프 모드
 	Weapon[73].size = 7.0f;						// 3인칭 모델 크기
 	Weapon[73].soundid = 67;						// 발사음 ID
-	Weapon[73].soundvolume = 90;					// 발사음 크기
+	Weapon[73].soundvolume = 90;				// 발사음 크기
 	Weapon[73].silencer = false;					// 소음기 여부
 	Weapon[73].WeaponP = 0;						// 무기 종류
 	Weapon[73].ChangeWeaponID = -1;					// 발사모드 전환 시 바뀔 무기 ID
@@ -3549,7 +3549,7 @@ void ParameterInfo::InitInfo()
 	Weapon[73].pellet = 1;						// 샷건 펠릿 수
 	Weapon[73].is_shell_reload = false;				// 셸 단위 재장전 여부
 	Weapon[73].bHasChamber = true;
-	Weapon[73].TacticalReloadFrame = 44;
+	Weapon[73].TacticalReloadFrame = 57;
 	Weapon[73].SoundID_Reload = -1;
 	Weapon[73].SoundID_Tactical = -1;
 
@@ -3569,8 +3569,8 @@ void ParameterInfo::InitInfo()
 	Weapon[74].my = 7.0f;						// 1인칭 손 위치 Y
 	Weapon[74].mz = 28.0f;						// 1인칭 손 위치 Z
 	Weapon[74].flashx = 9.0f;					// 총구 화염 위치 X
-	Weapon[74].flashy = 17.0f;					// 총구 화염 위치 Y
-	Weapon[74].flashz = 89.0f;					// 총구 화염 위치 Z
+	Weapon[74].flashy = 16.0f;					// 총구 화염 위치 Y
+	Weapon[74].flashz = 87.0f;					// 총구 화염 위치 Z
 	Weapon[74].yakkyou_px = 10.0f;					// 탄피 배출 위치 X
 	Weapon[74].yakkyou_py = 12.0f;					// 탄피 배출 위치 Y
 	Weapon[74].yakkyou_pz = 40.0f;					// 탄피 배출 위치 Z
@@ -3582,7 +3582,7 @@ void ParameterInfo::InitInfo()
 	Weapon[74].scopemode = 4;					// 스코프 모드
 	Weapon[74].size = 7.0f;						// 3인칭 모델 크기
 	Weapon[74].soundid = 68;						// 발사음 ID
-	Weapon[74].soundvolume = 90;					// 발사음 크기
+	Weapon[74].soundvolume = 90;				// 발사음 크기
 	Weapon[74].silencer = false;					// 소음기 여부
 	Weapon[74].WeaponP = 0;						// 무기 종류
 	Weapon[74].ChangeWeaponID = -1;					// 발사모드 전환 시 바뀔 무기 ID
@@ -3590,7 +3590,7 @@ void ParameterInfo::InitInfo()
 	Weapon[74].pellet = 1;						// 샷건 펠릿 수
 	Weapon[74].is_shell_reload = false;				// 셸 단위 재장전 여부
 	Weapon[74].bHasChamber = true;
-	Weapon[74].TacticalReloadFrame = 50;
+	Weapon[74].TacticalReloadFrame = 51;
 	Weapon[74].SoundID_Reload = -1;
 	Weapon[74].SoundID_Tactical = -1;
 
@@ -3610,7 +3610,7 @@ void ParameterInfo::InitInfo()
 	Weapon[75].my = 11.0f;						// 1인칭 손 위치 Y
 	Weapon[75].mz = 58.0f;						// 1인칭 손 위치 Z
 	Weapon[75].flashx = 3.0f;					// 총구 화염 위치 X
-	Weapon[75].flashy = 21.0f;					// 총구 화염 위치 Y
+	Weapon[75].flashy = 19.0f;					// 총구 화염 위치 Y
 	Weapon[75].flashz = 91.0f;					// 총구 화염 위치 Z
 	Weapon[75].yakkyou_px = 2.0f;					// 탄피 배출 위치 X
 	Weapon[75].yakkyou_py = 14.0f;					// 탄피 배출 위치 Y
@@ -3623,7 +3623,7 @@ void ParameterInfo::InitInfo()
 	Weapon[75].scopemode = 0;					// 스코프 모드
 	Weapon[75].size = 7.0f;						// 3인칭 모델 크기
 	Weapon[75].soundid = 71;						// 발사음 ID
-	Weapon[75].soundvolume = 80;					// 발사음 크기
+	Weapon[75].soundvolume = 80;				// 발사음 크기
 	Weapon[75].silencer = true;					// 소음기 여부
 	Weapon[75].WeaponP = 1;						// 무기 종류
 	Weapon[75].ChangeWeaponID = 18;					// 발사모드 전환 시 바뀔 무기 ID
@@ -3631,7 +3631,7 @@ void ParameterInfo::InitInfo()
 	Weapon[75].pellet = 1;						// 샷건 펠릿 수
 	Weapon[75].is_shell_reload = false;				// 셸 단위 재장전 여부
 	Weapon[75].bHasChamber = true;
-	Weapon[75].TacticalReloadFrame = 34;
+	Weapon[75].TacticalReloadFrame = 35;
 	Weapon[75].SoundID_Reload = -1;
 	Weapon[75].SoundID_Tactical = -1;
 
@@ -3643,7 +3643,7 @@ void ParameterInfo::InitInfo()
 	Weapon[76].blazings = 3;						// 연사 속도
 	Weapon[76].speed = 10;						// 탄속
 	Weapon[76].nbsmax = 15;						// 최대 장탄수
-	Weapon[76].reloads = 56;						// 재장전 시간
+	Weapon[76].reloads = 55;						// 재장전 시간
 	Weapon[76].reaction = 9;						// 반동
 	Weapon[76].ErrorRangeMIN = 0;					// 최소 명중률 오차
 	Weapon[76].ErrorRangeMAX = 28;					// 최대 명중률 오차
@@ -3651,8 +3651,8 @@ void ParameterInfo::InitInfo()
 	Weapon[76].my = 10.0f;						// 1인칭 손 위치 Y
 	Weapon[76].mz = 58.0f;						// 1인칭 손 위치 Z
 	Weapon[76].flashx = 3.0f;					// 총구 화염 위치 X
-	Weapon[76].flashy = 21.0f;					// 총구 화염 위치 Y
-	Weapon[76].flashz = 90.0f;					// 총구 화염 위치 Z
+	Weapon[76].flashy = 19.0f;					// 총구 화염 위치 Y
+	Weapon[76].flashz = 89.0f;					// 총구 화염 위치 Z
 	Weapon[76].yakkyou_px = 2.0f;					// 탄피 배출 위치 X
 	Weapon[76].yakkyou_py = 16.0f;					// 탄피 배출 위치 Y
 	Weapon[76].yakkyou_pz = 52.0f;					// 탄피 배출 위치 Z
@@ -3664,7 +3664,7 @@ void ParameterInfo::InitInfo()
 	Weapon[76].scopemode = 0;					// 스코프 모드
 	Weapon[76].size = 7.0f;						// 3인칭 모델 크기
 	Weapon[76].soundid = 72;						// 발사음 ID
-	Weapon[76].soundvolume = 80;					// 발사음 크기
+	Weapon[76].soundvolume = 80;				// 발사음 크기
 	Weapon[76].silencer = true;					// 소음기 여부
 	Weapon[76].WeaponP = 1;						// 무기 종류
 	Weapon[76].ChangeWeaponID = 52;					// 발사모드 전환 시 바뀔 무기 ID
@@ -3672,7 +3672,7 @@ void ParameterInfo::InitInfo()
 	Weapon[76].pellet = 1;						// 샷건 펠릿 수
 	Weapon[76].is_shell_reload = false;				// 셸 단위 재장전 여부
 	Weapon[76].bHasChamber = true;
-	Weapon[76].TacticalReloadFrame = 34;
+	Weapon[76].TacticalReloadFrame = 35;
 	Weapon[76].SoundID_Reload = -1;
 	Weapon[76].SoundID_Tactical = -1;
 
@@ -3684,7 +3684,7 @@ void ParameterInfo::InitInfo()
 	Weapon[77].blazings = 4;						// 연사 속도
 	Weapon[77].speed = 10;						// 탄속
 	Weapon[77].nbsmax = 20;						// 최대 장탄수
-	Weapon[77].reloads = 66;						// 재장전 시간
+	Weapon[77].reloads = 79;						// 재장전 시간
 	Weapon[77].reaction = 10;						// 반동
 	Weapon[77].ErrorRangeMIN = 0;					// 최소 명중률 오차
 	Weapon[77].ErrorRangeMAX = 25;					// 최대 명중률 오차
@@ -3692,8 +3692,8 @@ void ParameterInfo::InitInfo()
 	Weapon[77].my = 9.0f;						// 1인칭 손 위치 Y
 	Weapon[77].mz = 58.0f;						// 1인칭 손 위치 Z
 	Weapon[77].flashx = 3.0f;					// 총구 화염 위치 X
-	Weapon[77].flashy = 21.0f;					// 총구 화염 위치 Y
-	Weapon[77].flashz = 102.0f;					// 총구 화염 위치 Z
+	Weapon[77].flashy = 18.0f;					// 총구 화염 위치 Y
+	Weapon[77].flashz = 101.0f;					// 총구 화염 위치 Z
 	Weapon[77].yakkyou_px = 2.0f;					// 탄피 배출 위치 X
 	Weapon[77].yakkyou_py = 16.0f;					// 탄피 배출 위치 Y
 	Weapon[77].yakkyou_pz = 52.0f;					// 탄피 배출 위치 Z
@@ -3705,7 +3705,7 @@ void ParameterInfo::InitInfo()
 	Weapon[77].scopemode = 0;					// 스코프 모드
 	Weapon[77].size = 7.0f;						// 3인칭 모델 크기
 	Weapon[77].soundid = 73;						// 발사음 ID
-	Weapon[77].soundvolume = 80;					// 발사음 크기
+	Weapon[77].soundvolume = 80;				// 발사음 크기
 	Weapon[77].silencer = true;					// 소음기 여부
 	Weapon[77].WeaponP = 1;						// 무기 종류
 	Weapon[77].ChangeWeaponID = 69;					// 발사모드 전환 시 바뀔 무기 ID
@@ -3713,7 +3713,7 @@ void ParameterInfo::InitInfo()
 	Weapon[77].pellet = 1;						// 샷건 펠릿 수
 	Weapon[77].is_shell_reload = false;				// 셸 단위 재장전 여부
 	Weapon[77].bHasChamber = true;
-	Weapon[77].TacticalReloadFrame = 44;
+	Weapon[77].TacticalReloadFrame = 57;
 	Weapon[77].SoundID_Reload = -1;
 	Weapon[77].SoundID_Tactical = -1;
 
@@ -3725,7 +3725,7 @@ void ParameterInfo::InitInfo()
 	Weapon[78].blazings = 4;						// 연사 속도
 	Weapon[78].speed = 10;						// 탄속
 	Weapon[78].nbsmax = 20;						// 최대 장탄수
-	Weapon[78].reloads = 67;						// 재장전 시간
+	Weapon[78].reloads = 79;						// 재장전 시간
 	Weapon[78].reaction = 6;						// 반동
 	Weapon[78].ErrorRangeMIN = 0;					// 최소 명중률 오차
 	Weapon[78].ErrorRangeMAX = 20;					// 최대 명중률 오차
@@ -3733,8 +3733,8 @@ void ParameterInfo::InitInfo()
 	Weapon[78].my = 8.0f;						// 1인칭 손 위치 Y
 	Weapon[78].mz = 45.0f;						// 1인칭 손 위치 Z
 	Weapon[78].flashx = 9.0f;					// 총구 화염 위치 X
-	Weapon[78].flashy = 15.0f;					// 총구 화염 위치 Y
-	Weapon[78].flashz = 58.0f;					// 총구 화염 위치 Z
+	Weapon[78].flashy = 14.5f;					// 총구 화염 위치 Y
+	Weapon[78].flashz = 60.0f;					// 총구 화염 위치 Z
 	Weapon[78].yakkyou_px = 8.0f;					// 탄피 배출 위치 X
 	Weapon[78].yakkyou_py = 13.0f;					// 탄피 배출 위치 Y
 	Weapon[78].yakkyou_pz = 35.0f;					// 탄피 배출 위치 Z
@@ -3746,7 +3746,7 @@ void ParameterInfo::InitInfo()
 	Weapon[78].scopemode = 0;					// 스코프 모드
 	Weapon[78].size = 7.0f;						// 3인칭 모델 크기
 	Weapon[78].soundid = 74;						// 발사음 ID
-	Weapon[78].soundvolume = 90;					// 발사음 크기
+	Weapon[78].soundvolume = 90;				// 발사음 크기
 	Weapon[78].silencer = false;					// 소음기 여부
 	Weapon[78].WeaponP = 0;						// 무기 종류
 	Weapon[78].ChangeWeaponID = 51;					// 발사모드 전환 시 바뀔 무기 ID
@@ -3754,7 +3754,7 @@ void ParameterInfo::InitInfo()
 	Weapon[78].pellet = 1;						// 샷건 펠릿 수
 	Weapon[78].is_shell_reload = false;				// 셸 단위 재장전 여부
 	Weapon[78].bHasChamber = true;
-	Weapon[78].TacticalReloadFrame = 44;
+	Weapon[78].TacticalReloadFrame = 57;
 	Weapon[78].SoundID_Reload = -1;
 	Weapon[78].SoundID_Tactical = -1;
 
@@ -3766,7 +3766,7 @@ void ParameterInfo::InitInfo()
 	Weapon[79].blazings = 3;						// 연사 속도
 	Weapon[79].speed = 10;						// 탄속
 	Weapon[79].nbsmax = 30;						// 최대 장탄수
-	Weapon[79].reloads = 66;						// 재장전 시간
+	Weapon[79].reloads = 67;						// 재장전 시간
 	Weapon[79].reaction = 9;						// 반동
 	Weapon[79].ErrorRangeMIN = 0;					// 최소 명중률 오차
 	Weapon[79].ErrorRangeMAX = 25;					// 최대 명중률 오차
@@ -3774,7 +3774,7 @@ void ParameterInfo::InitInfo()
 	Weapon[79].my = 11.0f;						// 1인칭 손 위치 Y
 	Weapon[79].mz = 56.0f;						// 1인칭 손 위치 Z
 	Weapon[79].flashx = 3.0f;					// 총구 화염 위치 X
-	Weapon[79].flashy = 21.0f;					// 총구 화염 위치 Y
+	Weapon[79].flashy = 19.0f;					// 총구 화염 위치 Y
 	Weapon[79].flashz = 96.0f;					// 총구 화염 위치 Z
 	Weapon[79].yakkyou_px = 2.0f;					// 탄피 배출 위치 X
 	Weapon[79].yakkyou_py = 16.0f;					// 탄피 배출 위치 Y
@@ -3787,7 +3787,7 @@ void ParameterInfo::InitInfo()
 	Weapon[79].scopemode = 0;					// 스코프 모드
 	Weapon[79].size = 7.0f;						// 3인칭 모델 크기
 	Weapon[79].soundid = 75;						// 발사음 ID
-	Weapon[79].soundvolume = 80;					// 발사음 크기
+	Weapon[79].soundvolume = 80;				// 발사음 크기
 	Weapon[79].silencer = true;					// 소음기 여부
 	Weapon[79].WeaponP = 1;						// 무기 종류
 	Weapon[79].ChangeWeaponID = 6;					// 발사모드 전환 시 바뀔 무기 ID
@@ -3816,8 +3816,8 @@ void ParameterInfo::InitInfo()
 	Weapon[80].my = 9.0f;						// 1인칭 손 위치 Y
 	Weapon[80].mz = 38.0f;						// 1인칭 손 위치 Z
 	Weapon[80].flashx = 9.0f;					// 총구 화염 위치 X
-	Weapon[80].flashy = 16.0f;					// 총구 화염 위치 Y
-	Weapon[80].flashz = 72.0f;					// 총구 화염 위치 Z
+	Weapon[80].flashy = 15.0f;					// 총구 화염 위치 Y
+	Weapon[80].flashz = 71.0f;					// 총구 화염 위치 Z
 	Weapon[80].yakkyou_px = 8.0f;					// 탄피 배출 위치 X
 	Weapon[80].yakkyou_py = 4.0f;					// 탄피 배출 위치 Y
 	Weapon[80].yakkyou_pz = 18.0f;					// 탄피 배출 위치 Z
@@ -3829,7 +3829,7 @@ void ParameterInfo::InitInfo()
 	Weapon[80].scopemode = 1;					// 스코프 모드
 	Weapon[80].size = 7.0f;						// 3인칭 모델 크기
 	Weapon[80].soundid = 76;						// 발사음 ID
-	Weapon[80].soundvolume = 80;					// 발사음 크기
+	Weapon[80].soundvolume = 80;				// 발사음 크기
 	Weapon[80].silencer = true;					// 소음기 여부
 	Weapon[80].WeaponP = 0;						// 무기 종류
 	Weapon[80].ChangeWeaponID = 8;					// 발사모드 전환 시 바뀔 무기 ID
@@ -3837,7 +3837,7 @@ void ParameterInfo::InitInfo()
 	Weapon[80].pellet = 1;						// 샷건 펠릿 수
 	Weapon[80].is_shell_reload = false;				// 셸 단위 재장전 여부
 	Weapon[80].bHasChamber = true;
-	Weapon[80].TacticalReloadFrame = 75;
+	Weapon[80].TacticalReloadFrame = 74;
 	Weapon[80].SoundID_Reload = -1;
 	Weapon[80].SoundID_Tactical = -1;
 
@@ -3849,7 +3849,7 @@ void ParameterInfo::InitInfo()
 	Weapon[81].blazings = 5;					// 연사 속도
 	Weapon[81].speed = 11;						// 탄속
 	Weapon[81].nbsmax = 30;						// 최대 장탄수
-	Weapon[81].reloads = 69;					// 재장전 시간
+	Weapon[81].reloads = 79;					// 재장전 시간
 	Weapon[81].reaction = 6;					// 반동
 	Weapon[81].ErrorRangeMIN = 0;					// 최소 명중률 오차
 	Weapon[81].ErrorRangeMAX = 15;					// 최대 명중률 오차
@@ -3857,7 +3857,7 @@ void ParameterInfo::InitInfo()
 	Weapon[81].my = 7.0f;						// 1인칭 손 위치 Y
 	Weapon[81].mz = 29.0f;						// 1인칭 손 위치 Z
 	Weapon[81].flashx = 9.0f;					// 총구 화염 위치 X
-	Weapon[81].flashy = 17.0f;					// 총구 화염 위치 Y
+	Weapon[81].flashy = 16.5f;					// 총구 화염 위치 Y
 	Weapon[81].flashz = 77.0f;					// 총구 화염 위치 Z
 	Weapon[81].yakkyou_px = 8.0f;					// 탄피 배출 위치 X
 	Weapon[81].yakkyou_py = 11.0f;					// 탄피 배출 위치 Y
@@ -3878,7 +3878,7 @@ void ParameterInfo::InitInfo()
 	Weapon[81].pellet = 1;           				// 샷건 펠릿 수
 	Weapon[81].is_shell_reload = false;				// 셸 단위 재장전 여부
 	Weapon[81].bHasChamber = true;
-	Weapon[81].TacticalReloadFrame = 45;
+	Weapon[81].TacticalReloadFrame = 57;
 	Weapon[81].SoundID_Reload = -1;
 	Weapon[81].SoundID_Tactical = -1;
 
@@ -3890,7 +3890,7 @@ void ParameterInfo::InitInfo()
 	Weapon[82].blazings = 3;						// 연사 속도 (값이 작을수록 빠름)
 	Weapon[82].speed = 10;						// 탄속
 	Weapon[82].nbsmax = 30;						// 최대 장탄수
-	Weapon[82].reloads = 71;						// 재장전 시간
+	Weapon[82].reloads = 79;						// 재장전 시간
 	Weapon[82].reaction = 8;						// 반동
 	Weapon[82].ErrorRangeMIN = 0;					// 최소 명중률 오차
 	Weapon[82].ErrorRangeMAX = 25;					// 최대 명중률 오차
@@ -3899,7 +3899,7 @@ void ParameterInfo::InitInfo()
 	Weapon[82].mz = 28.0f;						// 1인칭 손 위치 Z
 	Weapon[82].flashx = 9.0f;					// 총구 화염 위치 X
 	Weapon[82].flashy = 15.0f;					// 총구 화염 위치 Y
-	Weapon[82].flashz = 81.0f;					// 총구 화염 위치 Z
+	Weapon[82].flashz = 80.0f;					// 총구 화염 위치 Z
 	Weapon[82].yakkyou_px = 8.0f;					// 탄피 배출 위치 X
 	Weapon[82].yakkyou_py = 12.0f;					// 탄피 배출 위치 Y
 	Weapon[82].yakkyou_pz = 35.0f;					// 탄피 배출 위치 Z
@@ -3911,7 +3911,7 @@ void ParameterInfo::InitInfo()
 	Weapon[82].scopemode = 1;					// 스코프 모드
 	Weapon[82].size = 7.0f;						// 3인칭 모델 크기
 	Weapon[82].soundid = 78;						// 발사음 ID
-	Weapon[82].soundvolume = 80;					// 발사음 크기
+	Weapon[82].soundvolume = 80;				// 발사음 크기
 	Weapon[82].silencer = true;					// 소음기 여부
 	Weapon[82].WeaponP = 0;						// 무기 종류 (0: 양손, 1: 한손)
 	Weapon[82].ChangeWeaponID = 47;					// 발사모드 전환 시 바뀔 무기 ID
@@ -3919,7 +3919,7 @@ void ParameterInfo::InitInfo()
 	Weapon[82].pellet = 1;						// 샷건 펠릿 수
 	Weapon[82].is_shell_reload = false;				// 셸 단위 재장전 여부
 	Weapon[82].bHasChamber = true;
-	Weapon[82].TacticalReloadFrame = 45;
+	Weapon[82].TacticalReloadFrame = 57;
 	Weapon[82].SoundID_Reload = -1;
 	Weapon[82].SoundID_Tactical = -1;
 
@@ -3931,7 +3931,7 @@ void ParameterInfo::InitInfo()
 	Weapon[83].blazings = 3.5;						// 연사 속도
 	Weapon[83].speed = 10;						// 탄속
 	Weapon[83].nbsmax = 25;						// 최대 장탄수
-	Weapon[83].reloads = 66;						// 재장전 시간
+	Weapon[83].reloads = 67;						// 재장전 시간
 	Weapon[83].reaction = 7;						// 반동
 	Weapon[83].ErrorRangeMIN = 0;					// 최소 명중률 오차
 	Weapon[83].ErrorRangeMAX = 25;					// 최대 명중률 오차
@@ -3939,7 +3939,7 @@ void ParameterInfo::InitInfo()
 	Weapon[83].my = 6.0f;						// 1인칭 손 위치 Y
 	Weapon[83].mz = 38.0f;						// 1인칭 손 위치 Z
 	Weapon[83].flashx = 9.0f;					// 총구 화염 위치 X
-	Weapon[83].flashy = 14.0f;					// 총구 화염 위치 Y
+	Weapon[83].flashy = 13.0f;					// 총구 화염 위치 Y
 	Weapon[83].flashz = 68.0f;					// 총구 화염 위치 Z
 	Weapon[83].yakkyou_px = 8.0f;					// 탄피 배출 위치 X
 	Weapon[83].yakkyou_py = 13.0f;					// 탄피 배출 위치 Y
@@ -3952,7 +3952,7 @@ void ParameterInfo::InitInfo()
 	Weapon[83].scopemode = 0;					// 스코프 모드
 	Weapon[83].size = 7.0f;						// 3인칭 모델 크기
 	Weapon[83].soundid = 79;						// 발사음 ID
-	Weapon[83].soundvolume = 80;					// 발사음 크기
+	Weapon[83].soundvolume = 80;				// 발사음 크기
 	Weapon[83].silencer = true;					// 소음기 여부
 	Weapon[83].WeaponP = 0;						// 무기 종류
 	Weapon[83].ChangeWeaponID = 48;					// 발사모드 전환 시 바뀔 무기 ID
@@ -3972,7 +3972,7 @@ void ParameterInfo::InitInfo()
 	Weapon[84].blazings = 4.5;						// 연사 속도 (값이 작을수록 빠름)
 	Weapon[84].speed = 10;						// 탄속
 	Weapon[84].nbsmax = 64;						// 최대 장탄수
-	Weapon[84].reloads = 87;						// 재장전 시간
+	Weapon[84].reloads = 86;						// 재장전 시간
 	Weapon[84].reaction = 6;						// 반동
 	Weapon[84].ErrorRangeMIN = 0;					// 최소 명중률 오차
 	Weapon[84].ErrorRangeMAX = 21;					// 최대 명중률 오차
@@ -3980,8 +3980,8 @@ void ParameterInfo::InitInfo()
 	Weapon[84].my = 8.0f;						// 1인칭 손 위치 Y
 	Weapon[84].mz = 28.0f;						// 1인칭 손 위치 Z
 	Weapon[84].flashx = 9.0f;					// 총구 화염 위치 X
-	Weapon[84].flashy = 18.0f;					// 총구 화염 위치 Y
-	Weapon[84].flashz = 87.0f;					// 총구 화염 위치 Z
+	Weapon[84].flashy = 16.0f;					// 총구 화염 위치 Y
+	Weapon[84].flashz = 85.0f;					// 총구 화염 위치 Z
 	Weapon[84].yakkyou_px = 8.0f;					// 탄피 배출 위치 X
 	Weapon[84].yakkyou_py = 12.0f;					// 탄피 배출 위치 Y
 	Weapon[84].yakkyou_pz = 35.0f;					// 탄피 배출 위치 Z
@@ -3993,7 +3993,7 @@ void ParameterInfo::InitInfo()
 	Weapon[84].scopemode = 0;					// 스코프 모드
 	Weapon[84].size = 7.0f;						// 3인칭 모델 크기
 	Weapon[84].soundid = 80;						// 발사음 ID
-	Weapon[84].soundvolume = 80;					// 발사음 크기
+	Weapon[84].soundvolume = 80;				// 발사음 크기
 	Weapon[84].silencer = true;					// 소음기 여부
 	Weapon[84].WeaponP = 0;						// 무기 종류 (0: 양손, 1: 한손)
 	Weapon[84].ChangeWeaponID = 70;					// 발사모드 전환 시 바뀔 무기 ID
@@ -4001,7 +4001,7 @@ void ParameterInfo::InitInfo()
 	Weapon[84].pellet = 1;						// 샷건 펠릿 수
 	Weapon[84].is_shell_reload = false;				// 셸 단위 재장전 여부
 	Weapon[84].bHasChamber = true;
-	Weapon[84].TacticalReloadFrame = 50;
+	Weapon[84].TacticalReloadFrame = 65;
 	Weapon[84].SoundID_Reload = -1;
 	Weapon[84].SoundID_Tactical = -1;
 
@@ -4013,7 +4013,7 @@ void ParameterInfo::InitInfo()
 	Weapon[85].blazings = 4;					// 연사 속도
 	Weapon[85].speed = 11;						// 탄속
 	Weapon[85].nbsmax = 30;						// 최대 장탄수
-	Weapon[85].reloads = 85;					// 재장전 시간
+	Weapon[85].reloads = 89;					// 재장전 시간
 	Weapon[85].reaction = 9;					// 반동
 	Weapon[85].ErrorRangeMIN = 0;					// 최소 명중률 오차
 	Weapon[85].ErrorRangeMAX = 20;					// 최대 명중률 오차
@@ -4021,8 +4021,8 @@ void ParameterInfo::InitInfo()
 	Weapon[85].my = 7.0f;						// 1인칭 손 위치 Y
 	Weapon[85].mz = 28.0f;						// 1인칭 손 위치 Z
 	Weapon[85].flashx = 9.0f;					// 총구 화염 위치 X
-	Weapon[85].flashy = 17.0f;					// 총구 화염 위치 Y
-	Weapon[85].flashz = 111.0f;					// 총구 화염 위치 Z
+	Weapon[85].flashy = 14.5f;					// 총구 화염 위치 Y
+	Weapon[85].flashz = 110.0f;					// 총구 화염 위치 Z
 	Weapon[85].yakkyou_px = 9.0f;					// 탄피 배출 위치 X
 	Weapon[85].yakkyou_py = 12.0f;					// 탄피 배출 위치 Y
 	Weapon[85].yakkyou_pz = 41.0f;					// 탄피 배출 위치 Z
@@ -4034,7 +4034,7 @@ void ParameterInfo::InitInfo()
 	Weapon[85].scopemode = 0;					// 스코프 모드
 	Weapon[85].size = 7.0f;						// 3인칭 모델 크기
 	Weapon[85].soundid = 81;						// 발사음 ID
-	Weapon[85].soundvolume = 80;					// 발사음 크기
+	Weapon[85].soundvolume = 80;				// 발사음 크기
 	Weapon[85].silencer = true;					// 소음기 여부
 	Weapon[85].WeaponP = 0;						// 무기 종류
 	Weapon[85].ChangeWeaponID = 10;					// 발사모드 전환 시 바뀔 무기 ID
@@ -4042,7 +4042,7 @@ void ParameterInfo::InitInfo()
 	Weapon[85].pellet = 1;						// 샷건 펠릿 수
 	Weapon[85].is_shell_reload = false;				// 셸 단위 재장전 여부
 	Weapon[85].bHasChamber = true;
-	Weapon[85].TacticalReloadFrame = 57;
+	Weapon[85].TacticalReloadFrame = 64;
 	Weapon[85].SoundID_Reload = -1;
 	Weapon[85].SoundID_Tactical = -1;
 
@@ -4054,7 +4054,7 @@ void ParameterInfo::InitInfo()
 	Weapon[86].blazings = 3;					// 연사 속도
 	Weapon[86].speed = 11;						// 탄속
 	Weapon[86].nbsmax = 25;						// 최대 장탄수
-	Weapon[86].reloads = 90;					// 재장전 시간
+	Weapon[86].reloads = 91;					// 재장전 시간
 	Weapon[86].reaction = 7;					// 반동
 	Weapon[86].ErrorRangeMIN = 0;					// 최소 명중률 오차
 	Weapon[86].ErrorRangeMAX = 19;					// 최대 명중률 오차
@@ -4062,8 +4062,8 @@ void ParameterInfo::InitInfo()
 	Weapon[86].my = 8.0f;						// 1인칭 손 위치 Y
 	Weapon[86].mz = 32.0f;						// 1인칭 손 위치 Z
 	Weapon[86].flashx = 9.0f;					// 총구 화염 위치 X
-	Weapon[86].flashy = 16.0f;					// 총구 화염 위치 Y
-	Weapon[86].flashz = 87.0f;					// 총구 화염 위치 Z
+	Weapon[86].flashy = 15.0f;					// 총구 화염 위치 Y
+	Weapon[86].flashz = 86.0f;					// 총구 화염 위치 Z
 	Weapon[86].yakkyou_px = 9.0f;					// 탄피 배출 위치 X
 	Weapon[86].yakkyou_py = 11.0f;					// 탄피 배출 위치 Y
 	Weapon[86].yakkyou_pz = 14.0f;					// 탄피 배출 위치 Z
@@ -4075,7 +4075,7 @@ void ParameterInfo::InitInfo()
 	Weapon[86].scopemode = 2;					// 스코프 모드
 	Weapon[86].size = 7.0f;						// 3인칭 모델 크기
 	Weapon[86].soundid = 82;						// 발사음 ID
-	Weapon[86].soundvolume = 80;					// 발사음 크기
+	Weapon[86].soundvolume = 80;				// 발사음 크기
 	Weapon[86].silencer = true;					// 소음기 여부
 	Weapon[86].WeaponP = 0;						// 무기 종류
 	Weapon[86].ChangeWeaponID = 20;					// 발사모드 전환 시 바뀔 무기 ID
@@ -4083,7 +4083,7 @@ void ParameterInfo::InitInfo()
 	Weapon[86].pellet = 1;						// 샷건 펠릿 수
 	Weapon[86].is_shell_reload = false;				// 셸 단위 재장전 여부
 	Weapon[86].bHasChamber = true;
-	Weapon[86].TacticalReloadFrame = 62;
+	Weapon[86].TacticalReloadFrame = 67;
 	Weapon[86].SoundID_Reload = -1;
 	Weapon[86].SoundID_Tactical = -1;
 
@@ -4095,7 +4095,7 @@ void ParameterInfo::InitInfo()
 	Weapon[87].blazings = 4;						// 연사 속도
 	Weapon[87].speed = 11;						// 탄속
 	Weapon[87].nbsmax = 30;						// 최대 장탄수
-	Weapon[87].reloads = 79;						// 재장전 시간
+	Weapon[87].reloads = 78;						// 재장전 시간
 	Weapon[87].reaction = 6;						// 반동
 	Weapon[87].ErrorRangeMIN = 0;					// 최소 명중률 오차
 	Weapon[87].ErrorRangeMAX = 19;					// 최대 명중률 오차
@@ -4103,7 +4103,7 @@ void ParameterInfo::InitInfo()
 	Weapon[87].my = 5.0f;						// 1인칭 손 위치 Y
 	Weapon[87].mz = 29.0f;						// 1인칭 손 위치 Z
 	Weapon[87].flashx = 9.0f;					// 총구 화염 위치 X
-	Weapon[87].flashy = 16.0f;					// 총구 화염 위치 Y
+	Weapon[87].flashy = 14.5f;					// 총구 화염 위치 Y
 	Weapon[87].flashz = 120.0f;					// 총구 화염 위치 Z
 	Weapon[87].yakkyou_px = 10.0f;					// 탄피 배출 위치 X
 	Weapon[87].yakkyou_py = 12.0f;					// 탄피 배출 위치 Y
@@ -4116,7 +4116,7 @@ void ParameterInfo::InitInfo()
 	Weapon[87].scopemode = 5;					// 스코프 모드
 	Weapon[87].size = 7.0f;						// 3인칭 모델 크기
 	Weapon[87].soundid = 83;						// 발사음 ID
-	Weapon[87].soundvolume = 80;					// 발사음 크기
+	Weapon[87].soundvolume = 80;				// 발사음 크기
 	Weapon[87].silencer = true;					// 소음기 여부
 	Weapon[87].WeaponP = 0;						// 무기 종류
 	Weapon[87].ChangeWeaponID = 43;					// 발사모드 전환 시 바뀔 무기 ID
@@ -4124,7 +4124,7 @@ void ParameterInfo::InitInfo()
 	Weapon[87].pellet = 1;						// 샷건 펠릿 수
 	Weapon[87].is_shell_reload = false;				// 셸 단위 재장전 여부
 	Weapon[87].bHasChamber = true;
-	Weapon[87].TacticalReloadFrame = 50;
+	Weapon[87].TacticalReloadFrame = 51;
 	Weapon[87].SoundID_Reload = -1;
 	Weapon[87].SoundID_Tactical = -1;
 
@@ -4144,8 +4144,8 @@ void ParameterInfo::InitInfo()
 	Weapon[88].my = 5.0f;						// 1인칭 손 위치 Y
 	Weapon[88].mz = 29.0f;						// 1인칭 손 위치 Z
 	Weapon[88].flashx = 9.0f;					// 총구 화염 위치 X
-	Weapon[88].flashy = 17.0f;					// 총구 화염 위치 Y
-	Weapon[88].flashz = 102.0f;					// 총구 화염 위치 Z
+	Weapon[88].flashy = 14.5f;					// 총구 화염 위치 Y
+	Weapon[88].flashz = 100.0f;					// 총구 화염 위치 Z
 	Weapon[88].yakkyou_px = 8.0f;					// 탄피 배출 위치 X
 	Weapon[88].yakkyou_py = 11.0f;					// 탄피 배출 위치 Y
 	Weapon[88].yakkyou_pz = 15.0f;					// 탄피 배출 위치 Z
@@ -4157,7 +4157,7 @@ void ParameterInfo::InitInfo()
 	Weapon[88].scopemode = 3;					// 스코프 모드
 	Weapon[88].size = 7.0f;						// 3인칭 모델 크기
 	Weapon[88].soundid = 84;						// 발사음 ID
-	Weapon[88].soundvolume = 80;					// 발사음 크기
+	Weapon[88].soundvolume = 80;				// 발사음 크기
 	Weapon[88].silencer = true;					// 소음기 여부
 	Weapon[88].WeaponP = 0;						// 무기 종류
 	Weapon[88].ChangeWeaponID = 44;					// 발사모드 전환 시 바뀔 무기 ID
@@ -4165,7 +4165,7 @@ void ParameterInfo::InitInfo()
 	Weapon[88].pellet = 1;						// 샷건 펠릿 수
 	Weapon[88].is_shell_reload = false;				// 셸 단위 재장전 여부
 	Weapon[88].bHasChamber = true;
-	Weapon[88].TacticalReloadFrame = 50;
+	Weapon[88].TacticalReloadFrame = 51;
 	Weapon[88].SoundID_Reload = -1;
 	Weapon[88].SoundID_Tactical = -1;
 
@@ -4177,7 +4177,7 @@ void ParameterInfo::InitInfo()
 	Weapon[89].blazings = 4;					// 연사 속도
 	Weapon[89].speed = 11;						// 탄속
 	Weapon[89].nbsmax = 30;						// 최대 장탄수
-	Weapon[89].reloads = 90;					// 재장전 시간
+	Weapon[89].reloads = 91;					// 재장전 시간
 	Weapon[89].reaction = 8;					// 반동
 	Weapon[89].ErrorRangeMIN = 0;					// 최소 명중률 오차
 	Weapon[89].ErrorRangeMAX = 20;					// 최대 명중률 오차
@@ -4185,7 +4185,7 @@ void ParameterInfo::InitInfo()
 	Weapon[89].my = 9.0f;						// 1인칭 손 위치 Y
 	Weapon[89].mz = 31.0f;						// 1인칭 손 위치 Z
 	Weapon[89].flashx = 9.0f;					// 총구 화염 위치 X
-	Weapon[89].flashy = 17.0f;					// 총구 화염 위치 Y
+	Weapon[89].flashy = 16.0f;					// 총구 화염 위치 Y
 	Weapon[89].flashz = 80.0f;					// 총구 화염 위치 Z
 	Weapon[89].yakkyou_px = 9.0f;					// 탄피 배출 위치 X
 	Weapon[89].yakkyou_py = 12.0f;					// 탄피 배출 위치 Y
@@ -4198,7 +4198,7 @@ void ParameterInfo::InitInfo()
 	Weapon[89].scopemode = 1;					// 스코프 모드
 	Weapon[89].size = 7.0f;						// 3인칭 모델 크기
 	Weapon[89].soundid = 85;						// 발사음 ID
-	Weapon[89].soundvolume = 80;					// 발사음 크기
+	Weapon[89].soundvolume = 80;				// 발사음 크기
 	Weapon[89].silencer = true;					// 소음기 여부
 	Weapon[89].WeaponP = 0;						// 무기 종류
 	Weapon[89].ChangeWeaponID = 46;					// 발사모드 전환 시 바뀔 무기 ID
@@ -4206,7 +4206,7 @@ void ParameterInfo::InitInfo()
 	Weapon[89].pellet = 3;						// 샷건 펠릿 수
 	Weapon[89].is_shell_reload = false;				// 셸 단위 재장전 여부
 	Weapon[89].bHasChamber = true;
-	Weapon[89].TacticalReloadFrame = 63;
+	Weapon[89].TacticalReloadFrame = 67;
 	Weapon[89].SoundID_Reload = -1;
 	Weapon[89].SoundID_Tactical = -1;
 
@@ -4226,8 +4226,8 @@ void ParameterInfo::InitInfo()
 	Weapon[90].my = 9.0f;						// 1인칭 손 위치 Y
 	Weapon[90].mz = 31.0f;						// 1인칭 손 위치 Z
 	Weapon[90].flashx = 9.0f;					// 총구 화염 위치 X
-	Weapon[90].flashy = 17.0f;					// 총구 화염 위치 Y
-	Weapon[90].flashz = 92.0f;					// 총구 화염 위치 Z
+	Weapon[90].flashy = 16.0f;					// 총구 화염 위치 Y
+	Weapon[90].flashz = 90.0f;					// 총구 화염 위치 Z
 	Weapon[90].yakkyou_px = 8.0f;					// 탄피 배출 위치 X
 	Weapon[90].yakkyou_py = 11.0f;					// 탄피 배출 위치 Y
 	Weapon[90].yakkyou_pz = 15.0f;					// 탄피 배출 위치 Z
@@ -4238,8 +4238,8 @@ void ParameterInfo::InitInfo()
 	Weapon[90].burstcnt = 0;					// 점사
 	Weapon[90].scopemode = 3;					// 스코프 모드
 	Weapon[90].size = 7.0f;						// 3인칭 모델 크기
-	Weapon[90].soundid = 86;						// 발사음 ID
-	Weapon[90].soundvolume = 80;					// 발사음 크기
+	Weapon[90].soundid = 36;						// 발사음 ID
+	Weapon[90].soundvolume = 80;				// 발사음 크기
 	Weapon[90].silencer = true;					// 소음기 여부
 	Weapon[90].WeaponP = 0;						// 무기 종류
 	Weapon[90].ChangeWeaponID = 11;					// 발사모드 전환 시 바뀔 무기 ID
@@ -4247,7 +4247,7 @@ void ParameterInfo::InitInfo()
 	Weapon[90].pellet = 1;						// 샷건 펠릿 수
 	Weapon[90].is_shell_reload = false;				// 셸 단위 재장전 여부
 	Weapon[90].bHasChamber = true;
-	Weapon[90].TacticalReloadFrame = 63;
+	Weapon[90].TacticalReloadFrame = 67;
 	Weapon[90].SoundID_Reload = -1;
 	Weapon[90].SoundID_Tactical = -1;
 
@@ -4341,7 +4341,7 @@ void ParameterInfo::InitInfo()
 	Weapon[93].blazings = 6.5f;									// 약 550rpm 기준
 	Weapon[93].speed = 11;										// 탄속
 	Weapon[93].nbsmax = 47;										// DP28 팬 탄창 47발
-	Weapon[93].reloads = 156;									// dp28 reload 2.wav 4.94초 기준
+	Weapon[93].reloads = 164;									// dp28 reload 2.wav 4.94초 기준
 	Weapon[93].reaction = 9;									// 반동
 	Weapon[93].ErrorRangeMIN = 0;								// 최소 명중률 오차
 	Weapon[93].ErrorRangeMAX = 23;								// 최대 명중률 오차
@@ -4349,8 +4349,8 @@ void ParameterInfo::InitInfo()
 	Weapon[93].my = 6.0f;										// 1인칭 손 위치 Y
 	Weapon[93].mz = 28.0f;										// 1인칭 손 위치 Z
 	Weapon[93].flashx = 9.0f;									// 총구 화염 위치 X
-	Weapon[93].flashy = 16.0f;									// 총구 화염 위치 Y
-	Weapon[93].flashz = 130.0f;									// 총구 화염 위치 Z
+	Weapon[93].flashy = 14.0f;									// 총구 화염 위치 Y
+	Weapon[93].flashz = 126.0f;									// 총구 화염 위치 Z
 	Weapon[93].yakkyou_px = 8.0f;								// 탄피 배출 위치 X
 	Weapon[93].yakkyou_py = 10.0f;								// 탄피 배출 위치 Y
 	Weapon[93].yakkyou_pz = 42.0f;								// 탄피 배출 위치 Z
@@ -4361,8 +4361,8 @@ void ParameterInfo::InitInfo()
 	Weapon[93].burstcnt = 0;									// 자동 사격
 	Weapon[93].scopemode = 5;									// 중거리 조준경
 	Weapon[93].size = 7.0f;										// 3인칭 모델 크기
-	Weapon[93].soundid = 88;										// 임시: M60 발사음 사용
-	Weapon[93].soundvolume = 90;								// 발사음 크기
+	Weapon[93].soundid = 87;										// 임시: M60 발사음 사용
+	Weapon[93].soundvolume = 90;							// 발사음 크기
 	Weapon[93].silencer = false;								// 소음기 여부
 	Weapon[93].WeaponP = WEAPONP_TWOHAND;						// 양손 무기
 	Weapon[93].ChangeWeaponID = -1;								// 발사모드 전환 없음

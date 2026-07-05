@@ -68,6 +68,10 @@
 
 #define HUMAN_RECOIL_MAX_Y DegreeToRadian(30.0f)
 
+// 실제 로직 1프레임당 반동 회복 배율.
+// object.cpp의 실제 회복과 렌더링 예측이 반드시 같은 값을 사용해야 한다.
+#define HUMAN_RECOIL_RECOVERY_RATE 0.85f
+
 #define HUMAN_MAPCOLLISION_R 2.8f							//!< 릐궴?긞긵궻뱰궫귟뵽믦?뵾똞
 #define HUMAN_MAPCOLLISION_HEIGHT 10.0f						//!< 릐궴?긞긵궻뱰궫귟뵽믦?뛼궠걁뭾갌뜕믴뱗걂
 #define HUMAN_MAPCOLLISION_ADD_HEIGHT_A 9.0f				//!< 릐궴?긞긵궻뱰궫귟뵽믦 믁돿빁?뛼궠걁뭾갌뷭??긞긵 SCHOOL 궸뜃귦궧귡걂
@@ -151,6 +155,11 @@ public:
 #define HUMAN_RENDER_WEAPON		0x08	// 손에 든 무기
 #define HUMAN_RENDER_ALL		(HUMAN_RENDER_UPPER | HUMAN_RENDER_LEG | HUMAN_RENDER_ARM | HUMAN_RENDER_WEAPON)
 
+// 미션 이벤트 사망 대상 분류
+#define MISSION_EVENT_TARGET_NONE	0
+#define MISSION_EVENT_TARGET_NEXT	1
+#define MISSION_EVENT_TARGET_END	2
+
 
 //! @brief 릐듖뿚긏깋긚
 class human : public object
@@ -200,6 +209,8 @@ protected:
 	int ReactionGunsightErrorRange;		//!< 뤖?궻뵿벍뚮뜼
 	bool Invincible;			//!< 뼰밎긲깋긐
 	bool isPlayer;				// ✨ 추가: 이 객체가 플레이어인지 여부
+	int mission_event_target_type;	// 사망 시 이벤트 진행에 영향을 주는 대상 종류
+	int mission_event_hp_multiplier;	// 이벤트 대상 최대 체력 배율
 	bool crouchflag;			// 앉기 상태
 	int sitlegmodel;			// 앉기 정지 다리 모델
 	int sitwalkmodel[TOTAL_SITWALKMODE];	// 앉기 이동 다리 모델
@@ -237,6 +248,20 @@ protected:
 	bool is_headshot_hit;
 	int render_parts_mask;		//!< 표시할 신체 파츠 마스크
 	int render_override_weapon_id;	//!< 1인칭 렌더링용 임시 무기 ID
+	int render_generation;		//!< 슬롯 재사용을 구분하는 렌더 세대 번호
+
+	// 렌더링에서만 사용하는 임시 위치.
+	// 실제 충돌/AI/사격 판정 좌표(pos_x/y/z)는 변경하지 않는다.
+	bool render_position_override;
+	float render_position_x;
+	float render_position_y;
+	float render_position_z;
+
+	// 렌더링에서만 사용하는 회전 보정값.
+	// 실제 조준/사격 판정 각도는 변경하지 않는다.
+	bool render_angle_offset_override;
+	float render_rotation_x_offset;
+	float render_view_y_offset;
 
 	int last_shot_fail_reason;
 
@@ -306,6 +331,11 @@ public:
 	virtual int GetRenderPartsMask();
 	void SetRenderOverrideWeaponID(int weapon_id);
 	int GetRenderOverrideWeaponID();
+	int GetRenderGeneration();
+	void SetRenderPositionOverride(float x, float y, float z);
+	void ClearRenderPositionOverride();
+	void SetRenderAngleOffset(float rotation_x_offset, float view_y_offset);
+	void ClearRenderAngleOffset();
 	void StartRenderWeaponChangeMotion(int weapon_id, int frames);
 	void StartSkillWeaponShotMotion(int weapon_id);
 	void ForceSelectWeaponSlotForSkillReturn(int id, int frames);
@@ -375,13 +405,22 @@ public:
 
 	void ResetBurstModeCnt();
 	virtual void Render(class D3DGraphics* d3dg, class ResourceManager* Resource, bool DrawArmOnly, bool player, bool NoModel);
-	virtual void SetIsPlayer(bool flag); // ✨ 추가
+	virtual void SetIsPlayer(bool flag); 
 	void SetCrouchFlag(bool flag);
 	bool GetCrouchFlag();
 	float GetRecoilYOffset();
-	void SetRecoilYOffset(float offset); // [✨ 이 줄을 추가하세요 ✨]
+	void SetRecoilYOffset(float offset); 
 	float GetRecoilXOffset();
 	void SetRecoilXOffset(float offset);
+
+	// 실제 반동값은 변경하지 않고 렌더링에 사용할 반동값만 계산한다.
+	void GetRenderRecoilOffset(
+		float alpha,
+		float* offset_x,
+		float* offset_y
+	);
+
+	void ClearDebugRecoil();
 
 	int GetHitEffectTimer();
 	void SetHitEffectTimer(int t);
@@ -439,8 +478,15 @@ public:
 	int GetSkillIronBodyTimer();
 
 	// 플레이어 스킬: 회복 / 전투 흡수
+	int GetBaseMaxHP();
 	int GetMaxHP();
 	bool HealHP(int value);
+
+	// 미션 이벤트 사망 대상
+	void ResetMissionEventTarget();
+	void SetMissionEventTarget(int target_type, int hp_multiplier, bool apply_hp_boost);
+	int GetMissionEventTargetType();
+	bool IsMissionEventTarget();
 	void StartSkillAbsorb(int frames);
 	void UpdateSkillAbsorb();
 	bool GetSkillAbsorbFlag();
@@ -510,6 +556,13 @@ protected:
 	int Loadbullets;	//!< 몧뭙릶
 	bool motionflag;	//!< 띆뷭댷벍뭷귩?궥긲깋긐
 
+	// Render-only transform. Logic, collision and pickup positions are unchanged.
+	bool render_transform_override;
+	float render_pos_x;
+	float render_pos_y;
+	float render_pos_z;
+	float render_rotation_x;
+	int render_generation;
 
 public:
 	weapon(class ParameterInfo *in_Param = NULL, float x = 0.0f, float y = 0.0f, float z = 0.0f, float rx = 0.0f, int id_param = 0, int nbs = 0, bool flag = false);
@@ -525,6 +578,9 @@ public:
 	virtual int StartReload();
 	virtual int RunReload();
 	virtual bool ResetWeaponParam(class ResourceManager *Resource, int id_param, int lnbs, int nbs);
+	virtual void SetRenderTransformOverride(float x, float y, float z, float rx);
+	virtual void ClearRenderTransformOverride();
+	virtual int GetRenderGeneration();
 	virtual int ProcessObject(class Collision *CollD);
 	virtual void Render(class D3DGraphics* d3dg, bool NoModel);
 };
@@ -545,6 +601,15 @@ protected:
 	float add_ry;				//!< 뷅궽궥뢢렡됷?쀊
 	int jump_cnt;				//!< 뷅궽궥뤵뤈긇긂깛긣
 
+	// Render-only transform for destroyed/flying map props.
+	bool render_transform_override;
+	float render_pos_x;
+	float render_pos_y;
+	float render_pos_z;
+	float render_rotation_x;
+	float render_rotation_y;
+	int render_generation;
+
 public:
 	smallobject(class ParameterInfo *in_Param = NULL, class MIFInterface *in_MIFdata = NULL, float x = 0.0f, float y = 0.0f, float z = 0.0f, float rx = 0.0f, int id_param = 0, signed short int p4 = 0, bool flag = false);
 	~smallobject();
@@ -552,10 +617,14 @@ public:
 	virtual void SetParamData(int id_param, signed short int p4, bool init);
 	virtual void GetParamData(int *id_param, signed short int *p4);
 	virtual int GetHP();
+	virtual float GetRotationY();
 	virtual float CollisionMap(class Collision *CollD);
 	virtual void HitBullet(int attacks);
 	virtual void HitGrenadeExplosion(int attacks);
 	virtual void Destruction();
+	virtual void SetRenderTransformOverride(float x, float y, float z, float rx, float ry);
+	virtual void ClearRenderTransformOverride();
+	virtual int GetRenderGeneration();
 	virtual int ProcessObject();
 	virtual void Render(class D3DGraphics* d3dg, bool NoModel);
 };
@@ -582,6 +651,7 @@ public:
 	virtual void SetParamData(int _attacks, int _penetration, float _speed, int _teamid, int _humanid, float _ontargetcnt, bool init);
 	virtual void GetPosData(float* x, float* y, float* z, float* rx, float* ry);
 	virtual void GetParamData(int* _attacks, int* _penetration, float* _speed, int* _teamid, int* _humanid, float* _ontargetcnt);
+	int GetLifeCount();
 	void SetSilencerFlag(bool flag);
 	bool GetSilencerFlag();
 	virtual int ProcessObject();
@@ -596,6 +666,14 @@ class grenade : public bullet
 	float move_z;		//!< Y렡댷벍쀊
 	int weapon_paramid;	//!< 일반 수류탄 / 충격 수류탄 구분용 무기 ID
 
+	// 렌더링에만 사용하는 보간 위치/회전. 실제 충돌 좌표는 변경하지 않는다.
+	bool render_transform_override;
+	float render_pos_x;
+	float render_pos_y;
+	float render_pos_z;
+	float render_rotation_x;
+	float render_rotation_y;
+
 public:
 	grenade(int modelid = -1, int textureid = -1);
 	~grenade();
@@ -603,6 +681,8 @@ public:
 	void GetParamData(float* _speed, int* _teamid, int* _humanid, float* _ontargetcnt);
 	int GetWeaponParamID();
 	float GetSpeed();
+	void SetRenderTransformOverride(float x, float y, float z, float rx, float ry);
+	void ClearRenderTransformOverride();
 	int ProcessObject(class Collision* CollD);
 	virtual void Render(D3DGraphics* d3dg, bool NoModel);
 };
@@ -626,6 +706,16 @@ protected:
 	int cnt;			//!< 긇긂깛긣
 	int type;			//!< 롰쀞
 
+	// Render-only interpolation state. Logic position and lifetime stay unchanged.
+	bool render_state_override;
+	float render_pos_x;
+	float render_pos_y;
+	float render_pos_z;
+	float render_rotation_texture;
+	float render_model_size;
+	float render_alpha;
+	int render_generation;
+
 public:
 	effect(float x = 0.0f, float y = 0.0f, float z = 0.0f, float size = 1.0f, float rotation = 0.0f, int texture = -1, int count = 0);
 	~effect();
@@ -635,6 +725,9 @@ public:
 	virtual int GetTextureID();
 	virtual void GetMove(float *mx, float *my, float *mz);
 	virtual bool GetCollideMapFlag();
+	virtual void GetRenderState(float* rotation, float* size, float* alpha, int* generation);
+	virtual void SetRenderStateOverride(float x, float y, float z, float rotation, float size, float alpha);
+	virtual void ClearRenderStateOverride();
 	virtual int ProcessObject();
 	virtual void Render(class D3DGraphics *d3dg, float camera_rx, float camera_ry, bool NoModel);
 };

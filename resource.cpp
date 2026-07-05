@@ -537,102 +537,111 @@ int ResourceManager::LoadWeaponSound()
 	int reloadsound[TOTAL_RELOAD_SOUND];
 
 	//긖긂깛긤긲?귽깑귩귏궴귕궲벶귒뜛귔
-	soundid[0] = SoundCtrl->LoadSound("data\\sound\\bang1.wav");  //glock
-	soundid[1] = SoundCtrl->LoadSound("data\\sound\\bang2.wav");  //psg
-	soundid[2] = SoundCtrl->LoadSound("data\\sound\\bang3.wav");  //de
-	soundid[3] = SoundCtrl->LoadSound("data\\sound\\bang4.wav");  //bar
-	soundid[4] = SoundCtrl->LoadSound("data\\sound\\bang5.wav");  //aug
-	soundid[5] = SoundCtrl->LoadSound("data\\sound\\ka.wav");
-	soundid[6] = SoundCtrl->LoadSound("data\\sound\\1\\ak47.wav");
-	soundid[7] = SoundCtrl->LoadSound("data\\sound\\2\\mp40.wav");
-	soundid[8] = SoundCtrl->LoadSound("data\\sound\\1\\awp.wav");
+	soundid[0] = SoundCtrl->LoadSound("data\\sound\\2\\mp5.wav");  //mp5
+	soundid[1] = SoundCtrl->LoadSound("data\\sound\\4\\psg.wav");  //psg
+	soundid[2] = SoundCtrl->LoadSound("data\\sound\\1\\deagle.wav");  //de
+	soundid[3] = SoundCtrl->LoadSound("data\\sound\\5\\m60.wav");  //m60
+	soundid[4] = SoundCtrl->LoadSound("data\\sound\\1\\m1911.wav");  //m1911
+	soundid[5] = SoundCtrl->LoadSound("data\\sound\\2\\mp5sd.wav"); // mp5sd
+
+	soundid[6] = SoundCtrl->LoadSound("data\\sound\\4\\ak47.wav");
+	soundid[7] = SoundCtrl->LoadSound("data\\sound\\5\\mp40.wav");
+	soundid[8] = SoundCtrl->LoadSound("data\\sound\\4\\awp.wav");
 	soundid[9] = SoundCtrl->LoadSound("data\\sound\\2\\p90.wav");
-	//soundid[9] = SoundCtrl->LoadSound("data\\sound\\1\\deagle.wav");
-	soundid[10] = SoundCtrl->LoadSound("data\\sound\\1\\famas.wav");
-	//soundid[13] = SoundCtrl->LoadSound("data\\sound\\1\\glock_01.wav");
-	soundid[11] = SoundCtrl->LoadSound("data\\sound\\2\\winchester.wav");
-	soundid[12] = SoundCtrl->LoadSound("data\\sound\\1\\m1_carbine.wav");
-	soundid[13] = SoundCtrl->LoadSound("data\\sound\\1\\m4a1.wav");
-	soundid[14] = SoundCtrl->LoadSound("data\\sound\\1\\m4a1sd.wav");
-	soundid[15] = SoundCtrl->LoadSound("data\\sound\\2\\svd.wav");
-	soundid[16] = SoundCtrl->LoadSound("data\\sound\\1\\mk14.wav");
-	soundid[17] = SoundCtrl->LoadSound("data\\sound\\1\\m249.wav");
-	soundid[18] = SoundCtrl->LoadSound("data\\sound\\1\\m1shot.wav");
-	soundid[19] = SoundCtrl->LoadSound("data\\sound\\1\\galil.wav");
-	soundid[20] = SoundCtrl->LoadSound("data\\sound\\2\\sig556.wav");
-	soundid[21] = SoundCtrl->LoadSound("data\\sound\\2\\sig556sd.wav");
+	soundid[10] = SoundCtrl->LoadSound("data\\sound\\3\\famas.wav");
+
+	soundid[11] = SoundCtrl->LoadSound("data\\sound\\5\\winchester.wav");
+	soundid[12] = SoundCtrl->LoadSound("data\\sound\\4\\m1_carbine.wav");
+	soundid[13] = SoundCtrl->LoadSound("data\\sound\\3\\m4a1.wav");
+	soundid[14] = SoundCtrl->LoadSound("data\\sound\\3\\m4a1sd.wav");
+	soundid[15] = SoundCtrl->LoadSound("data\\sound\\4\\svd.wav");
+
+	soundid[16] = SoundCtrl->LoadSound("data\\sound\\4\\mk14.wav");
+	soundid[17] = SoundCtrl->LoadSound("data\\sound\\5\\m249.wav");
+	soundid[18] = SoundCtrl->LoadSound("data\\sound\\5\\m1shot.wav");
+	soundid[19] = SoundCtrl->LoadSound("data\\sound\\4\\galil.wav");
+	soundid[20] = SoundCtrl->LoadSound("data\\sound\\3\\sig556.wav");
+
+	soundid[21] = SoundCtrl->LoadSound("data\\sound\\3\\sig556sd.wav");
 	soundid[22] = SoundCtrl->LoadSound("data\\sound\\1\\mac10.wav");
 	soundid[23] = SoundCtrl->LoadSound("data\\sound\\1\\mk23.wav");
 	soundid[24] = SoundCtrl->LoadSound("data\\sound\\1\\mk23sd.wav");
-	soundid[25] = SoundCtrl->LoadSound("data\\sound\\2\\scar.wav");
-	soundid[26] = SoundCtrl->LoadSound("data\\sound\\2\\scarsd.wav");
-	soundid[27] = SoundCtrl->LoadSound("data\\sound\\1\\mp7.wav");
-	soundid[28] = SoundCtrl->LoadSound("data\\sound\\1\\m29f.wav");
+	soundid[25] = SoundCtrl->LoadSound("data\\sound\\4\\scar.wav");
+
+	soundid[26] = SoundCtrl->LoadSound("data\\sound\\4\\scarsd.wav");
+	soundid[27] = SoundCtrl->LoadSound("data\\sound\\2\\mp7.wav");
+	soundid[28] = SoundCtrl->LoadSound("data\\sound\\1\\m92f.wav");
 	soundid[29] = SoundCtrl->LoadSound("data\\sound\\2\\pdw.wav");
-	soundid[30] = SoundCtrl->LoadSound("data\\sound\\2\\saiga.wav");
-	soundid[31] = SoundCtrl->LoadSound("data\\sound\\2\\spas.wav");
+	soundid[30] = SoundCtrl->LoadSound("data\\sound\\5\\saiga.wav");
+
+	soundid[31] = SoundCtrl->LoadSound("data\\sound\\5\\spas.wav");
 	soundid[32] = SoundCtrl->LoadSound("data\\sound\\2\\ump.wav");
 	soundid[33] = SoundCtrl->LoadSound("data\\sound\\2\\umpsd.wav");
 	soundid[34] = SoundCtrl->LoadSound("data\\sound\\1\\glock_18.wav");
-	soundid[35] = SoundCtrl->LoadSound("data\\sound\\2\\m1911.wav");
-	soundid[36] = SoundCtrl->LoadSound("data\\sound\\2\\mk23sd.wav");
-	soundid[37] = SoundCtrl->LoadSound("data\\sound\\2\\hk416.wav");
-	soundid[38] = SoundCtrl->LoadSound("data\\sound\\2\\hk416sd.wav");
-	soundid[39] = SoundCtrl->LoadSound("data\\sound\\2\\tar21.wav");
-	soundid[40] = SoundCtrl->LoadSound("data\\sound\\2\\g36k.wav");
-	soundid[41] = SoundCtrl->LoadSound("data\\sound\\2\\m16.wav");
+	soundid[35] = SoundCtrl->LoadSound("data\\sound\\1\\p38.wav");
+
+	soundid[36] = SoundCtrl->LoadSound("data\\sound\\3\\augsd.wav");
+	soundid[37] = SoundCtrl->LoadSound("data\\sound\\3\\hk416.wav");
+	soundid[38] = SoundCtrl->LoadSound("data\\sound\\3\\hk416sd.wav");
+	soundid[39] = SoundCtrl->LoadSound("data\\sound\\3\\tar21.wav");
+	soundid[40] = SoundCtrl->LoadSound("data\\sound\\3\\g36k.wav");
+
+	soundid[41] = SoundCtrl->LoadSound("data\\sound\\3\\m16.wav");
 	soundid[42] = SoundCtrl->LoadSound("data\\sound\\2\\mp9sd.wav");
 	soundid[43] = SoundCtrl->LoadSound("data\\sound\\3\\f2000sd.wav");
-	soundid[44] = SoundCtrl->LoadSound("data\\sound\\3\\kriss.wav");
-	soundid[45] = SoundCtrl->LoadSound("data\\sound\\3\\uzi.wav");
-	soundid[46] = SoundCtrl->LoadSound("data\\sound\\3\\b93r.wav");
-	soundid[47] = SoundCtrl->LoadSound("data\\sound\\3\\revolver.wav");
-	soundid[48] = SoundCtrl->LoadSound("data\\sound\\3\\jackhammer.wav");
-	soundid[49] = SoundCtrl->LoadSound("data\\sound\\3\\db.wav");
-	soundid[50] = SoundCtrl->LoadSound("data\\sound\\3\\wa2000.wav");
-	soundid[51] = SoundCtrl->LoadSound("data\\sound\\3\\minigun.wav");
-	soundid[52] = SoundCtrl->LoadSound("data\\sound\\4\\bar.wav");
+	soundid[44] = SoundCtrl->LoadSound("data\\sound\\2\\kriss.wav");
+	soundid[45] = SoundCtrl->LoadSound("data\\sound\\2\\uzi.wav");
+
+	soundid[46] = SoundCtrl->LoadSound("data\\sound\\1\\b93r.wav");
+	soundid[47] = SoundCtrl->LoadSound("data\\sound\\1\\revolver.wav");
+	soundid[48] = SoundCtrl->LoadSound("data\\sound\\5\\jackhammer.wav");
+	soundid[49] = SoundCtrl->LoadSound("data\\sound\\5\\db.wav");
+	soundid[50] = SoundCtrl->LoadSound("data\\sound\\4\\wa2000.wav");
+
+	soundid[51] = SoundCtrl->LoadSound("data\\sound\\5\\minigun.wav");
+	soundid[52] = SoundCtrl->LoadSound("data\\sound\\5\\bar.wav");
 	soundid[53] = SoundCtrl->LoadSound("data\\sound\\4\\kar98k.wav");
 	soundid[54] = SoundCtrl->LoadSound("data\\sound\\4\\m1garand.wav");
-	soundid[55] = SoundCtrl->LoadSound("data\\sound\\4\\ppsh.wav");
-	soundid[56] = SoundCtrl->LoadSound("data\\sound\\4\\stg44.wav");
-	soundid[57] = SoundCtrl->LoadSound("data\\sound\\4\\thompson.wav");
-	soundid[58] = SoundCtrl->LoadSound("data\\sound\\4\\m950.wav");
-	soundid[59] = SoundCtrl->LoadSound("data\\sound\\4\\usas.wav");
+	soundid[55] = SoundCtrl->LoadSound("data\\sound\\5\\ppsh.wav");
+
+	soundid[56] = SoundCtrl->LoadSound("data\\sound\\5\\stg44.wav");
+	soundid[57] = SoundCtrl->LoadSound("data\\sound\\5\\thompson.wav");
+	soundid[58] = SoundCtrl->LoadSound("data\\sound\\1\\m950.wav");
+	soundid[59] = SoundCtrl->LoadSound("data\\sound\\5\\usas.wav");
 	soundid[60] = SoundCtrl->LoadSound("data\\sound\\4\\springfield.wav");
-	soundid[61] = SoundCtrl->LoadSound("data\\sound\\4\\mg42.wav");
-	soundid[62] = SoundCtrl->LoadSound("data\\sound\\3\\throw.wav");
-	soundid[63] = SoundCtrl->LoadSound("data\\sound\\3\\bizon.wav");
-	soundid[64] = SoundCtrl->LoadSound("data\\sound\\3\\vz61.wav");
-	soundid[65] = SoundCtrl->LoadSound("data\\sound\\3\\cf05.wav");
-	soundid[66] = SoundCtrl->LoadSound("data\\sound\\3\\ar57.wav");
+
+	soundid[61] = SoundCtrl->LoadSound("data\\sound\\5\\mg42.wav");
+	soundid[62] = SoundCtrl->LoadSound("data\\sound\\throw.wav");
+	soundid[63] = SoundCtrl->LoadSound("data\\sound\\2\\bizon.wav");
+	soundid[64] = SoundCtrl->LoadSound("data\\sound\\1\\vz61.wav");
+	soundid[65] = SoundCtrl->LoadSound("data\\sound\\1\\cf05.wav");
+
+	soundid[66] = SoundCtrl->LoadSound("data\\sound\\2\\ar57.wav");
 	soundid[67] = SoundCtrl->LoadSound("data\\sound\\2\\k1a.wav");
-	soundid[68] = SoundCtrl->LoadSound("data\\sound\\2\\k2c.wav");
-	soundid[69] = SoundCtrl->LoadSound("data\\sound\\1\\aug.wav");
+	soundid[68] = SoundCtrl->LoadSound("data\\sound\\4\\k2c.wav");
+	soundid[69] = SoundCtrl->LoadSound("data\\sound\\3\\aug.wav");
 	soundid[70] = SoundCtrl->LoadSound("data\\sound\\1\\glock_01.wav");
-	soundid[71] = SoundCtrl->LoadSound("data\\sound\\1\\glock_01_SD.wav"); 
-	soundid[72] = SoundCtrl->LoadSound("data\\sound\\3\\b93rsd.wav");
-	soundid[73] = SoundCtrl->LoadSound("data\\sound\\3\\vz61sd.wav");
+
+	soundid[71] = SoundCtrl->LoadSound("data\\sound\\1\\glock_01_SD.wav");
+	soundid[72] = SoundCtrl->LoadSound("data\\sound\\1\\b93rsd.wav");
+	soundid[73] = SoundCtrl->LoadSound("data\\sound\\1\\vz61sd.wav");
 	soundid[74] = SoundCtrl->LoadSound("data\\sound\\2\\mp9.wav");
 	soundid[75] = SoundCtrl->LoadSound("data\\sound\\1\\mac10sd.wav");
+
 	soundid[76] = SoundCtrl->LoadSound("data\\sound\\2\\p90sd.wav");
 	soundid[77] = SoundCtrl->LoadSound("data\\sound\\2\\pdwsd.wav");
-	soundid[78] = SoundCtrl->LoadSound("data\\sound\\3\\krisssd.wav");
-	soundid[79] = SoundCtrl->LoadSound("data\\sound\\3\\uzisd.wav");
-	soundid[80] = SoundCtrl->LoadSound("data\\sound\\3\\bizonsd.wav");
-	soundid[81] = SoundCtrl->LoadSound("data\\sound\\1\\ak47sd.wav");
-	soundid[82] = SoundCtrl->LoadSound("data\\sound\\1\\famassd.wav");
-	soundid[83] = SoundCtrl->LoadSound("data\\sound\\2\\m16sd.wav");
-	soundid[84] = SoundCtrl->LoadSound("data\\sound\\2\\g36ksd.wav");
-	soundid[85] = SoundCtrl->LoadSound("data\\sound\\2\\tar21sd.wav");
-	soundid[86] = SoundCtrl->LoadSound("data\\sound\\1\\augsd.wav");
-	soundid[87] = SoundCtrl->LoadSound("data\\sound\\4\\kar98s.wav");
-	soundid[88] = SoundCtrl->LoadSound("data\\sound\\5\\dp28.wav");
+	soundid[78] = SoundCtrl->LoadSound("data\\sound\\2\\krisssd.wav");
+	soundid[79] = SoundCtrl->LoadSound("data\\sound\\2\\uzisd.wav");
+	soundid[80] = SoundCtrl->LoadSound("data\\sound\\2\\bizonsd.wav");
 
-	//soundid[42] = SoundCtrl->LoadSound("data\\sound\\2\\mp9.wav");
-	//soundid[21] = SoundCtrl->LoadSound("data\\sound\\1\\mk14sd.wav");
-	//soundid[40] = SoundCtrl->LoadSound("data\\sound\\2\\grenade.wav");
+	soundid[81] = SoundCtrl->LoadSound("data\\sound\\4\\ak47sd.wav");
+	soundid[82] = SoundCtrl->LoadSound("data\\sound\\3\\famassd.wav");
+	soundid[83] = SoundCtrl->LoadSound("data\\sound\\3\\m16sd.wav");
+	soundid[84] = SoundCtrl->LoadSound("data\\sound\\3\\g36ksd.wav");
+	soundid[85] = SoundCtrl->LoadSound("data\\sound\\3\\tar21sd.wav");
 
+	soundid[86] = SoundCtrl->LoadSound("data\\sound\\4\\kar98s.wav");
+	soundid[87] = SoundCtrl->LoadSound("data\\sound\\5\\dp28.wav");
 
 
 	// 기존 단일 재장전 사운드는 사용하지 않는다.

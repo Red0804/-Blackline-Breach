@@ -38,6 +38,8 @@
 #define MAINMENU_SCALE_RAW ((float)GameConfig.GetScreenHeight() / 720.0f)
 #define MAINMENU_SCALE ((MAINMENU_SCALE_RAW < 1.0f) ? 1.0f : ((MAINMENU_SCALE_RAW > 1.5f) ? 1.5f : MAINMENU_SCALE_RAW))
 
+#define MAX_FULLMAP_FLOORS 32
+
 #define TOTAL_MENUITEMS 8								//!< 긽긦깄?1됪뽋궸?렑궥귡?긞긘깈깛릶
 
 #define MAINMENU_ROW_H ((int)(30 * MAINMENU_SCALE))
@@ -126,10 +128,10 @@
 
 #ifdef ENABLE_MENUOPTIONS
  #define OPTIONS_P1_W 340															//!< 긆긵긘깈깛됪뽋 No.1?븴
- #define OPTIONS_P1_H (30*6)														//!< 긆긵긘깈깛됪뽋 No.1?뛼궠
+ #define OPTIONS_P1_H (30*7)														//!< 긆긵긘깈깛됪뽋 No.1?뛼궠
  #define OPTIONS_P1_X (GameConfig.GetScreenWidth() - 360)							//!< 긆긵긘깈깛됪뽋 No.1?X띆뷭
  #define OPTIONS_P1_Y (MAINMENU_Y+MAINMENU_H - OPTIONS_P1_H - 24)					//!< 긆긵긘깈깛됪뽋 No.1?Y띆뷭
-#define OPTIONS_P1_DATAS 6															//!< 옵션 메인 항목 개수
+#define OPTIONS_P1_DATAS 7															//!< 옵션 메인 항목 개수
  #define OPTIONS_P2_W 600															//!< 긆긵긘깈깛됪뽋 No.2?븴
  #define OPTIONS_P2_H 360															//!< 긆긵긘깈깛됪뽋 No.2?뛼궠
  #define OPTIONS_P2_X ((GameConfig.GetScreenWidth() - OPTIONS_P2_W)/2)				//!< 긆긵긘깈깛됪뽋 No.2?X띆뷭
@@ -140,8 +142,9 @@
  #define OPTIONS_P3_X ((GameConfig.GetScreenWidth() - OPTIONS_P3_W)/2)				//!< 긆긵긘깈깛됪뽋 No.3?X띆뷭
  #define OPTIONS_P3_Y (105 + (GameConfig.GetScreenHeight()-105 - OPTIONS_P3_H)/2)	//!< 긆긵긘깈깛됪뽋 No.3?Y띆뷭
  #define OPTIONS_P3_DATAS 1															//!< 긆긵긘깈깛됪뽋 No.3?깏깛긏긡긌긚긣궻릶
-#define OPTIONS_ADVANCED_DATAS 21  // Gameplay Setting 항목 개수
-#define OPTIONS_TOGGLE_DATAS 10     // Toggle Setting 항목 개수
+#define OPTIONS_ADVANCED_DATAS 22  // Gameplay Setting 항목 개수
+#define OPTIONS_HUD_DATAS 7         // HUD Setting 항목 개수
+#define OPTIONS_TOGGLE_DATAS 7      // Toggle Setting 항목 개수
 #define OPTIONS_CROSSHAIR_DATAS 23  // style10 + color10 + outline + reset + back
 
 // SKILLS 화면
@@ -265,6 +268,9 @@ class mainmenu : public D3Dscene
 	bool IsDraggingSlider;     // 슬라이더 드래그 중인지 여부
 	int DraggingID;            // 드래그 중인 항목 번호
 
+	MenuLinkTextData Options_HudLinkData[OPTIONS_HUD_DATAS];
+	int Options_HudID;         // HUD Setting 현재 선택 항목 ID
+
 	MenuLinkTextData Options_ToggleLinkData[OPTIONS_TOGGLE_DATAS];
 	int Options_ToggleID;      // Toggle Setting 현재 선택 항목 ID
 
@@ -350,12 +356,75 @@ class maingame : public D3Dscene
 	float draw_camera_rx;
 	float draw_camera_ry;
 
+	// 고정 33FPS 로직 사이의 플레이어 이동을 렌더링에서만 보간한다.
+	float render_interpolation_alpha;
+	bool render_interpolation_valid;
+	class human* render_previous_player;
+	float render_previous_player_x;
+	float render_previous_player_y;
+	float render_previous_player_z;
+
+	// 이번 렌더에서 실제로 표시되는 플레이어 위치.
+	// 캐릭터에 붙는 스킬 이펙트와 갈고리 시작점도 같은 위치를 사용한다.
+	float render_visual_player_x;
+	float render_visual_player_y;
+	float render_visual_player_z;
+	float render_visual_player_rx;
+	float render_visual_player_ry;
+	bool render_visual_player_valid;
+
+	// 렌더 프레임에서 먼저 읽은 마우스 이동량.
+	// 화면에는 즉시 반영하고 다음 로직 틱에서 실제 조준 방향에도 동일하게 반영한다.
+	int render_pending_mouse_x;
+	int render_pending_mouse_y;
+	bool render_previous_crouch;
+	bool render_previous_dead;
+	bool render_previous_dead_motion;
+	bool render_previous_f1mode;
+	bool render_previous_debugmode;
+
+	// 조준 확대의 렌더 전용 보간 상태.
+	// 맵/포커스/플레이어/시점/생사 전환 때 이전 화면의 값을 이어받지 않는다.
+	float render_smooth_zoom;
+	int render_previous_scope;
+	int render_previous_weapon;
+	bool render_view_state_valid;
+	class human* render_view_state_player;
+	bool render_view_state_dead;
+	bool render_view_state_dead_motion;
+	bool render_view_state_f1mode;
+	bool render_view_state_debugmode;
+
 	bool ShowInfo_Debugmode;	//!< 띆뷭궶궵귩?렑궥귡긢긫긞긏긾?긤
 	bool Camera_Debugmode;		//!< 긇긽깋긢긫긞긏긾?긤
 	bool tag;					//!< 긆긳긙긃긏긣궻?긐귩?렑
 	bool radar;
 	bool ShowFullMap;
-	float FullMapWorldR;   // 전체 지도 확대/축소 범위. 500.0f가 현재 기본/최대 확대 상태
+	float FullMapWorldR;   // 전체 지도 확대/축소 범위. 기본 500.0f, 최대 확대 300.0f
+
+	// 전체 지도에서만 사용하는 수동 층 선택 상태.
+	// AUTO에서는 안정화된 플레이어 바닥 기준을 사용하고, 수동 선택 시에만 선택 층 높이를 고정한다.
+	// 수동 선택으로 현재 층까지 돌아오면 CURRENT 상태 없이 AUTO로 복귀한다.
+	bool FullMapFloorManual;
+	int FullMapFloorOffset;
+	int FullMapFloorCurrentIndex;
+	int FullMapFloorSelectedIndex;
+	int FullMapFloorCount;
+	float FullMapFloorHeight[MAX_FULLMAP_FLOORS];
+	float FullMapFloorReferenceY;
+
+	// 전체 지도를 연 채 이동할 때 층 목록을 다시 탐색하기 위한 마지막 기준 위치.
+	// 수동으로 선택한 실제 층 높이는 재탐색 뒤 가장 가까운 층 후보에 다시 연결한다.
+	bool FullMapFloorSyncValid;
+	float FullMapFloorSyncX;
+	float FullMapFloorSyncY;
+	float FullMapFloorSyncZ;
+
+	// 미니맵과 AUTO 전체 지도가 실제 카메라의 점프/시선 높이를 따라가지 않도록
+	// 플레이어가 서 있는 바닥을 기준으로 유지하는 레이더 전용 높이.
+	bool RadarFloorReferenceValid;
+	float RadarFloorReferenceY;
+	int RadarFloorReferencePlayerID;
 	bool wireframe;
 	bool nomodel;				//!< 긾긢깑?됪긲깋긐
 	bool CenterLine;			//!< 3D뗴듩궸뭷륲멄귩?렑
@@ -795,6 +864,7 @@ class maingame : public D3Dscene
 	bool ConfirmPlayerSkillTargeting(human* myHuman);
 	bool HandlePlayerSkillTargetingInput(human* myHuman, bool skill_key_down);
 	bool UpdatePlayerSkillAimTarget(human* myHuman, float max_dist, bool need_ground, float* out_x, float* out_y, float* out_z);
+	bool UpdatePlayerSkillAimTargetVisualRaw(human* myHuman, float max_dist, bool need_ground, float* out_x, float* out_y, float* out_z);
 	bool IsPlayerSkillGroundTargetValid(int skilltype, float x, float y, float z);
 	float GetPlayerSkillTargetPreviewHeight(int skilltype);
 	void RenderPlayerSkillTargetPreview(human* myHuman);
@@ -859,14 +929,30 @@ class maingame : public D3Dscene
 	int time_render;				//!< ?됪궻룉뿚렄듩
 	GameInfo MainGameInfo;			//!< 깏긗깑긣뾭듖뿚긏깋긚
 	bool CheckInputControl(int CheckKey, int mode);
+	bool CheckInputControlRealtime(int CheckKey);
 	void InputPlayer(human *myHuman, int mouse_x, int mouse_y, float MouseSensitivity);
 	void InputViewCamera(int mouse_x, int mouse_y, float MouseSensitivity);
 	void CleanupMissionRuntime();   // 추가
 	void Render3D();
 	void Render2D();
 	bool GetRadarPos(float in_x, float in_y, float in_z, int RadarPosX, int RadarPosY, int RadarSize, float RadarWorldR, int* out_x, int* out_y, float* local_y, bool check);
+	void ResetFullMapFloorSelection();
+	bool GetRadarSupportFloorHeight(human* radar_player, float* floor_y);
+	void UpdateRadarFloorReference(human* radar_player);
+	void BuildFullMapFloorList(float player_x, float player_y, float player_z);
+	void SyncFullMapFloorSelection(human* myHuman);
+	bool ChangeFullMapFloor(int direction, human* myHuman);
+	int radar_human_height_layer[MAX_HUMAN];
+	int GetRadarHeightLayer(float local_y);
+	int GetRadarHeightLayerWithHysteresis(float local_y, int previous_layer);
+	void DrawRadarHeightMarker(int x, int y, int height_layer, int color, int marker_size);
+	void DrawRadarPlayerDirectionMarker(int x, int y, float dir_x, float dir_y, int color);
 	bool IsRadarTargetVisibleToPlayer(human* radar_player, float target_x, float target_y, float target_z);
 	bool IsRadarTargetVisibleToTeam(int teamid, float target_x, float target_y, float target_z);
+	bool GetMissionEventPoint(signed short int p4, pointdata* out_data);
+	bool DoesMissionEventPathEndMission(signed short int start_p4);
+	void SetupMissionEventTargets();
+	bool IsMissionEventTargetActive(human* target);
 	void RenderRadar();
 
 #ifdef ENABLE_DEBUGCONSOLE
@@ -880,12 +966,22 @@ class maingame : public D3Dscene
 	void InputConsole();
 	void ProcessConsole();
 	void RenderConsole();
+	bool IsDebugMuzzleAdjustInputActive();
+	void ProcessDebugMuzzleInput();
+	void RenderDebugWeaponOverlay();
 #endif
 
 public:
 	maingame();
 	~maingame();
 	void SetShowInfoFlag(bool flag);
+	void SetRenderInterpolationAlpha(float alpha);
+	void PollRenderMouseInput();
+	void CaptureRenderInterpolationState();
+	void ResetRenderInterpolation();
+	void HandleApplicationFocusChange(bool active);
+	void InvalidatePlayerRenderInterpolation();
+	void GetSkillVisualHumanPosition(human* target, float* x, float* y, float* z);
 	void SyncDrawCamera();
 	void ProcessVisualTimers();
 	int GetGameSpeed();
