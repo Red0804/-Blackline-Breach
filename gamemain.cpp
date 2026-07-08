@@ -74,13 +74,14 @@ GameInfo GameInfoData;				//!< 긒??궻륉뫴
 // TRAINING 미션 폴더
 #define TRAINING_BEGINNER_DIR "training\\beginner"
 #define TRAINING_ADVANCED_DIR "training\\advanced"
+#define TRAINING_EXPERT_DIR "training\\expert"
 #define TRAINING_SKILL_DIR "training\\skill"
 
 typedef struct {
 	char name[TRAINING_MISSION_NAME_MAX];
 	char path[MAX_PATH];
 	int order;
-	int group;	// 0: beginner, 1: advanced, 2: skill
+	int group;	// 0: beginner, 1: advanced, 2: expert, 3: skill
 } TrainingMissionInfo;
 
 static TrainingMissionInfo TrainingMissionData[MAX_TRAINING_MISSION];
@@ -218,7 +219,8 @@ static void LoadTrainingMissionList()
 	// training\skill\*.mif
 	LoadTrainingMissionFolder(TRAINING_BEGINNER_DIR, 0);
 	LoadTrainingMissionFolder(TRAINING_ADVANCED_DIR, 1);
-	LoadTrainingMissionFolder(TRAINING_SKILL_DIR, 2);
+	LoadTrainingMissionFolder(TRAINING_EXPERT_DIR, 2);
+	LoadTrainingMissionFolder(TRAINING_SKILL_DIR, 3);
 
 	SortTrainingMissionList();
 }
@@ -279,10 +281,10 @@ static bool CheckTrainingMissionVisibleByTab(int data_index, int tab)
 	}
 
 	if (tab == TRAINING_TAB_SKILL) {
-		return (TrainingMissionData[data_index].group == 2);
+		return (TrainingMissionData[data_index].group == 3);
 	}
 
-	return (TrainingMissionData[data_index].group != 2);
+	return (TrainingMissionData[data_index].group != 3);
 }
 
 static int GetTrainingMissionCountByTab(int tab)
@@ -6140,7 +6142,7 @@ void maingame::InputPlayer(human* myHuman, int mouse_x, int mouse_y, float Mouse
 		mouse_ry -= pull_down;
 
 
-		//キ??作による向きを計算
+		// 키 조작에 의한 방향 계산 부분
 		if ((CheckInputControl(KEY_TURNUP, 0) == true) && (CheckInputControl(KEY_TURNDOWN, 0) == false)) { add_camera_ry += (INPUT_ARROWKEYS_ANGLE - add_camera_ry) * 0.2f; }
 		else if ((CheckInputControl(KEY_TURNDOWN, 0) == true) && (CheckInputControl(KEY_TURNUP, 0) == false)) { add_camera_ry += (INPUT_ARROWKEYS_ANGLE * -1 - add_camera_ry) * 0.2f; }
 		else { add_camera_ry = 0.0f; }
@@ -6757,6 +6759,10 @@ void maingame::InputPlayer(human* myHuman, int mouse_x, int mouse_y, float Mouse
 			if (IsPlayerTemporarySkillWeaponActive() == true) {
 				ClearGrenadeTrajectoryToggle();
 			}
+			// ★ 추가: 스킬로 소환된 DP-28인 경우 무기 버리기 무시
+			else if (IsPlayerDP28SkillWeaponActive() == true) {
+				// 아무 동작도 하지 않음 (버리기 차단)
+			}
 			else if (isMinigunBusy == false) {
 				ObjMgr.DumpWeapon(PlayerID);
 			}
@@ -7207,7 +7213,11 @@ void maingame::Process()
 // 플레이어 1인칭 손 모션/무기 렌더링만 임시 스킬 무기 기준으로 바꾼다.
 // 반드시 ObjMgr.Process() 전에 설정해야 손 모양도 바뀐다.
 	if (myHuman != NULL) {
-		if (IsPlayerTemporarySkillWeaponVisible() == true) {
+		// 플레이어가 사망한 경우 렌더링 오버라이드를 해제하여 정상적인 시체 모션이 나오도록 수정
+		if (myHuman->GetHP() <= 0) {
+			myHuman->SetRenderOverrideWeaponID(-1);
+		}
+		else if (IsPlayerTemporarySkillWeaponVisible() == true) {
 			myHuman->SetRenderOverrideWeaponID(GetPlayerTemporarySkillWeaponID());
 		}
 		else if ((myHuman->GetSkillRobotExecuteFlag() == true) ||
@@ -7596,25 +7606,21 @@ void maingame::Render3D()
 		float next_add_ry = 0.0f;
 
 		if ((turn_left == true) && (turn_right == false)) {
-			next_add_rx =
-				add_camera_rx +
-				(INPUT_ARROWKEYS_ANGLE * -1.0f - add_camera_rx) * 0.2f;
+			next_add_rx = add_camera_rx + (INPUT_ARROWKEYS_ANGLE - add_camera_rx) * 0.01f; // 양수로 수정
 		}
 		else if ((turn_right == true) && (turn_left == false)) {
-			next_add_rx =
-				add_camera_rx +
-				(INPUT_ARROWKEYS_ANGLE - add_camera_rx) * 0.2f;
+			next_add_rx = add_camera_rx + (INPUT_ARROWKEYS_ANGLE * -1.0f - add_camera_rx) * 0.01f; // 음수로 수정
 		}
 
 		if ((turn_up == true) && (turn_down == false)) {
 			next_add_ry =
 				add_camera_ry +
-				(INPUT_ARROWKEYS_ANGLE - add_camera_ry) * 0.2f;
+				(INPUT_ARROWKEYS_ANGLE - add_camera_ry) * 0.01f;
 		}
 		else if ((turn_down == true) && (turn_up == false)) {
 			next_add_ry =
 				add_camera_ry +
-				(INPUT_ARROWKEYS_ANGLE * -1.0f - add_camera_ry) * 0.2f;
+				(INPUT_ARROWKEYS_ANGLE * -1.0f - add_camera_ry) * 0.01f;
 		}
 
 		render_key_yaw_offset =
@@ -9553,12 +9559,12 @@ void maingame::Render2D()
 				// 우측 무기 HUD 안에 들어가도록 글자 폭만 줄인다.
 				int slot_font_width = 10;
 				int slot_font_height = 14;
-				const int slot_text_max_width = HUDA_WEAPON_SIZEW * 32 - 24;
+				const int slot_text_max_width = HUDA_WEAPON_SIZEW * 32 - 40;
 
 				int slot_text_len = (int)strlen(slot_text);
 				if ((slot_text_len > 0) && (slot_text_len * slot_font_width > slot_text_max_width)) {
 					slot_font_width = slot_text_max_width / slot_text_len;
-					if (slot_font_width < 8) { slot_font_width = 8; }
+					if (slot_font_width < 6) { slot_font_width = 6; }
 					if (slot_font_width > 10) { slot_font_width = 10; }
 				}
 

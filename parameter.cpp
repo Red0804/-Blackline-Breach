@@ -1491,7 +1491,7 @@ void ParameterInfo::InitInfo()
 	Weapon[23].scopemode = 4;        				// 스코프 모드
 	Weapon[23].size = 7.0f;          				// 3인칭 모델 크기
 	Weapon[23].soundid = 12;          				// 발사음 ID
-	Weapon[23].soundvolume = 80;     				// 발사음 크기
+	Weapon[23].soundvolume = 90;     				// 발사음 크기
 	Weapon[23].silencer = false;     				// 소음기 여부
 	Weapon[23].WeaponP = 0;          				// 무기 종류
 	Weapon[23].ChangeWeaponID = -1;  				// 발사모드 전환 시 바뀔 무기 ID
@@ -1655,7 +1655,7 @@ void ParameterInfo::InitInfo()
 	Weapon[27].scopemode = 6;        				// 스코프 모드
 	Weapon[27].size = 7.0f;          				// 3인칭 모델 크기
 	Weapon[27].soundid = 16;          				// 발사음 ID
-	Weapon[27].soundvolume = 80;     				// 발사음 크기
+	Weapon[27].soundvolume = 90;     				// 발사음 크기
 	Weapon[27].silencer = false;     				// 소음기 여부
 	Weapon[27].WeaponP = 0;          				// 무기 종류
 	Weapon[27].ChangeWeaponID = -1;  				// 발사모드 전환 시 바뀔 무기 ID
@@ -1696,7 +1696,7 @@ void ParameterInfo::InitInfo()
 	Weapon[28].scopemode = 2;        				// 스코프 모드
 	Weapon[28].size = 7.0f;          				// 3인칭 모델 크기
 	Weapon[28].soundid = 29;          				// 발사음 ID
-	Weapon[28].soundvolume = 80;     				// 발사음 크기
+	Weapon[28].soundvolume = 90;     				// 발사음 크기
 	Weapon[28].silencer = false;     				// 소음기 여부
 	Weapon[28].WeaponP = 0;          				// 무기 종류
 	Weapon[28].ChangeWeaponID = 81;  				// 발사모드 전환 시 바뀔 무기 ID
@@ -2823,7 +2823,7 @@ void ParameterInfo::InitInfo()
 	Weapon[56].blazings = 7.5;					// 연사 속도
 	Weapon[56].speed = 11;						// 탄속
 	Weapon[56].nbsmax = 20;						// 최대 장탄수
-	Weapon[56].reloads = 91;					// 재장전 시간
+	Weapon[56].reloads = 95;					// 재장전 시간
 	Weapon[56].reaction = 9;					// 반동
 	Weapon[56].ErrorRangeMIN = 0;					// 최소 명중률 오차
 	Weapon[56].ErrorRangeMAX = 20;					// 최대 명중률 오차
@@ -3008,7 +3008,7 @@ void ParameterInfo::InitInfo()
 	Weapon[60].scopemode = 0;        				// 스코프 모드
 	Weapon[60].size = 7.0f;          				// 3인칭 모델 크기
 	Weapon[60].soundid = 54;          				// 발사음 ID
-	Weapon[60].soundvolume = 80;     				// 발사음 크기
+	Weapon[60].soundvolume = 90;     				// 발사음 크기
 	Weapon[60].silencer = false;     				// 소음기 여부
 	Weapon[60].WeaponP = 0;          				// 무기 종류
 	Weapon[60].ChangeWeaponID = -1;  				// 발사모드 전환 시 바뀔 무기 ID
@@ -3069,7 +3069,7 @@ void ParameterInfo::InitInfo()
 	Weapon[62].blazings = 4;					// 연사 속도
 	Weapon[62].speed = 10;						// 탄속
 	Weapon[62].nbsmax = 71;						// 최대 장탄수
-	Weapon[62].reloads = 67;					// 재장전 시간
+	Weapon[62].reloads = 95;					// 재장전 시간
 	Weapon[62].reaction = 6;					// 반동
 	Weapon[62].ErrorRangeMIN = 0;					// 최소 명중률 오차
 	Weapon[62].ErrorRangeMAX = 25;					// 최대 명중률 오차
@@ -4459,7 +4459,6 @@ void ParameterInfo::InitInfo()
 	SET_RELOAD_SOUND(6, RELOAD_CLASSIC_SMG, -1); // MAC10
 	SET_RELOAD_SOUND(33, RELOAD_CLASSIC_SMG, -1); // MP40
 	SET_RELOAD_SOUND(48, RELOAD_CLASSIC_SMG, -1); // UZI
-	SET_RELOAD_SOUND(62, RELOAD_CLASSIC_SMG, -1); // PPSH-41
 	SET_RELOAD_SOUND(65, RELOAD_CLASSIC_SMG, -1); // Thompson
 	SET_RELOAD_SOUND(79, RELOAD_CLASSIC_SMG, -1); // MAC10 SD
 	SET_RELOAD_SOUND(83, RELOAD_CLASSIC_SMG, -1); // UZI SD
@@ -4551,6 +4550,7 @@ void ParameterInfo::InitInfo()
 	SET_RELOAD_SOUND(49, RELOAD_DRUM_SHOTGUN, -1); // Jackhammer, 나중에 drum_shotgun으로 분리 가능
 	SET_RELOAD_SOUND(50, RELOAD_DOUBLE_BARREL, -1); // Double Barrel
 	SET_RELOAD_SOUND(56, RELOAD_BAR, -1); // BAR
+	SET_RELOAD_SOUND(62, RELOAD_BAR, -1); // PPSH-41
 	SET_RELOAD_SOUND(58, RELOAD_KAR98_CLIP, -1); // KAR98K, 임시. 나중에 kar98_clip으로 분리 가능
 	SET_RELOAD_SOUND(60, RELOAD_GARAND_CLIP, -1); // M1 Garand
 	SET_RELOAD_SOUND(66, RELOAD_SHOTGUN_MAG_EMPTY, RELOAD_SHOTGUN_MAG_TACTICAL); // USAS-12

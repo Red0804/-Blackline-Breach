@@ -2143,22 +2143,41 @@ bool AIcontrol::CautionMain()
 	else if( soundlists > 0 ){		//돶궕빓궞궑궫
 		cautioncnt = 160;					//똸둀귩띋둎
 	}
-	else if( cautioncnt == 0 ){		//똸둀귩뢎뿹궥귡궶귞
-		if( CheckTargetPos(true) == false ){				//똸둀둎럑뭤?귝귟뿣귢궲궋귡궔
-			MoveTarget(true);				//똸둀둎럑뭤?궸뗟궱궘
-		}
-		else{
+	else if (cautioncnt <= 0) {		// cautioncnt가 0 이하로 내려가면 타임아웃 카운터로 사용
+
+		if (CheckTargetPos(true) == true) {
+			// 케이스 1: 무사히 제자리에 도착한 경우
 			newbattlemode = AI_NORMAL;
 			FaceCaution_flag = false;
 			FaceCaution_rx = 0.0f;
 
-			//똸둀뫲궭긬긚궶귞렅귉릋귕귡
+			// 원래 있던 내비게이션 경로 재개 (순찰 경로일 때만)
 			pointdata pdata;
 			MoveNavi->GetPathPointData(&pdata);
-			if( (pdata.p1 == POINT_P1TYPE_AIPATH)&&(pdata.p2 == 4) ){
+			if ((pdata.p1 == POINT_P1TYPE_AIPATH) && (pdata.p2 == 4)) {
 				MoveNavi->MovePathNextState();
 				MoveNavi->MovePathNowState();
 			}
+		}
+		else if (cautioncnt <= -150) {
+			// 케이스 2: 5초(150프레임) 초과로 도달 실패(타임아웃)된 경우
+			newbattlemode = AI_NORMAL;
+			FaceCaution_flag = false;
+			FaceCaution_rx = 0.0f;
+
+			// 지형에 낀 상태일 확률이 높으므로 강제로 다음 경로로 유도
+			// 단, 스크립트/이벤트 이동이 아닌 일반 AI 순찰 경로일 때만 스킵 허용
+			pointdata pdata;
+			MoveNavi->GetPathPointData(&pdata);
+			if ((pdata.p1 == POINT_P1TYPE_AIPATH) && (pdata.p2 == 4)) {
+				MoveNavi->MovePathNextState();
+				MoveNavi->MovePathNowState();
+			}
+		}
+		else {
+			// 케이스 3: 아직 5초가 안 지났고 목표를 향해 계속 이동(벽에 비비기 포함) 시도
+			MoveTarget(true);
+			cautioncnt -= 1;  // 타임아웃 카운터 감소
 		}
 	}
 	else if( (cautioncnt < 100)&&(FaceCaution_flag == false) ){		//100긲깒??귩먛궯궫귞갂깋깛??궸똸둀뢎뿹걁긇긂깛긣갌0궸걂

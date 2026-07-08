@@ -5100,13 +5100,30 @@ void HumanMotionControl::ProcessObject(float rotation_x, float armrotation_y, in
 			else{ reaction_y = 0.0f; }
 		}
 	}
-	else{
-		if( (DegreeToRadian(-2.0f) < reaction_y)&&(reaction_y < DegreeToRadian(2.0f)) ){
-			reaction_y = 0.0f;
+	else
+	{
+		// 1프레임당 이동할 고정 각도 (속도 조절 변수)
+		const float linear_speed = DegreeToRadian(2.0f);
+
+		// 목표값(0.0f)을 향해 일정한 속도로 이동
+		if (reaction_y > 0.0f)
+		{
+			reaction_y -= linear_speed;
+			// 목표값을 지나치면(오버슛) 0으로 보정
+			if (reaction_y < 0.0f) { reaction_y = 0.0f; }
+		}
+		else if (reaction_y < 0.0f)
+		{
+			reaction_y += linear_speed;
+			// 목표값을 지나치면(오버슛) 0으로 보정
+			if (reaction_y > 0.0f) { reaction_y = 0.0f; }
+		}
+
+		// 목표값에 완전히 도달했을 때 완료 처리
+		if (reaction_y == 0.0f)
+		{
 			slowarm = false;
 		}
-		if( reaction_y > 0.0f ){ reaction_y += DegreeToRadian(-2.0f); }
-		if( reaction_y < 0.0f ){ reaction_y += DegreeToRadian(2.0f); }
 	}
 
 	//깏깓?긤뭷궶귞쁱궻둷뱗귩띋먠믦

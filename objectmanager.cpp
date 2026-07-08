@@ -5371,6 +5371,7 @@ int ObjectManager::ShotWeapon(int human_id)
 			float bullet_rx = rx2;
 			float bullet_ry = ry2;
 
+			/*
 			if ((playerflag == true) && (MyHuman->GetScopeMode() == 0)) {
 				// 기존 총알 시작점에서 뻗는 선이 조준점 중앙의 실제 판정선이다.
 				// 맵/인물/소형 오브젝트 중 가장 가까운 지점을 찾아 총구에서 그 지점으로 수렴시킨다.
@@ -5570,17 +5571,6 @@ int ObjectManager::ShotWeapon(int human_id)
 				if (muzzle_blocked == true) {
 					// The visible muzzle is behind/inside a wall. Use the body-safe
 					// origin and aim at the first wall point instead of spawning inside.
-					float safe_to_wall_x = block_hit_x - muzzle_safe_x;
-					float safe_to_wall_y = block_hit_y - muzzle_safe_y;
-					float safe_to_wall_z = block_hit_z - muzzle_safe_z;
-					float safe_to_wall_xz = sqrtf(
-						safe_to_wall_x * safe_to_wall_x +
-						safe_to_wall_z * safe_to_wall_z
-					);
-					float safe_to_wall_length = sqrtf(
-						safe_to_wall_xz * safe_to_wall_xz +
-						safe_to_wall_y * safe_to_wall_y
-					);
 
 					bullet_start_x = muzzle_safe_x;
 					bullet_start_y = muzzle_safe_y;
@@ -5589,18 +5579,22 @@ int ObjectManager::ShotWeapon(int human_id)
 					actual_target_y = block_hit_y;
 					actual_target_z = block_hit_z;
 
-					if (safe_to_wall_length > 0.001f) {
-						bullet_rx = atan2f(safe_to_wall_z, safe_to_wall_x);
-						bullet_ry = atan2f(safe_to_wall_y, safe_to_wall_xz);
-					}
-					else {
-						// Extremely close boundary: preserve the aim direction, but never
-						// place the bullet at the obstructed muzzle position.
-						bullet_rx = rx2;
-						bullet_ry = ry2;
-					}
+					// 총알이 조준선 중앙으로 꺾이지 않고 카메라 시야 방향으로 일직선 발사되도록 고정
+					bullet_rx = rx2;
+					bullet_ry = ry2;
 				}
 				else {
+					bullet_start_x = muzzle_x;
+					bullet_start_y = muzzle_y;
+					bullet_start_z = muzzle_z;
+
+					// 무기 데이터의 총구 화염 Z축 위치(flashz)를 실제 월드 길이로 변환
+					float weapon_length = ParamData.flashz / 10.0f;
+
+					// 총기 길이에 최소한의 여유 거리(예: 8.0f)를 더하여 무기마다 다른 수렴 거리를 자동 생성
+					float convergence_dist = weapon_length + 8.0f;
+
+					// 타겟까지의 거리를 계산
 					float muzzle_to_target_x = aim_target_x - muzzle_x;
 					float muzzle_to_target_y = aim_target_y - muzzle_y;
 					float muzzle_to_target_z = aim_target_z - muzzle_z;
@@ -5613,12 +5607,15 @@ int ObjectManager::ShotWeapon(int human_id)
 						muzzle_to_target_y * muzzle_to_target_y
 					);
 
-					if (muzzle_to_target_length > 0.001f) {
-						bullet_start_x = muzzle_x;
-						bullet_start_y = muzzle_y;
-						bullet_start_z = muzzle_z;
+					// 무기마다 계산된 동적 수렴 거리보다 멀 때만 크로스헤어 정중앙으로 조준 (수렴)
+					if (muzzle_to_target_length > convergence_dist) {
 						bullet_rx = atan2f(muzzle_to_target_z, muzzle_to_target_x);
 						bullet_ry = atan2f(muzzle_to_target_y, muzzle_to_target_xz);
+					}
+					else {
+						// 무기 길이 대비 벽(타겟)에 너무 가까우면 심하게 꺾이는 것을 막기 위해 일직선 발사 (평행)
+						bullet_rx = rx2;
+						bullet_ry = ry2;
 					}
 				}
 
@@ -5649,7 +5646,7 @@ int ObjectManager::ShotWeapon(int human_id)
 				}
 
 			}
-
+			*/
 			newbullet->SetPosData(
 				bullet_start_x,
 				bullet_start_y,
